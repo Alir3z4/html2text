@@ -223,13 +223,7 @@ class HTML2Text(HTMLParser.HTMLParser):
         else:
             self.out = out
 
-        # empty list to store output characters before they are "joined"
-        self.outtextlist = []
-
-        try:
-            self.outtext = unicode()
-        except NameError:  # Python3
-            self.outtext = str()
+        self.flush_outtext()
 
         self.quiet = 0
         self.p_p = 0  # number of newline character to print before next output
@@ -265,6 +259,15 @@ class HTML2Text(HTMLParser.HTMLParser):
         except KeyError:
             pass
         unifiable['nbsp'] = '&nbsp_place_holder;'
+
+    def flush_outtext(self):
+        # empty list to store output characters before they are "joined"
+        self.outtextlist = []
+
+        try:
+            self.outtext = unicode()
+        except NameError:  # Python3
+            self.outtext = str()
 
     def feed(self, data):
         data = data.replace("</' + 'script>", "</ignore>")
@@ -303,7 +306,10 @@ class HTML2Text(HTMLParser.HTMLParser):
         except NameError:
             self.outtext = self.outtext.replace('&nbsp_place_holder;', nbsp)
 
-        return self.outtext
+        outtext = self.outtext
+        self.flush_outtext()
+
+        return outtext
 
     def handle_charref(self, c):
         self.o(self.charref(c), 1)
