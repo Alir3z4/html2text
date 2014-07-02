@@ -306,7 +306,10 @@ class HTML2Text(HTMLParser.HTMLParser):
         except NameError:
             self.outtext = self.outtext.replace('&nbsp_place_holder;', nbsp)
 
-        return self.outtext
+        outtext = self.outtext
+        self.flush_outtext()
+
+        return outtext
 
     def handle_charref(self, c):
         self.o(self.charref(c), 1)
