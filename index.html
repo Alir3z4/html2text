@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Html2text by Alir3z4</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/Alir3z4/html2text">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/Alir3z4/html2text/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/Alir3z4/html2text/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Html2text</h1>
+          <p>Convert HTML to Markdown-formatted text.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/Alir3z4">Alir3z4</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="html2text" class="anchor" href="#html2text"><span class="octicon octicon-link"></span></a><a href="http://www.aaronsw.com/2002/html2text/">html2text</a>
+</h1>
+
+<p><a href="http://travis-ci.org/Alir3z4/html2text"><img src="https://secure.travis-ci.org/Alir3z4/html2text.png" alt="Build Status"></a>
+<a href="https://coveralls.io/r/Alir3z4/html2text"><img src="https://coveralls.io/repos/Alir3z4/html2text/badge.png" alt="Coverage Status"></a>
+<a href="https://pypi.python.org/pypi/html2text/"><img src="https://pypip.in/d/html2text/badge.png" alt="Downloads"></a>
+<a href="https://pypi.python.org/pypi/html2text/"><img src="https://pypip.in/v/html2text/badge.png" alt="Version"></a>
+<a href="https://pypi.python.org/pypi/html2text/"><img src="https://pypip.in/egg/html2text/badge.png" alt="Egg?"></a>
+<a href="https://pypi.python.org/pypi/html2text/"><img src="https://pypip.in/wheel/html2text/badge.png" alt="Wheel?"></a>
+<a href="https://pypi.python.org/pypi/html2text/"><img src="https://pypip.in/format/html2text/badge.png" alt="Format"></a>
+<a href="https://pypi.python.org/pypi/html2text/"><img src="https://pypip.in/license/html2text/badge.png" alt="License"></a></p>
+
+<p>html2text is a Python script that converts a page of HTML into clean, easy-to-read plain ASCII text. Better yet, that ASCII also happens to be valid Markdown (a text-to-HTML format).</p>
+
+<p>Usage: <code>html2text.py [(filename|url) [encoding]]</code></p>
+
+<table>
+<thead><tr>
+<th>Option</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>--version</code></td>
+<td>Show program's version number and exit</td>
+</tr>
+<tr>
+<td>
+<code>-h</code>, <code>--help</code>
+</td>
+<td>Show this help message and exit</td>
+</tr>
+<tr>
+<td><code>--ignore-links</code></td>
+<td>Don't include any formatting for links</td>
+</tr>
+<tr>
+<td><code>--ignore-images</code></td>
+<td>Don't include any formatting for images</td>
+</tr>
+<tr>
+<td>
+<code>-g</code>, <code>--google-doc</code>
+</td>
+<td>Convert an html-exported Google Document</td>
+</tr>
+<tr>
+<td>
+<code>-d</code>, <code>--dash-unordered-list</code>
+</td>
+<td>Use a dash rather than a star for unordered list items</td>
+</tr>
+<tr>
+<td>
+<code>-b</code> <code>BODY_WIDTH</code>, <code>--body-width</code>=<code>BODY_WIDTH</code>
+</td>
+<td>Number of characters per output line, <code>0</code> for no wrap</td>
+</tr>
+<tr>
+<td>
+<code>-i</code> <code>LIST_INDENT</code>, <code>--google-list-indent</code>=<code>LIST_INDENT</code>
+</td>
+<td>Number of pixels Google indents nested lists</td>
+</tr>
+<tr>
+<td>
+<code>-s</code>, <code>--hide-strikethrough</code>
+</td>
+<td>Hide strike-through text. only relevent when <code>-g</code> is specified as well</td>
+</tr>
+<tr>
+<td><code>--escape-all</code></td>
+<td>Escape all special characters.  Output is less readable, but avoids corner case formatting issues.</td>
+</tr>
+</tbody>
+</table><p>Or you can use it from within <code>Python</code>:</p>
+
+<pre><code>import html2text
+print html2text.html2text("&lt;p&gt;Hello, world.&lt;/p&gt;")
+</code></pre>
+
+<p>Or with some configuration options:</p>
+
+<pre><code>import html2text
+h = html2text.HTML2Text()
+h.ignore_links = True
+print h.handle("&lt;p&gt;Hello, &lt;a href='http://earth.google.com/'&gt;world&lt;/a&gt;!")
+</code></pre>
+
+<p><em>Originally written by Aaron Swartz. This code is distributed under the GPLv3.</em></p>
+
+<h2>
+<a name="how-to-install" class="anchor" href="#how-to-install"><span class="octicon octicon-link"></span></a>How to install</h2>
+
+<p><code>html2text</code> is available on pypi
+<a href="https://pypi.python.org/pypi/html2text">https://pypi.python.org/pypi/html2text</a></p>
+
+<pre><code>$ pip install html2text
+</code></pre>
+
+<h2>
+<a name="how-to-run-unit-tests" class="anchor" href="#how-to-run-unit-tests"><span class="octicon octicon-link"></span></a>How to run unit tests</h2>
+
+<pre><code>PYTHONPATH=$PYTHONPATH:. coverage run --source=html2text setup.py test -v
+</code></pre>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
