@@ -1,46 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Html2text by Alir3z4</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="Html2text : Convert HTML to Markdown-formatted text.">
 
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Html2text</title>
   </head>
+
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/Alir3z4/html2text">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/Alir3z4/html2text/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/Alir3z4/html2text/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
 
-    <div class="wrapper">
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/Alir3z4/html2text">View on GitHub</a>
 
-      <section>
-        <div id="title">
-          <h1>Html2text</h1>
-          <p>Convert HTML to Markdown-formatted text.</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/Alir3z4">Alir3z4</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
+          <h1 id="project_title">Html2text</h1>
+          <h2 id="project_tagline">Convert HTML to Markdown-formatted text.</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/Alir3z4/html2text/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/Alir3z4/html2text/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
-<a name="html2text" class="anchor" href="#html2text"><span class="octicon octicon-link"></span></a><a href="http://www.aaronsw.com/2002/html2text/">html2text</a>
-</h1>
+<a name="html2text" class="anchor" href="#html2text"><span class="octicon octicon-link"></span></a>html2text</h1>
 
 <p><a href="http://travis-ci.org/Alir3z4/html2text"><img src="https://secure.travis-ci.org/Alir3z4/html2text.png" alt="Build Status"></a>
 <a href="https://coveralls.io/r/Alir3z4/html2text"><img src="https://coveralls.io/repos/Alir3z4/html2text/badge.png" alt="Coverage Status"></a>
@@ -145,9 +137,17 @@ print h.handle("&lt;p&gt;Hello, &lt;a href='http://earth.google.com/'&gt;world&l
 <pre><code>PYTHONPATH=$PYTHONPATH:. coverage run --source=html2text setup.py test -v
 </code></pre>
       </section>
-
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Html2text maintained by <a href="https://github.com/Alir3z4">Alir3z4</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
     
+
   </body>
 </html>
