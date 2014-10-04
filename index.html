@@ -119,16 +119,32 @@
 </tbody>
 </table><p>Or you can use it from within <code>Python</code>:</p>
 
-<pre><code>import html2text
-print html2text.html2text("&lt;p&gt;Hello, world.&lt;/p&gt;")
+<pre><code>&gt;&gt;&gt; import html2text
+&gt;&gt;&gt;
+&gt;&gt;&gt; print(html2text.html2text("&lt;p&gt;&lt;strong&gt;Zed's&lt;/strong&gt; dead baby, &lt;em&gt;Zed's&lt;/em&gt; dead.&lt;/p&gt;"))
+**Zed's** dead baby, _Zed's_ dead.
+
 </code></pre>
 
 <p>Or with some configuration options:</p>
 
-<pre><code>import html2text
-h = html2text.HTML2Text()
-h.ignore_links = True
-print h.handle("&lt;p&gt;Hello, &lt;a href='http://earth.google.com/'&gt;world&lt;/a&gt;!")
+<pre><code>&gt;&gt;&gt; import html2text
+&gt;&gt;&gt; 
+&gt;&gt;&gt; h = html2text.HTML2Text()
+&gt;&gt;&gt; # Ignore converting links from HTML
+&gt;&gt;&gt; h.ignore_links = True
+&gt;&gt;&gt; print h.handle("&lt;p&gt;Hello, &lt;a href='http://earth.google.com/'&gt;world&lt;/a&gt;!")
+Hello, world!
+
+&gt;&gt;&gt; print(h.handle("&lt;p&gt;Hello, &lt;a href='http://earth.google.com/'&gt;world&lt;/a&gt;!"))
+
+Hello, world!
+
+&gt;&gt;&gt; # Don't Ignore links anymore, I like links
+&gt;&gt;&gt; h.ignore_links = False
+&gt;&gt;&gt; print(h.handle("&lt;p&gt;Hello, &lt;a href='http://earth.google.com/'&gt;world&lt;/a&gt;!"))
+Hello, [world](http://earth.google.com/)!
+
 </code></pre>
 
 <p><em>Originally written by Aaron Swartz. This code is distributed under the GPLv3.</em></p>
