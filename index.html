@@ -39,7 +39,7 @@
         </div>
 
         <h1>
-<a name="html2text" class="anchor" href="#html2text"><span class="octicon octicon-link"></span></a>html2text</h1>
+<a id="html2text" class="anchor" href="#html2text" aria-hidden="true"><span class="octicon octicon-link"></span></a>html2text</h1>
 
 <p><a href="http://travis-ci.org/Alir3z4/html2text"><img src="https://secure.travis-ci.org/Alir3z4/html2text.png" alt="Build Status"></a>
 <a href="https://coveralls.io/r/Alir3z4/html2text"><img src="https://coveralls.io/repos/Alir3z4/html2text/badge.png" alt="Coverage Status"></a>
@@ -52,13 +52,15 @@
 
 <p>html2text is a Python script that converts a page of HTML into clean, easy-to-read plain ASCII text. Better yet, that ASCII also happens to be valid Markdown (a text-to-HTML format).</p>
 
-<p>Usage: <code>html2text.py [(filename|url) [encoding]]</code></p>
+<p>Usage: <code>html2text [(filename|url) [encoding]]</code></p>
 
 <table>
-<thead><tr>
+<thead>
+<tr>
 <th>Option</th>
 <th>Description</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr>
 <td><code>--version</code></td>
@@ -117,7 +119,9 @@
 <td>Format tables in HTML rather than Markdown syntax.</td>
 </tr>
 </tbody>
-</table><p>Or you can use it from within <code>Python</code>:</p>
+</table>
+
+<p>Or you can use it from within <code>Python</code>:</p>
 
 <pre><code>&gt;&gt;&gt; import html2text
 &gt;&gt;&gt;
@@ -150,7 +154,7 @@ Hello, [world](http://earth.google.com/)!
 <p><em>Originally written by Aaron Swartz. This code is distributed under the GPLv3.</em></p>
 
 <h2>
-<a name="how-to-install" class="anchor" href="#how-to-install"><span class="octicon octicon-link"></span></a>How to install</h2>
+<a id="how-to-install" class="anchor" href="#how-to-install" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to install</h2>
 
 <p><code>html2text</code> is available on pypi
 <a href="https://pypi.python.org/pypi/html2text">https://pypi.python.org/pypi/html2text</a></p>
@@ -159,7 +163,7 @@ Hello, [world](http://earth.google.com/)!
 </code></pre>
 
 <h2>
-<a name="how-to-run-unit-tests" class="anchor" href="#how-to-run-unit-tests"><span class="octicon octicon-link"></span></a>How to run unit tests</h2>
+<a id="how-to-run-unit-tests" class="anchor" href="#how-to-run-unit-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to run unit tests</h2>
 
 <pre><code>PYTHONPATH=$PYTHONPATH:. coverage run --source=html2text setup.py test -v
 </code></pre>
