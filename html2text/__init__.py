@@ -14,6 +14,7 @@ from html2text.compat import urlparse, HTMLParser
 from html2text import config
 
 from html2text.utils import (
+    wide_unichr,
     name2cp,
     unifiable_n,
     google_text_emphasis,
@@ -722,7 +723,7 @@ class HTML2Text(HTMLParser.HTMLParser):
             return unifiable_n[c]
         else:
             try:
-                return unichr(c)
+                return wide_unichr(c)
             except NameError:  # Python3
                 return chr(c)
 
@@ -739,7 +740,7 @@ class HTML2Text(HTMLParser.HTMLParser):
                     return config.UNIFIABLE[c]
                 else:
                     try:
-                        return unichr(name2cp(c))
+                        return wide_unichr(name2cp(c))
                     except NameError:  # Python3
                         return chr(name2cp(c))
 

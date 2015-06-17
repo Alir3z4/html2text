@@ -1,7 +1,16 @@
 import sys
 from html2text import config
+import struct 
 
 from html2text.compat import htmlentitydefs
+
+# Based on http://stackoverflow.com/questions/7105874/valueerror-unichr-arg-not-in-range0x10000-narrow-python-build-please-hel
+def wide_unichr(i):
+    try:
+        return unichr(i)
+    except ValueError:
+        return struct.pack('i', i).decode('utf-32')
+
 
 
 def name2cp(k):
