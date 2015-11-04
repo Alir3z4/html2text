@@ -1,44 +1,25 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="UTF-8">
     <title>Html2text by Alir3z4</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/Alir3z4/html2text">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/Alir3z4/html2text/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/Alir3z4/html2text/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
+    <section class="page-header">
+      <h1 class="project-name">Html2text</h1>
+      <h2 class="project-tagline">Convert HTML to Markdown-formatted text.</h2>
+      <a href="https://github.com/Alir3z4/html2text" class="btn">View on GitHub</a>
+      <a href="https://github.com/Alir3z4/html2text/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/Alir3z4/html2text/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div class="wrapper">
-
-      <section>
-        <div id="title">
-          <h1>Html2text</h1>
-          <p>Convert HTML to Markdown-formatted text.</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/Alir3z4">Alir3z4</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
-
-        <h1>
+    <section class="main-content">
+      <h1>
 <a id="html2text" class="anchor" href="#html2text" aria-hidden="true"><span class="octicon octicon-link"></span></a>html2text</h1>
 
 <p><a href="http://travis-ci.org/Alir3z4/html2text"><img src="https://secure.travis-ci.org/Alir3z4/html2text.png" alt="Build Status"></a>
@@ -77,61 +58,21 @@
 <td>Don't include any formatting for links</td>
 </tr>
 <tr>
-<td><code>--protect-links</code></td>
-<td>Protect links from line breaks surrounding them "+" with angle brackets</td>
-</tr>
-<tr>
-<td><code>--ignore-images</code></td>
-<td>Don't include any formatting for images</td>
-</tr>
-<tr>
-<td><code>--images-to-alt</code></td>
-<td>Discard image data, only keep alt text</td>
-</tr>
-<tr>
-<td>
-<code>-g</code>, <code>--google-doc</code>
-</td>
-<td>Convert an html-exported Google Document</td>
-</tr>
-<tr>
-<td>
-<code>-d</code>, <code>--dash-unordered-list</code>
-</td>
-<td>Use a dash rather than a star for unordered list items</td>
-</tr>
-<tr>
-<td>
-<code>-b</code> <code>BODY_WIDTH</code>, <code>--body-width</code>=<code>BODY_WIDTH</code>
-</td>
-<td>Number of characters per output line, <code>0</code> for no wrap</td>
-</tr>
-<tr>
-<td>
-<code>-i</code> <code>LIST_INDENT</code>, <code>--google-list-indent</code>=<code>LIST_INDENT</code>
-</td>
-<td>Number of pixels Google indents nested lists</td>
-</tr>
-<tr>
-<td>
-<code>-s</code>, <code>--hide-strikethrough</code>
-</td>
-<td>Hide strike-through text. only relevent when <code>-g</code> is specified as well</td>
-</tr>
-<tr>
 <td><code>--escape-all</code></td>
 <td>Escape all special characters.  Output is less readable, but avoids corner case formatting issues.</td>
 </tr>
 <tr>
-<td><code>--bypass-tables</code></td>
-<td>Format tables in HTML rather than Markdown syntax.</td>
+<td><code>--reference-links</code></td>
+<td>Use reference links instead of links to create markdown</td>
 </tr>
 <tr>
-<td><code>--single-line-break</code></td>
-<td>Use a single line break after a block element rather than two.</td>
+<td><code>--mark-code</code></td>
+<td>Mark preformatted and code blocks with [code]...[/code]</td>
 </tr>
 </tbody>
 </table>
+
+<p>For a complete list of options see the <a href="docs/usage.md">docs</a></p>
 
 <p>Or you can use it from within <code>Python</code>:</p>
 
@@ -145,7 +86,7 @@
 <p>Or with some configuration options:</p>
 
 <pre><code>&gt;&gt;&gt; import html2text
-&gt;&gt;&gt; 
+&gt;&gt;&gt;
 &gt;&gt;&gt; h = html2text.HTML2Text()
 &gt;&gt;&gt; # Ignore converting links from HTML
 &gt;&gt;&gt; h.ignore_links = True
@@ -179,10 +120,28 @@ Hello, [world](http://earth.google.com/)!
 
 <pre><code>PYTHONPATH=$PYTHONPATH:. coverage run --source=html2text setup.py test -v
 </code></pre>
-      </section>
 
-    </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+<p>To see the coverage results:</p>
+
+<pre><code>coverage combine
+coverage html
+</code></pre>
+
+<p>then open the <code>./htmlcov/index.html</code> file in your browser.</p>
+
+<h2>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p>Documentation lives <a href="docs/index.md">here</a></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/Alir3z4/html2text">Html2text</a> is maintained by <a href="https://github.com/Alir3z4">Alir3z4</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
   </body>
 </html>
