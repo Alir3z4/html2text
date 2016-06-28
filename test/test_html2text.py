@@ -134,7 +134,7 @@ def generate_test(fn):
         module_args['bypass_tables'] = True
         cmdline_args.append('--bypass-tables')
 
-    if base_fn.find('table_ignore') >= 0:
+    if base_fn.startswith('table_ignore'):
         module_args['ignore_tables'] = True
         cmdline_args.append('--ignore-tables')
 
