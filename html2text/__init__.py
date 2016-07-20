@@ -6,16 +6,11 @@ import re
 import sys
 
 try:
-    from html import escape as html_escape
-except ImportError:
-    from cgi import escape as html_escape
-
-try:
     from textwrap import wrap
 except ImportError:  # pragma: no cover
     pass
 
-from html2text.compat import urlparse, HTMLParser
+from html2text.compat import urlparse, HTMLParser, html_escape
 from html2text import config
 
 from html2text.utils import (
