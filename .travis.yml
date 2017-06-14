@@ -12,6 +12,8 @@ python:
 install:
     - pip install coveralls==0.5
 before_script:
+  # Python 3.2 needs setuptools < 30 - support for Py3.2 was dropped after that version
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then pip install -U 'setuptools<30'; fi
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install unittest2; fi
   # flake8 doesn't support Python 2.6
   - if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; then pip install flake8==3.3.0;flake8 .; fi
