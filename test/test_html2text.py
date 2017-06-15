@@ -95,7 +95,12 @@ def get_baseline(fn):
 
 
 class TestHTML2Text(unittest.TestCase):
-    pass
+
+    def test_html_escape(self):
+        self.assertEqual(
+            html2text.compat.html_escape('<pre>and then<div> & other tags'),
+            '&lt;pre&gt;and then&lt;div&gt; &amp; other tags'
+        )
 
 
 def generate_test(fn):
