@@ -94,6 +94,9 @@ class HTML2Text(HTMLParser.HTMLParser):
         self.p_p = 0  # number of newline character to print before next output
         self.outcount = 0
         self.start = 1
+        # tag_start is more general than start,
+        # which seems to be used more for whitespace
+        self.tag_start = 0
         self.space = 0
         self.a = []
         self.astack = []
@@ -290,6 +293,7 @@ class HTML2Text(HTMLParser.HTMLParser):
     def handle_tag(self, tag, attrs, start):
         self.current_tag = tag
         # attrs is None for endtags
+        self.tag_start = start
         if attrs is None:
             attrs = {}
         else:
@@ -342,6 +346,9 @@ class HTML2Text(HTMLParser.HTMLParser):
                     self.soft_br()
             elif self.astack and tag == 'div':
                 pass
+            elif self.blockquote:
+                # Don't add additional linebreaks in a blockquote
+                pass
             else:
                 self.p()
 
@@ -374,7 +381,7 @@ class HTML2Text(HTMLParser.HTMLParser):
         if tag == "blockquote":
             if start:
                 self.p()
-                self.o('> ', 0, 1)
+                self.o('> ', puredata=0, force=1)
                 self.start = 1
                 self.blockquote += 1
             else:
@@ -746,6 +753,17 @@ class HTML2Text(HTMLParser.HTMLParser):
                     # use existing initial indentation
                     data = data.lstrip("\n")
 
+            if self.blockquote:
+                # The result when data only contains linebreaks
+                if data.strip() != '>':
+                    # two blank spaces used in beginning to
+                    # create single linebreak see optwrap for code.
+                    blank = '  ' if self.tag_start else ''
+                    data = '\n' + bq + data + blank
+                else:
+                    # Don't output any extra linebreaks.
+                    return
+
             if self.start:
                 self.space = 0
                 self.p_p = 0
@@ -794,8 +812,10 @@ class HTML2Text(HTMLParser.HTMLParser):
                     self.out("  *[" + abbr + "]: " + definition + "\n")
 
             self.p_p = 0
-            self.out(data)
-            self.outcount += 1
+            # special case for when the tag is blockquote
+            if data != '> ':
+                self.out(data)
+                self.outcount += 1
 
     def handle_data(self, data, entity_char=False):
         if self.stressed:
@@ -828,7 +848,7 @@ class HTML2Text(HTMLParser.HTMLParser):
         if not self.code and not self.pre and not entity_char:
             data = escape_md_section(data, snob=self.escape_snob)
         self.preceding_data = data
-        self.o(data, 1)
+        self.o(data, puredata=1)
 
     def unknown_decl(self, data):  # pragma: no cover
         # TODO: what is this doing here?
@@ -919,7 +939,7 @@ class HTML2Text(HTMLParser.HTMLParser):
                         wrap(para, self.body_width, break_long_words=False)
                     )
                     if para.endswith('  '):
-                        result += "  \n"
+                        result += "\n"
                         newlines = 1
                     else:
                         result += "\n\n"

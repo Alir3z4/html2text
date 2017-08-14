@@ -18,7 +18,7 @@ H1   | H2        | H3
 C1   | Content 2 | x   
 C123 | Content 2 | xyz 
 
-some content between the tables  
+some content between the tables
 Header 1  | Header 2         | Header 3                                     
 ----------|------------------|----------------------------------------------
 Content 1 | Content 2        | ![200](http://lorempixel.com/200/200) Image! 

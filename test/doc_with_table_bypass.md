@@ -4,36 +4,36 @@ With some text, `code`, **bolds** and _italics_.
 
 ## This is second header
 
-Displaynone text  
-  
-<table>  
-<tr>  
+Displaynone text
+
+<table>
+<tr>
 <th>
 
 Header 1
 
-</th>  
+</th>
 <th>
 
 Header 2
 
-</th>  
+</th>
 <th>
 
 Header 3
 
-</th> </tr>  
-<tr>  
+</th> </tr>
+<tr>
 <td>
 
 Content 1
 
-</td>  
+</td>
 <td>
 
 Content 2
 
-</td>  
+</td>
 <td>
 
 ![200](http://lorempixel.com/200/200) Image!

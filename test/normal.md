@@ -16,8 +16,8 @@ text to separate lists
     2. a **bold human** being
   3. end
 
-**bold**  
-_italic_  
+**bold**
+_italic_
 
     
     
@@ -27,7 +27,7 @@ _italic_
       return 'b'
           
 
-Some `fixed width text` here  
+Some `fixed width text` here
 _`italic fixed width text`_
 
 2012\. Now that was a good year. So was 2011. That's all.
@@ -42,12 +42,12 @@ _`italic fixed width text`_
 
 -foo 
 
-not a header  
+not a header
 \--
 
-not a hr  
-  
-\---  
+not a hr
+
+\---
 \- - -
 
 c:\tmp, \\\server\path, \\_/, foo\bar, #\\#, \\\\#
