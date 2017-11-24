@@ -180,6 +180,10 @@ def generate_test(fn):
         module_args['ignore_tables'] = True
         cmdline_args.append('--ignore-tables')
 
+    if base_fn.startswith('surrogate_escape'):
+        module_args['surrogate_escape'] = True
+        cmdline_args.append('--surrogate-escape')
+
     if base_fn.startswith('bodywidth'):
         # module_args['unicode_snob'] = True
         module_args['body_width'] = 0

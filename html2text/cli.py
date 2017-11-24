@@ -3,7 +3,7 @@ import warnings
 
 from html2text.compat import urllib
 from html2text import HTML2Text, config, __version__
-from html2text.utils import wrapwrite, wrap_read
+from html2text.utils import wrapwrite,wrapwrite_surrogate_escape, wrap_read
 
 
 def main():
@@ -85,6 +85,14 @@ def main():
         default=config.IMAGES_TO_ALT,
         help="Discard image data, only keep alt text"
     )
+    p.add_option(
+        "--surrogate-escape",
+        dest="surrogate_escape",
+        action="store_true",
+        default=config.SURROGATE_ESCAPE,
+        help="Escaping some special characters and avoid error during printing in console"
+    )
+
     p.add_option(
         "--images-with-size",
         dest="images_with_size",
@@ -285,6 +293,7 @@ def main():
     h.ignore_links = options.ignore_links
     h.protect_links = options.protect_links
     h.ignore_images = options.ignore_images
+    h.surrogate_escape = options.surrogate_escape
     h.images_to_alt = options.images_to_alt
     h.images_with_size = options.images_with_size
     h.google_doc = options.google_doc
@@ -303,4 +312,7 @@ def main():
     h.pad_tables = options.pad_tables
     h.default_image_alt = options.default_image_alt
 
-    wrapwrite(h.handle(data))
+    if options.surrogate_escape:
+        wrapwrite_surrogate_escape(h.handle(data))
+    else:
+        wrapwrite(h.handle(data))

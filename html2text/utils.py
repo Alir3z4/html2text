@@ -204,11 +204,22 @@ def skipwrap(para, wrap_links):
 
 
 def wrapwrite(text):
-    text = text.encode('utf-8','surrogateescape')
+    text = text.encode('utf-8')
+    
     try:  # Python3
         sys.stdout.buffer.write(text)
     except AttributeError:
         sys.stdout.write(text)
+
+
+def wrapwrite_surrogate_escape(text):
+    text = text.encode('utf-8','surrogateescape')
+    
+    try:  # Python3
+        sys.stdout.buffer.write(text)
+    except AttributeError:
+        sys.stdout.write(text)
+
 
 
 def wrap_read():  # pragma: no cover
