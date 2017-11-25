@@ -41,7 +41,7 @@ def test_module(fn, google_doc=False, **kwargs):
         setattr(h, k, v)
 
     result = get_baseline(fn)
-    with open(fn) as inf:
+    with open(fn, encoding='utf-8') as inf:
         actual = cleanup_eol(inf.read())
         actual = h.handle(actual)
     return result, actual
@@ -88,7 +88,7 @@ def get_baseline_name(fn):
 
 def get_baseline(fn):
     name = get_baseline_name(fn)
-    with codecs.open(name, mode='r', encoding='utf8') as f:
+    with codecs.open(name, mode='r', encoding='utf8',errors='surrogateescape') as f:
         out = f.read()
     out = cleanup_eol(out)
     return out

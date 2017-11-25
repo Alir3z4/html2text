@@ -1,0 +1,1102 @@
+<!doctype html>
+<!--[if IEMobile 7 ]> <html lang="en-US"class="no-js iem7"> <![endif]-->
+<!--[if lt IE 7 ]> <html lang="en-US" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en-US" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en-US" class="no-js ie8"> <![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html lang="en-US" class="no-js"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link type="text/css" media="all" href="http://www.baeldung.com/wp-content/cache/autoptimize/css/autoptimize_fc62a9157befe107c17d9cde6cb86f96.css" rel="stylesheet" /><title>Intro to WebSockets with Spring | Baeldung</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="pingback" href="http://www.baeldung.com/xmlrpc.php">
+<link rel="apple-touch-icon" sizes="57x57" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/apple-touch-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/apple-touch-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/apple-touch-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/apple-touch-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/apple-touch-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/apple-touch-icon-180x180.png">
+<link rel="icon" type="image/png" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/android-chrome-192x192.png" sizes="192x192">
+<link rel="icon" type="image/png" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/manifest.json">
+<link rel="mask-icon" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/safari-pinned-tab.svg" color="#63b175">
+<link rel="shortcut icon" href="http://www.baeldung.com/wp-content/themes/baeldung/favicon/favicon.ico">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="msapplication-TileImage" content="http://www.baeldung.com/wp-content/themes/baeldung/favicon/mstile-144x144.png">
+<meta name="msapplication-config" content="http://www.baeldung.com/wp-content/themes/baeldung/favicon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+
+<link rel="author" href="https://plus.google.com/+BaeldungTutorials/" />
+<meta name="description" content="A quick intro to using WebSockets with Spring from a JS client." />
+<link rel="canonical" href="http://www.baeldung.com/websockets-spring" />
+<meta property="og:title" content="Intro to WebSockets with Spring | Baeldung" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.baeldung.com/websockets-spring" />
+<meta property="og:image" content="http://www.baeldung.com/wp-content/uploads/2016/10/social-On-Spring-dark.jpg" />
+<meta property="og:site_name" content="Baeldung" />
+<meta property="og:description" content="A quick intro to using WebSockets with Spring from a JS client." />
+<meta property="article:published_time" content="2016-05-14T20:38:41Z" />
+<meta property="article:modified_time" content="2017-07-19T13:36:04Z" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@baeldung" />
+<meta name="twitter:domain" content="www.baeldung.com" />
+<meta name="twitter:title" content="Intro to WebSockets with Spring | Baeldung" />
+<meta name="twitter:description" content="A quick intro to using WebSockets with Spring from a JS client." />
+<meta name="twitter:image" content="http://www.baeldung.com/wp-content/uploads/2016/10/social-On-Spring-dark.jpg" />
+
+<link rel='dns-prefetch' href='//www.baeldung.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/www.baeldung.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.9"}};
+			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55358,56794,8205,9794,65039],[55358,56794,8203,9794,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<style>
+        .wi_webinar_widget {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            /*border: 1px solid rgba(0,0,0,0.1);*/
+            /*border-bottom: 2px solid rgba(0,0,0,0.2);*/
+            /*padding: 10px;*/
+            margin: 15px 10px;
+
+            font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+            font-weight: 300;
+        }
+
+        .webinar_title {
+            text-align: center;
+            font-size: 24px;
+            line-height: 36px;
+            padding: 20px;
+            border-bottom: 1px solid #DDD;
+            color: #222222;
+        }
+
+        .wi_webinar_date {
+            background-color: #C95456;
+            color: #FFF;
+            /*font-weight: bold;*/
+            text-align: center;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+            border-top: 2px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .wi_webinar_sign_up {
+            text-align: center;
+            background-color: #F7F7F7;
+            padding: 20px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+            color: #222222;
+        }
+
+        .wi_webinar_headline1 {
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .wi_webinar_headline2 {
+            display: block;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .wi_signup_btn {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            width: 100% !important;
+            background-color: #55B369 !important;
+            display: block !important;
+            margin-top: 10px !important;
+            font-size: 18px !important;
+            font-weight: bold !important;
+            padding: 10px !important;
+            border-radius: 5px !important;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.2) !important;
+            text-decoration: none !important;
+            color: #FFF !important;
+            height: 46px !important;
+            line-height: 23px !important;
+        }
+
+        .wi_signup_btn:hover {
+            text-decoration: none !important;
+            color: #FFF !important;
+            background-color: #4ba05e !important;
+        }
+
+        .wi_webinar_input {
+            display: block;
+            margin-top: 10px;
+            width: 100%;
+            border-radius: 5px;
+            height: 46px;
+            line-height: 46px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+
+        .wi_webinar_spam {
+            border-top: 1px solid #DDD;
+            padding-top: 15px;
+            margin-top: 15px;
+            text-transform: uppercase;
+            font-size: 10px;
+            color: #757575;
+        }
+    </style>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var getTemplateUrl = {"templateUrl":"http:\/\/www.baeldung.com\/wp-content\/themes\/baeldung"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://www.baeldung.com/wp-includes/js/jquery/jquery.js?ver=1.12.4'></script>
+<script type='text/javascript' src='http://www.baeldung.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var wp_surveys = [];
+wp_surveys = [{"question":"Which of these is closest to your current job\/role?","answers":[{"answer":"Developer","value":"developer"},{"answer":"Senior Developer","value":"senior-developer"},{"answer":"Lead Developer","value":"lead-developer"},{"answer":"Architect","value":"architect"},{"answer":"Manager","value":"manager"}],"show_if_tag":"SURVEY-ROLE","do_not_show_if_tag":"","survey_slug_tag":"developer-role","tag_to_create":"","drip_custom_field_name":"job_role","if_previous_survey":false,"previous_survey":null,"previous_answer":null,"remove_tags":["","developer-role","developer-role-developer","developer-role-senior-developer","developer-role-lead-developer","developer-role-architect","developer-role-manager"],"rand":"0"}];;
+/* ]]> */
+</script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var THO_Head = {"variations":[],"post_id":"10901","element_tag":"thrive_headline","woo_tag":"tho_woo"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://www.baeldung.com/wp-content/plugins/thrive-headline-optimizer/frontend/js/header.min.js?ver=1.1.8'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var wpdiscuzAjaxObj = {"url":"http:\/\/www.baeldung.com\/wp-admin\/admin-ajax.php","wpdiscuz_options":{"wc_hide_replies_text":"Hide Replies","wc_show_replies_text":"Show Replies","wc_msg_required_fields":"Please fill out required fields","wc_invalid_field":"Some of field value is invalid","wc_error_empty_text":"please fill out this field to comment","wc_error_url_text":"url is invalid","wc_error_email_text":"email address is invalid","wc_invalid_captcha":"Invalid Captcha Code","wc_login_to_vote":"You Must Be Logged In To Vote","wc_deny_voting_from_same_ip":"You are not allowed to vote for this comment","wc_self_vote":"You cannot vote for your comment","wc_vote_only_one_time":"You've already voted for this comment","wc_voting_error":"Voting Error","wc_held_for_moderate":"Comment awaiting moderation","wc_comment_edit_not_possible":"Sorry, this comment no longer possible to edit","wc_comment_not_updated":"Sorry, the comment was not updated","wc_comment_not_edited":"You've not made any changes","wc_new_comment_button_text":"new comment","wc_new_comments_button_text":"new comments","wc_new_reply_button_text":"new reply on your comment","wc_new_replies_button_text":"new replies on your comments","wc_msg_input_min_length":"Input is too short","wc_msg_input_max_length":"Input is too long","is_user_logged_in":false,"commentListLoadType":"0","lazyLoadOnPageLoad":0,"commentListUpdateType":"0","commentListUpdateTimer":"30","liveUpdateGuests":"1","wc_comment_bg_color":"#FEFEFE","wc_reply_bg_color":"#F8F8F8","wordpress_comment_order":"asc","commentsVoteOrder":false,"wordpressThreadCommentsDepth":"5","wordpressIsPaginate":"","commentTextMaxLength":null,"storeCommenterData":100000,"isCaptchaInSession":true,"isGoodbyeCaptchaActive":false,"facebookAppID":"","cookiehash":"c0cc64a9cc1c7a2943b86b812a2db56e","version":"4.1.1","wc_post_id":10901,"loadLastCommentId":0,"lastVisitKey":"wpdiscuz_last_visit","lastVisitExpires":1514148732,"lastVisitCookie":{"1":{"1944":1511550101,"4999":1511542226,"8601":1511410547,"10881":1510870961,"13258":1511409927,"15687":1511032050,"20794":1510860452,"10901":1511556732}},"wc_captcha_show_for_guest":1,"wc_captcha_show_for_members":"0","is_email_field_required":1}};
+/* ]]> */
+</script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var aamLocal = {"nonce":"391c24f4e8","ajaxurl":"http:\/\/www.baeldung.com\/wp-admin\/admin-ajax.php"};
+/* ]]> */
+</script>
+<link rel='https://api.w.org/' href='http://www.baeldung.com/wp-json/' />
+<link rel='shortlink' href='http://www.baeldung.com/?p=10901' />
+<link rel="alternate" type="application/json+oembed" href="http://www.baeldung.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring" />
+<link rel="alternate" type="text/xml+oembed" href="http://www.baeldung.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring&#038;format=xml" />
+<style type="text/css">#tve_editor .ttfm1{font-family: 'Lato' !important;font-weight: 400 !important;}.ttfm1 input, .ttfm1 select, .ttfm1 textarea, .ttfm1 button {font-family: 'Lato' !important;font-weight: 400 !important;}#tve_editor .ttfm1.bold_text,.ttfm1 .bold_text,.ttfm1 b,.ttfm1 strong{font-weight: 700 !important;}.ttfm1.bold_text,.ttfm1 .bold_text,.ttfm1 b,.ttfm1 strong input, .ttfm1.bold_text,.ttfm1 .bold_text,.ttfm1 b,.ttfm1 strong select, .ttfm1.bold_text,.ttfm1 .bold_text,.ttfm1 b,.ttfm1 strong textarea, .ttfm1.bold_text,.ttfm1 .bold_text,.ttfm1 b,.ttfm1 strong button {font-weight: 700 !important;}#tve_editor .ttfm2{font-family: 'Lora' !important;font-weight: 400 !important;}.ttfm2 input, .ttfm2 select, .ttfm2 textarea, .ttfm2 button {font-family: 'Lora' !important;font-weight: 400 !important;}#tve_editor .ttfm2.bold_text,.ttfm2 .bold_text,.ttfm2 b,.ttfm2 strong{font-weight: 700 !important;}.ttfm2.bold_text,.ttfm2 .bold_text,.ttfm2 b,.ttfm2 strong input, .ttfm2.bold_text,.ttfm2 .bold_text,.ttfm2 b,.ttfm2 strong select, .ttfm2.bold_text,.ttfm2 .bold_text,.ttfm2 b,.ttfm2 strong textarea, .ttfm2.bold_text,.ttfm2 .bold_text,.ttfm2 b,.ttfm2 strong button {font-weight: 700 !important;}#tve_editor .ttfm3{font-family: 'Oswald' !important;font-weight: 400 !important;}.ttfm3 input, .ttfm3 select, .ttfm3 textarea, .ttfm3 button {font-family: 'Oswald' !important;font-weight: 400 !important;}#tve_editor .ttfm3.bold_text,.ttfm3 .bold_text,.ttfm3 b,.ttfm3 strong{font-weight: 700 !important;}.ttfm3.bold_text,.ttfm3 .bold_text,.ttfm3 b,.ttfm3 strong input, .ttfm3.bold_text,.ttfm3 .bold_text,.ttfm3 b,.ttfm3 strong select, .ttfm3.bold_text,.ttfm3 .bold_text,.ttfm3 b,.ttfm3 strong textarea, .ttfm3.bold_text,.ttfm3 .bold_text,.ttfm3 b,.ttfm3 strong button {font-weight: 700 !important;}#tve_editor .ttfm4{font-family: 'Paytone One' !important;font-weight: 400 !important;}.ttfm4 input, .ttfm4 select, .ttfm4 textarea, .ttfm4 button {font-family: 'Paytone One' !important;font-weight: 400 !important;}#tve_editor .ttfm5{font-family: 'Pathway Gothic One' !important;font-weight: 400 !important;}.ttfm5 input, .ttfm5 select, .ttfm5 textarea, .ttfm5 button {font-family: 'Pathway Gothic One' !important;font-weight: 400 !important;}#tve_editor .ttfm6{font-family: 'Raleway' !important;font-weight: 300 !important;}.ttfm6 input, .ttfm6 select, .ttfm6 textarea, .ttfm6 button {font-family: 'Raleway' !important;font-weight: 300 !important;}#tve_editor .ttfm6.bold_text,.ttfm6 .bold_text,.ttfm6 b,.ttfm6 strong{font-weight: 700 !important;}.ttfm6.bold_text,.ttfm6 .bold_text,.ttfm6 b,.ttfm6 strong input, .ttfm6.bold_text,.ttfm6 .bold_text,.ttfm6 b,.ttfm6 strong select, .ttfm6.bold_text,.ttfm6 .bold_text,.ttfm6 b,.ttfm6 strong textarea, .ttfm6.bold_text,.ttfm6 .bold_text,.ttfm6 b,.ttfm6 strong button {font-weight: 700 !important;}#tve_editor .ttfm7{font-family: 'Raleway' !important;font-weight: 600 !important;}.ttfm7 input, .ttfm7 select, .ttfm7 textarea, .ttfm7 button {font-family: 'Raleway' !important;font-weight: 600 !important;}#tve_editor .ttfm7.bold_text,.ttfm7 .bold_text,.ttfm7 b,.ttfm7 strong{font-weight: 700 !important;}.ttfm7.bold_text,.ttfm7 .bold_text,.ttfm7 b,.ttfm7 strong input, .ttfm7.bold_text,.ttfm7 .bold_text,.ttfm7 b,.ttfm7 strong select, .ttfm7.bold_text,.ttfm7 .bold_text,.ttfm7 b,.ttfm7 strong textarea, .ttfm7.bold_text,.ttfm7 .bold_text,.ttfm7 b,.ttfm7 strong button {font-weight: 700 !important;}</style>
+
+<style type='text/css'>
+.syntaxhighlighter { line-height: 1.2em }
+.syntaxhighlighter,
+.syntaxhighlighter a,
+.syntaxhighlighter div,
+.syntaxhighlighter code,
+.syntaxhighlighter table,
+.syntaxhighlighter table td,
+.syntaxhighlighter table tr,
+.syntaxhighlighter table tbody,
+.syntaxhighlighter table thead,
+.syntaxhighlighter table caption,
+.syntaxhighlighter textarea {
+font-size: 12px !important; /* Set the font size in pixels */  
+font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important; /* Set the font type */  
+}
+.syntaxhighlighter table caption {
+/* For Title(Caption) */  
+font-size: 14px !important; /* Set the font size in pixels */  
+font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important; /* Set the font type */  
+}
+.syntaxhighlighter.nogutter td.code .line {
+/* Set the left padding space when no-gutter in ver. 3.0 */  
+padding-left: 3px !important;
+}
+.syntaxhighlighter {
+/* For Chrome/Safari(WebKit) */  
+/* Hide the superfluous vertical scrollbar in ver. 3.0 */  
+overflow-y: hidden !important;
+padding: 1px !important;
+}
+.widget-area.syntaxhighlighter a,
+.widget-area.syntaxhighlighter div,
+.widget-area.syntaxhighlighter code,
+.widget-area.syntaxhighlighter table,
+.widget-area.syntaxhighlighter table td,
+.widget-area.syntaxhighlighter table tr,
+.widget-area.syntaxhighlighter table tbody,
+.widget-area.syntaxhighlighter table thead,
+.widget-area.syntaxhighlighter table caption,
+.widget-area.syntaxhighlighter textarea {
+/* For Widget */  
+font-size: 14px !important; /* Set the font size in pixels */  
+font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important; /* Set the font type */  
+}
+.widget-area table caption {
+/* For Widget */  
+/* For Title(Caption) */  
+font-size: 10px !important; /* Set the font size in pixels */  
+font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important; /* Set the font type */  
+}
+</style>
+
+<style type="text/css">#wpcomm .wc_new_comment{background:#00B38F;}#wpcomm .wc_new_reply{background:#00B38F;}#wpcomm .wc-form-wrapper{background:#F9F9F9;}#wpcomm select,#wpcomm input[type="text"],#wpcomm input[type="email"],#wpcomm input[type="url"],#wpcomm input[type="date"],#wpcomm input[type="color"]{border:#D9D9D9 1px solid;}#wpcomm .wc-comment .wc-comment-right{background:#FEFEFE;}#wpcomm .wc-reply .wc-comment-right{background:#F8F8F8;}#wpcomm .wc-comment-text{font-size:14px;color:#555;}#wpcomm .wc-blog-administrator > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-administrator > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-administrator > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-author > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-author > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-author > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-contributor > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-contributor > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-contributor > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-editor > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-editor > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-editor > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-subscriber > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-subscriber > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-subscriber > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-visual2 > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-visual2 > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-visual2 > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-marketing > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-marketing > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-marketing > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-backwpup_admin > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-backwpup_admin > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-backwpup_admin > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-backwpup_check > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-backwpup_check > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-backwpup_check > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-backwpup_helper > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-backwpup_helper > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-backwpup_helper > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-senioreditor > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-senioreditor > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-senioreditor > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-post_author > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-post_author > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-post_author > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-guest > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-guest > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-guest > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-authorplus > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-authorplus > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-authorplus > .wc-comment-left .wc-comment-label{background:#00B38F;}#wpcomm .wc-blog-wtt_user > .wc-comment-right .wc-comment-author,#wpcomm .wc-blog-wtt_user > .wc-comment-right .wc-comment-author a{color:#00B38F;}#wpcomm .wc-blog-wtt_user > .wc-comment-left .wc-comment-label{background:#00B38F;}.wc-load-more-submit{border:1px solid #D9D9D9;}#wpcomm .wc-new-loaded-comment > .wc-comment-right{background:#FFFAD6;}.comments-area{width:auto;}.wpdiscuz-front-actions{background:#F9F9F9;}.wpdiscuz-subscribe-bar{background:#F9F9F9;}.wpdiscuz-sort-buttons{color:#bbbbbb;}.wpdiscuz-sort-button{color:#bbbbbb; cursor:pointer;}.wpdiscuz-sort-button:hover{color:#00B38F;cursor:pointer;}.wpdiscuz-sort-button-active{color:#00B38F!important;cursor:default!important;}#wpcomm .page-numbers{color:#555;border:#555 1px solid;}#wpcomm span.current{background:#555;}#wpcomm .wpdiscuz-readmore{cursor:pointer;color:#00B38F;} #wpcomm .wpdiscuz-textarea-wrap{border:#D9D9D9 1px solid;} .wpd-custom-field .wcf-pasiv-star, #wpcomm .wpdiscuz-item .wpdiscuz-rating > label {color: #DDDDDD;}#wpcomm .wpdiscuz-item .wpdiscuz-rating:not(:checked) > label:hover,.wpdiscuz-rating:not(:checked) > label:hover ~ label {   }#wpcomm .wpdiscuz-item .wpdiscuz-rating > input ~ label:hover, #wpcomm .wpdiscuz-item .wpdiscuz-rating > input:not(:checked) ~ label:hover ~ label, #wpcomm .wpdiscuz-item .wpdiscuz-rating > input:not(:checked) ~ label:hover ~ label{color: #FFED85;} #wpcomm .wpdiscuz-item .wpdiscuz-rating > input:checked ~ label:hover, #wpcomm .wpdiscuz-item .wpdiscuz-rating > input:checked ~ label:hover, #wpcomm .wpdiscuz-item .wpdiscuz-rating > label:hover ~ input:checked ~ label, #wpcomm .wpdiscuz-item .wpdiscuz-rating > input:checked + label:hover ~ label, #wpcomm .wpdiscuz-item .wpdiscuz-rating > input:checked ~ label:hover ~ label, .wpd-custom-field .wcf-activ-star, #wpcomm .wpdiscuz-item .wpdiscuz-rating > input:checked ~ label{ color:#FFD700;} #wpcomm .wc-cta-button:hover{border: 1px solid #00B38F!important; background:#00B38F!important; color:#fff!important;} #wpcomm .wc-cta-active{border: 1px solid #00B38F!important; background:#00B38F!important; color:#fff!important;}#wpcomm .wpf-cta:hover{color:#fff!important; background:#00B38F!important; border:1px solid #00B38F!important;}
+        
+#wpcomm .wpf-cta{ border: 1px solid #cccccc; color:#bbbbbb; }
+#wpcomm .wc-cta-button{ background:#888888; border:1px solid #888888; color:#ffffff;}
+#wpcomm .wc-cta-button-x{ background:#888888; border:1px solid #888888; color:#ffffff;}
+#wpcomm .wc-vote-link{border:1px solid #bbbbbb; color:#aaaaaa;}
+#wpcomm .wc-vote-result{border-top: 1px solid #bbbbbb; border-bottom: 1px solid #bbbbbb; color:#aaaaaa;}
+#wpcomm .wc-vote-result.wc-vote-result-like{border:1px solid #bbbbbb;}
+#wpcomm .wc-vote-result.wc-vote-result-dislike{border:1px solid #bbbbbb;}
+</style>
+
+<style type="text/css">.car-collapse .car-yearmonth { cursor: s-resize; } </style>
+<script type="text/javascript">
+		/* <![CDATA[ */
+			jQuery(document).ready(function() {
+				jQuery('.car-collapse').find('.car-monthlisting').hide();
+				jQuery('.car-collapse').find('.car-monthlisting:first').show();
+				jQuery('.car-collapse').find('.car-yearmonth').click(function() {
+					jQuery(this).next('ul').slideToggle('fast');
+				});
+				jQuery('.car-collapse').find('.car-toggler').click(function() {
+					if ( 'Expand All' == jQuery(this).text() ) {
+						jQuery(this).parent('.car-container').find('.car-monthlisting').show();
+						jQuery(this).text('Collapse All');
+					}
+					else {
+						jQuery(this).parent('.car-container').find('.car-monthlisting').hide();
+						jQuery(this).text('Expand All');
+					}
+					return false;
+				});
+			});
+		/* ]]> */
+	</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-26064837-1', 'auto');
+  ga('send', 'pageview');
+  setTimeout("ga('send', 'event', 'Time on page', 'more than 2.5 minutes')", 150000);
+  
+</script>
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+
+fbq('init', '512471148948613');
+fbq('track', "PageView");</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=512471148948613&ev=PageView&noscript=1"
+/></noscript>
+
+<script type="text/javascript">
+  var _dcq = _dcq || [];
+  var _dcs = _dcs || {}; 
+  _dcs.account = '9539554';
+  
+  (function() {
+    var dc = document.createElement('script');
+    dc.type = 'text/javascript'; dc.async = true; 
+    dc.src = '//tag.getdrip.com/9539554.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(dc, s);
+  })();
+</script>
+
+<script type="text/javascript">
+(function(){
+  var bsa = document.createElement('script');
+     bsa.type = 'text/javascript';
+     bsa.async = true;
+     bsa.src = '//s3.buysellads.com/ac/bsa.js';
+  (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+})();
+</script>
+ 
+
+
+<!--[if lt IE 9]>
+            <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+        <![endif]-->
+
+<!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+<!--[if lt IE 9]>
+                  <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+        <![endif]-->
+</head>
+<body class="post-template-default single single-post postid-10901 single-format-standard">
+<nav class="menu-container">
+<div class="header--menu">
+<a class="nav--logo_mobile" href="http://baeldung.com" title="Baeldung">
+<img alt="The Baeldung logo" src="http://www.baeldung.com/wp-content/themes/baeldung/icon/logo.svg">
+</a>
+<a href="#" class="menu-mobile" title="Navigation" onclick="veggieBurger.reset().play();">
+<svg version="1.1" id="veggieBurger" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35;" xml:space="preserve">
+<line style="fill:none;stroke:#ffffff;stroke-width:2;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:10;" x1="2.5" y1="17.5" x2="32.5" y2="17.5" />
+<line style="fill:none;stroke:#ffffff;stroke-width:2;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:10;" x1="2.5" y1="6.5" x2="32.5" y2="6.5" />
+<line style="fill:none;stroke:#ffffff;stroke-width:2;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:10;" x1="2.5" y1="28.5" x2="32.5" y2="28.5" />
+</svg>
+</a>
+<ul id="menu-main-menu" class="nav--menu"><li class="nav--logo"><a href="http://www.baeldung.com" title="Baeldung"><img src="http://www.baeldung.com/wp-content/themes/baeldung/icon/logo.svg"></a><li class="nav--menu_item  menu-start-here"><a class="nav--menu_item_anchor" href="/start-here">Start Here</a></li>
+<li class="nav--menu_item nav--menu_item_darkened menu-courses"><a id="menu-item-17021" class="nav--menu_item_anchor nav--menu_item_withDropdown" href="javascript:void(0)">Courses&nbsp;<span class="menu--item_normal">▼</span><span class="menu--item_active">▲</span></a>
+<div class="nav--dropdown">
+<ul class="nav--dropdown_content">
+<li class="nav--dropdown_item">
+<a class="dropdown--item_anchor transition--background" href="/rest-with-spring-course" title="The &#8220;REST With Spring&#8221; Course">
+<div class="dropdown--item_icon">
+<svg id="IcnCoursesRestWithSpring" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 190" enable-background="new 0 0 180 190"><g><path fill="none" stroke="#3C3C3C" stroke-width="2" stroke-miterlimit="10" d="M84.07 29.4C43.5 32.44 11.5 66.3 11.5 107.66c0 43.35 35.15 78.5 78.5 78.5s78.5-35.15 78.5-78.5c0-40.04-29.98-73.05-68.72-77.87" /><path fill="none" stroke="#63B175" stroke-width="2" stroke-miterlimit="10" d="M103.26 78.5l.3.14s.3 1.08.48 1.6c.56 1.82 1.05 3.4.4 4.9-1 2.28-3.32 2.62-4.6 2.12-.75-.3-1.42-.93-1.83-1.73-.52-1-.55-2.13-.1-3.18.75-1.74 2.64-2.6 4.63-3.52.24-.1.73-.33.73-.33z" /><g fill="none" stroke="#63B175" stroke-width="2" stroke-miterlimit="10"><path d="M119.6 55.02c-8.5 1.72-15.2 7.32-18.66 14.58 6 5.35 14.38 7.9 22.86 6.18 8.5-1.72 15.2-7.32 18.67-14.58-6-5.35-14.37-7.9-22.87-6.18zM100.94 69.6l30.23-6.12" /></g><g fill="none" stroke="#fff" stroke-width="2" stroke-miterlimit="10"><path d="M111.92 40.12l-7.97 4.85c.05.32.05.34.1.65l4.26 1.03c.06.3.06.34.1.65l-7.96 4.85" /><path d="M112.1 51.78c-4.67 4.9-15.8 4.7-15.8 4.7s-.7-11.08 3.96-16c4.67-4.9 15.8-4.7 15.8-4.7s.7 11.1-3.96 16z" /></g><g fill="none" stroke="#63B175" stroke-width="2" stroke-miterlimit="10"><path d="M82.87 22.1c0 7.46 3.58 14.08 9.12 18.25 5.54-4.17 9.12-10.8 9.12-18.26 0-7.47-3.58-14.1-9.13-18.26-5.55 4.16-9.13 10.8-9.13 18.25zM92 97.4V22.1" /></g><g><path fill="#63B175" d="M68.3 57.3c5.27 5.27 12.5 7.42 19.35 6.45.97-6.87-1.18-14.1-6.46-19.36-5.28-5.3-12.5-7.44-19.37-6.47C60.86 44.8 63 52 68.3 57.3z" /><path fill="none" stroke="#535353" stroke-width="2" stroke-miterlimit="10" d="M68.86 44.96l18.8 18.8" /></g><g fill="none" stroke="#63B175" stroke-width="2" stroke-miterlimit="10"><path d="M57.27 84.28c9.22 2.3 18.52-.07 25.38-5.63-3.43-8.14-10.5-14.62-19.74-16.93-9.2-2.3-18.5.07-25.37 5.64 3.43 8.13 10.5 14.6 19.74 16.92zM59.73 72.9l32.84 8.23" /></g><g fill="none" stroke="#949598" stroke-width="2" stroke-miterlimit="10"><path d="M127.36 115.64H56.63L55.6 99.4c-.05-1.1.8-2 1.9-2h69c1.08 0 1.94.9 1.88 2l-1.02 16.24zM117.67 162.12l4-46.48H62.32l4 46.48c.07.97.9 1.72 1.87 1.72h47.6c.97 0 1.78-.75 1.87-1.72zM63.98 134.8h32.94M64.76 143.93H88.3" /></g></g></svg>
+</div>
+<div class="dropdown--item_text">
+<h3 class="dropdown--item_title">
+REST with Spring
+</h3>
+<p class="dropdown--item_excerpt">
+The canonical reference for building a production grade API with Spring.
+</p>
+</div>
+</a>
+</li>
+</li>
+<li class="nav--dropdown_item">
+<a class="dropdown--item_anchor transition--background" href="/learn-spring-security-course" title="The “Learn Spring Security” Course">
+<div class="dropdown--item_icon">
+<svg id="IcnCoursesLearnSpringSecurity" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 190" enable-background="new 0 0 180 190"><g fill="none" stroke-width="2" stroke-miterlimit="10"><path stroke="#3C3C3C" d="M41.4 130.26c6 11.53 14.76 21.62 25.73 29.25l21.96 15.3 21.96-15.3c10.97-7.62 19.72-17.7 25.7-29.24M32.23 87.38v5.33c0 3.85.28 7.66.8 11.4m112.94-51.2V22.43H32.22V52.9" /><g stroke="#fff"><ellipse cx="168.007" cy="28.705" transform="matrix(.243 -.97 .97 .243 99.351 184.706)" rx="3.031" ry="3.197" /><path d="M168.74 25.67l2.62-10.46 3.64.93M170.52 18.57l2.6.66" /></g><g stroke="#63B175"><circle cx="89.093" cy="101.254" r="28.936" /><path d="M73.77 76.74v-12.4c0-8.17 6.16-15.3 14.3-15.82 7.98-.5 14.75 5.08 16.1 12.56.3 1.6 1.7 2.73 3.33 2.73 2.12 0 3.74-1.9 3.36-4-1.95-10.64-11.5-18.63-22.84-18.1-11.9.57-21.05 10.82-21.05 22.73v18.2c1.94-2.3 4.24-4.3 6.8-5.9z" /></g><g stroke="#fff"><circle cx="89.093" cy="101.254" r="18.723" /><circle cx="89.093" cy="101.254" r="5.106" /><path d="M89.1 82.53v6.2M89.1 113.8v6.18M107.82 101.25h-6.2M76.56 101.25h-6.2M102.33 88l-4.37 4.4M80.23 110.12l-4.38 4.37M102.33 114.5l-4.37-4.38M80.23 92.4L75.85 88" /></g><g stroke="#63B175"><ellipse cx="108.382" cy="136.502" transform="matrix(.518 -.855 .855 .518 -64.521 158.503)" rx="3.197" ry="3.031" /><path d="M111.07 138.1l9.22 5.6-1.96 3.2M117.32 141.9l-1.4 2.3" /><ellipse cx="54.412" cy="157.689" transform="matrix(.243 -.97 .97 .243 -111.771 172.167)" rx="3.031" ry="3.197" /><path d="M55.15 154.65l2.62-10.45 3.64.9M56.93 147.56l2.6.65" /><ellipse cx="47.22" cy="36.389" transform="matrix(.735 -.678 .678 .735 -12.161 41.66)" rx="3.197" ry="3.031" /><path d="M49.36 38.67l7.3 7.92-2.76 2.53M54.32 44.05l-1.98 1.83" /></g><g stroke="#63B175" clip-rule="evenodd"><path d="M134.05 82.1c-1.63-2-2.96-4.45-3.47-7.24.32 0 1.18.17 1.7.14-.28-1.58-1.73-5.64-.95-7.73.34.16 1.34.73 1.52.83.18-1.4.85-5.4 2.12-6.96.1.07 1.1.96 1.35 1.2.78-2.72 2.42-5.3 4.23-6.52.17.3.7 1.52.8 1.68 1.5-2.05 4.53-4.92 6.44-5.74.18.33.64 1.28.78 1.6 1.2-1.32 4.9-3.7 6.78-4.2.05.33.12 1.63.13 1.85 2.87-1.83 6.07-3.32 8.5-3.66-.03.45-.12 1.64-.14 1.98 2.8-1.7 6.5-2.7 9.33-3.24-.55 2.8-1.54 6.52-3.25 9.32.33-.02 1.52-.1 1.98-.13-.35 2.42-1.84 5.6-3.68 8.5.22 0 1.52.08 1.86.12-.5 1.88-2.88 5.57-4.2 6.77.32.15 1.27.6 1.6.8-.82 1.9-3.7 4.92-5.75 6.45.17.08 1.4.62 1.7.8-1.23 1.8-3.8 3.43-6.52 4.22.23.25 1.12 1.23 1.2 1.34-1.57 1.28-5.56 1.95-6.97 2.12.1.2.67 1.18.83 1.52-2.1.78-6.16-.67-7.75-.94-.02.5.14 1.38.15 1.7-2.83-.53-5.3-1.9-7.35-3.55l-3-3.02zm1.3 1.33s-1.98 2.55-4.1 5.28M41.14 85.13c-2.04 1.66-4.52 3.02-7.35 3.54 0-.3.16-1.18.13-1.7-1.58.28-5.64 1.73-7.73.95.15-.34.73-1.33.83-1.52-1.4-.17-5.4-.84-6.97-2.12.08-.1.96-1.1 1.2-1.34-2.7-.8-5.3-2.43-6.5-4.23.28-.16 1.5-.7 1.67-.78-2.06-1.53-4.92-4.54-5.75-6.45.34-.2 1.28-.65 1.6-.8-1.32-1.2-3.7-4.9-4.2-6.77.33-.05 1.63-.12 1.85-.13-1.84-2.9-3.33-6.08-3.67-8.5.46.02 1.64.1 1.98.13-1.7-2.8-2.7-6.5-3.24-9.32 2.82.54 6.53 1.53 9.32 3.24-.02-.34-.1-1.53-.12-1.98 2.42.34 5.6 1.83 8.5 3.67 0-.2.08-1.5.12-1.85 1.9.5 5.57 2.9 6.78 4.2.15-.3.6-1.26.8-1.6 1.9.83 4.92 3.7 6.45 5.75.08-.16.62-1.38.8-1.68 1.8 1.22 3.43 3.8 4.22 6.5.25-.22 1.23-1.1 1.34-1.18 1.3 1.56 1.96 5.55 2.13 6.96.2-.1 1.18-.67 1.52-.83.78 2.1-.67 6.15-.94 7.73.52.03 1.4-.13 1.7-.14-.5 2.8-1.84 5.23-3.47 7.25l-3 3.03zm5.78 3.58c-2.1-2.72-4.1-5.27-4.1-5.27M137.05 106.16c2.04-1.66 4.52-3.03 7.35-3.54 0 .3-.17 1.18-.15 1.7 1.6-.3 5.65-1.73 7.74-.95-.17.34-.74 1.33-.84 1.5 1.4.2 5.4.86 6.96 2.14-.07.12-.96 1.1-1.2 1.35 2.72.8 5.3 2.43 6.52 4.23-.3.17-1.52.7-1.7.8 2.07 1.5 4.94 4.53 5.77 6.44-.33.2-1.28.65-1.6.8 1.32 1.2 3.7 4.9 4.2 6.77-.33.04-1.63.1-1.85.1 1.84 2.9 3.33 6.1 3.68 8.52-.46-.02-1.65-.1-1.98-.13 1.7 2.8 2.7 6.5 3.24 9.3-2.83-.53-6.54-1.52-9.34-3.23.02.34.1 1.53.13 1.98-2.43-.34-5.63-1.83-8.5-3.67-.02.22-.1 1.52-.14 1.85-1.88-.5-5.57-2.88-6.78-4.2-.14.32-.6 1.26-.8 1.6-1.9-.82-4.92-3.7-6.44-5.75-.08.17-.62 1.4-.8 1.7-1.8-1.23-3.44-3.82-4.22-6.52-.25.23-1.24 1.1-1.35 1.2-1.27-1.57-1.94-5.56-2.12-6.97-.18.08-1.18.66-1.52.82-.78-2.1.67-6.15.95-7.73-.52-.04-1.38.12-1.7.13.5-2.8 1.84-5.24 3.47-7.26l3-3zm-5.8-3.58c2.12 2.73 4.1 5.28 4.1 5.28M44.13 109.17c1.63 2.02 2.97 4.47 3.47 7.26-.3 0-1.18-.17-1.7-.14.28 1.57 1.73 5.63.95 7.72-.34-.16-1.33-.74-1.52-.83-.17 1.4-.84 5.4-2.12 6.95-.1-.07-1.08-.96-1.33-1.2-.8 2.7-2.43 5.3-4.23 6.52-.17-.3-.7-1.52-.8-1.7-1.52 2.07-4.54 4.94-6.45 5.76-.2-.34-.65-1.28-.8-1.6-1.2 1.32-4.9 3.7-6.78 4.2-.04-.33-.1-1.63-.12-1.85-2.9 1.84-6.08 3.33-8.5 3.67.02-.45.1-1.64.12-1.98-2.8 1.7-6.5 2.7-9.32 3.24.54-2.8 1.53-6.5 3.24-9.3-.34 0-1.52.1-1.98.12.35-2.42 1.83-5.62 3.67-8.5-.22 0-1.52-.08-1.85-.13.5-1.9 2.88-5.58 4.2-6.8-.32-.13-1.26-.6-1.6-.78.83-1.9 3.7-4.93 5.75-6.45-.17-.08-1.38-.62-1.68-.8 1.22-1.8 3.8-3.43 6.5-4.22-.23-.25-1.1-1.23-1.2-1.34 1.57-1.27 5.57-1.94 6.98-2.12-.1-.18-.67-1.17-.83-1.5 2.1-.8 6.15.66 7.73.93.03-.5-.13-1.37-.14-1.68 2.82.5 5.3 1.88 7.34 3.54l3 3zm-1.3-1.3s1.98-2.56 4.1-5.3M165.04 53.74c-11.62 5.45-24.65 23.07-29.68 29.7M13.14 53.74c11.62 5.45 24.65 23.07 29.7 29.7M165.04 137.55c-11.62-5.46-24.65-23.07-29.68-29.7M13.14 137.55c11.62-5.46 24.65-23.07 29.7-29.7" /></g></g></svg>
+</div>
+<div class="dropdown--item_text">
+<h3 class="dropdown--item_title">
+Learn Spring Security
+</h3>
+<p class="dropdown--item_excerpt">
+THE unique Spring Security education if you’re working with Java today.
+</p>
+</div>
+</a>
+</li>
+</li>
+</ul>
+</li>
+<li class="nav--menu_item  menu-guides"><a id="menu-item-17022" class="nav--menu_item_anchor nav--menu_item_withDropdown" href="javascript:void(0)">Guides&nbsp;<span class="menu--item_normal">▼</span><span class="menu--item_active">▲</span></a>
+<div class="nav--dropdown">
+<ul class="nav--dropdown_content">
+<li class="nav--dropdown_item">
+<a class="dropdown--item_anchor transition--background" href="/persistence-with-spring-series/" title="Persistence with Spring">
+<div class="dropdown--item_icon">
+<svg id="IcnGuidesPersistence" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" enable-background="new 0 0 180 180"><g fill="none" stroke-width="2" stroke-miterlimit="10"><g stroke="#949598"><path d="M49.46 157.25h105" /><path d="M75.46 170.25l-13-13h26zM153.46 72.25l10 10-10 10M43.46 117.5v39.75M80.96 164.75h73.5M76.24 29.75h77.22v120H51.36c-4.35 0-7.9 3.36-7.9 7.5 0 4.14 3.55 7.5 7.9 7.5h18.6M67.57 29.75h-16.2c-4.36 0-7.9 3.36-7.9 7.5v40.1" /></g><g stroke="#63B175" clip-rule="evenodd"><ellipse cx="106.464" cy="67.429" rx="25" ry="7.143" /><ellipse cx="106.464" cy="67.429" rx="25" ry="7.143" /><path d="M81.46 85.3v8.9c0 3.96 11.2 7.16 25 7.16s25-3.2 25-7.15v-8.9M81.46 94.2v8.94c0 3.95 11.2 7.15 25 7.15s25-3.2 25-7.16V94.2M81.46 103.14v8.93c0 3.95 11.2 7.14 25 7.14s25-3.18 25-7.13v-8.93M81.46 112.07V121c0 3.94 11.2 7.14 25 7.14s25-3.2 25-7.14v-8.93M81.46 67.43v8.93c0 3.94 11.2 7.14 25 7.14s25-3.2 25-7.14v-8.93M81.46 76.36v8.93c0 3.93 11.2 7.13 25 7.13s25-3.2 25-7.14v-8.94" /></g><path stroke="#fff" d="M136.38 24.53l-13.23 8.07c.08.5.1.55.17 1.07l7.07 1.7c.07.53.08.57.16 1.1l-13.24 8.06" /><g><circle cx="87.61" cy="12.954" r="3.155" stroke="#949598" /><circle cx="76.277" cy="46.595" r="3.155" stroke="#949598" /><path stroke="#949598" d="M74.92 26.27l10.48-11.1M72.98 33.67l2.52 9.87" /><circle cx="90.94" cy="40.3" r="2.162" stroke="#949598" /><circle cx="59.989" cy="36.366" r="2.162" stroke="#949598" /><circle cx="62.503" cy="11.912" r="2.162" stroke="#949598" /><path stroke="#949598" d="M63.43 13.86l1.2 2.2" /><path stroke="#949598" d="M65.97 18.5l2 3.66" stroke-dasharray="2.7869,2.7869" /><path stroke="#949598" d="M68.64 23.4l1.2 2.18M89.05 39.27l-2.17-1.25" /><path stroke="#949598" d="M83.88 36.3l-4.5-2.6" stroke-dasharray="3.4654,3.4654" /><path stroke="#949598" d="M77.87 32.84L75.7 31.6M61.88 35.33l2.13-1.3M65.9 32.9l2.14-1.3" /><circle cx="71.906" cy="29.433" r="4.372" stroke="#63B175" /></g><g stroke="#fff"><path d="M62.63 78.2c-1.58-.96-5.84-2.03-23.16-.52-18.56 1.63-21.16 3.5-22 4.13-4.45 3.28-3.8 15.96-3.6 18.52.34 3.38 1.87 14.6 6.7 16.98.93.46 3.8 1.86 22.4.23 17.32-1.5 21.32-3.3 22.7-4.5 3.76-3.27 3.34-13.34 3-17.55-.32-3.37-1.66-14.65-6.04-17.3zM47.3 98.07l-8.44 7.4c-.66.57-1.72.17-1.8-.74L35.9 91.5c-.07-.88.88-1.5 1.65-1.03l9.58 5.82c.63.38.7 1.28.16 1.77z" /></g><g stroke="#63B175"><circle cx="163.464" cy="111.942" r="2.821" /><circle cx="24.377" cy="60.861" r="2.821" /><circle cx="34.877" cy="126.999" r="2.821" /></g></g></svg>
+</div>
+<div class="dropdown--item_text">
+<h3 class="dropdown--item_title">
+Persistence
+</h3>
+<p class="dropdown--item_excerpt">
+The main persistence with Spring guides here at Baeldung.
+</p>
+</div>
+</a>
+</li>
+</li>
+<li class="nav--dropdown_item">
+<a class="dropdown--item_anchor transition--background" href="/rest-with-spring-series/" title="REST with Spring">
+<div class="dropdown--item_icon">
+<svg id="IcnGuidesRest" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" enable-background="new 0 0 180 180"><g fill="none" stroke-width="2" stroke-miterlimit="10"><g stroke="#949598"><path d="M50.42 20.47l10 10h-20zM138.44 89.23V37.97h-7.5M27.94 157.97h110.5v-33.8M130.94 124.17v26.3H28.84c-4.36 0-7.9 3.36-7.9 7.5 0 4.14 3.54 7.5 7.9 7.5h102.1M130.94 89.24V30.47H28.84c-4.36 0-7.9 3.36-7.9 7.5v120" /></g><circle cx="109.449" cy="17.348" r="2.821" stroke="#fff" /><circle cx="147.207" cy="55.74" r="2.821" stroke="#949598" /><g stroke="#63B175"><path d="M34.3 98.4c.05-.13.2-.2.34-.12.52.3 1.05.58 1.56.85 1.8.94 3.34 1.75 3.98 3.36.98 2.46-.53 4.47-1.85 5.05-.8.34-1.78.37-2.7.1-1.13-.38-2-1.2-2.46-2.32-.74-1.88.03-3.94.84-6.13.1-.26.2-.53.3-.8zM48.97 46.94c.14.04.2.2.12.33-.3.53-.57 1.06-.83 1.58-.9 1.8-1.7 3.36-3.3 4.02-2.46 1-4.5-.46-5.08-1.78-.37-.8-.42-1.78-.14-2.7.35-1.14 1.15-2.03 2.27-2.5 1.87-.76 3.94-.03 6.14.76.26.1.53.18.8.28z" /></g><g stroke="#fff"><path d="M155.13 91.4c-1.3-.94-4.93-2.2-20.15-2.2-16.3 0-18.7 1.45-19.5 1.92-4.12 2.5-4.5 13.6-4.55 15.86.05 2.98.53 12.87 4.56 15.32.76.47 3.17 1.9 19.5 1.9 15.2 0 18.83-1.25 20.13-2.2 3.52-2.55 3.92-11.37 3.93-15.06 0-2.96-.3-12.9-3.93-15.53zM140.24 107.57l-7.9 5.8c-.62.46-1.52.02-1.52-.78v-11.62c0-.78.88-1.24 1.5-.78l7.92 5.8c.52.4.52 1.18 0 1.57z" /></g><g stroke="#63B175"><path d="M90.6 73.64c-2.74 2.88-9.27 2.77-9.27 2.77s-.42-6.5 2.32-9.4c2.75-2.87 9.28-2.76 9.28-2.76s.42 6.5-2.32 9.4zM73.43 56.2c0 4.38 2.1 8.27 5.37 10.72 3.25-2.45 5.36-6.34 5.36-10.72 0-4.4-2.1-8.28-5.36-10.73-3.26 2.45-5.37 6.34-5.37 10.73zM78.8 100.43V56.2" /><path d="M64.28 75.7c3.1 3.1 7.34 4.37 11.37 3.8.58-4.04-.7-8.28-3.8-11.38-3.1-3.1-7.33-4.37-11.36-3.8-.58 4.04.68 8.28 3.78 11.38zM64.62 68.45L75.65 79.5" /><path d="M95.02 75.54c-5 1-8.94 4.3-10.97 8.57 3.53 3.15 8.45 4.65 13.43 3.64 5-1 8.94-4.3 10.97-8.57-3.53-3.14-8.44-4.64-13.43-3.63zM84.05 84.1l17.76-3.6" /><path d="M58.4 92.73c5.4 1.36 10.88-.04 14.9-3.3-2-4.8-6.17-8.6-11.6-9.95-5.4-1.36-10.87.04-14.9 3.3 2 4.8 6.17 8.6 11.6 9.95zM59.84 86.05l19.3 4.83M90.5 66.78l-4.68 2.86c.03.18.03.2.06.38l2.5.6c.03.2.03.2.06.38l-4.68 2.86" /><path d="M85.4 89.4c.1-.03.17 0 .2.1.08.3.17.62.27.93.33 1.07.62 2 .24 2.87-.57 1.35-1.95 1.54-2.7 1.25-.44-.18-.83-.55-1.07-1-.3-.6-.33-1.27-.07-1.88.45-1.03 1.55-1.53 2.73-2.07.13-.07.27-.13.4-.2z" /></g><g stroke="#949598"><path d="M99.57 111.16H58.02l-.6-9.55c-.04-.63.47-1.17 1.1-1.17h40.55c.63 0 1.14.54 1.1 1.18l-.6 9.56zM93.88 138.46l2.34-27.3H61.37l2.34 27.3c.06.57.54 1 1.1 1H92.8c.57 0 1.05-.43 1.1-1zM62.34 122.42H81.7M62.8 127.78h13.82" /></g></g></svg>
+</div>
+<div class="dropdown--item_text">
+<h3 class="dropdown--item_title">
+REST
+</h3>
+<p class="dropdown--item_excerpt">
+The main guides on REST APIs with Spring, here at Baeldung.
+</p>
+</div>
+</a>
+</li>
+</li>
+<li class="nav--dropdown_item">
+<a class="dropdown--item_anchor transition--background" href="/security-spring" title="Security with Spring">
+<div class="dropdown--item_icon">
+<svg id="IcnGuidesSecurity" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" enable-background="new 0 0 180 180"><g><g fill="none" stroke="#949598" stroke-width="2" stroke-miterlimit="10"><path d="M41.17 155.15h103M144.17 106.62V83.65M144.17 136.46v11.2H42.07c-4.36 0-7.9 3.35-7.9 7.5 0 4.13 3.54 7.5 7.9 7.5h102.1M34.17 97.42v57.73M144.17 48.53V27.65H42.07c-4.36 0-7.9 3.36-7.9 7.5v36.7" /></g><g fill="none" stroke="#63B175" stroke-width="2" stroke-miterlimit="10"><circle cx="93.168" cy="100.888" r="25" /><circle cx="93.168" cy="100.888" r="16.177" /><circle cx="93.168" cy="100.888" r="4.412" /><path d="M93.17 84.7v2.95M93.17 114.12v2.94M109.34 100.9h-2.94M79.93 100.9H77M104.6 89.45l-2.07 2.08M83.8 110.25l-2.07 2.08M104.6 112.33l-2.07-2.08M83.8 91.53l-2.07-2.08M93.17 87.65v2.4M93.17 111.72v2.4M106.4 100.9H104M82.34 100.9h-2.4M102.53 91.53l-1.7 1.7M85.5 108.55l-1.7 1.7M102.53 110.25l-1.7-1.7M85.5 93.23l-1.7-1.7" /><path d="M79.93 79.7V69c0-7.06 5.32-13.22 12.36-13.67 6.88-.45 12.73 4.38 13.9 10.84.24 1.38 1.47 2.36 2.87 2.36 1.83 0 3.23-1.66 2.9-3.46-1.68-9.2-9.94-16.1-19.73-15.63-10.28.48-18.2 9.34-18.2 19.63V84.8c1.7-2 3.68-3.7 5.9-5.1z" /></g><g fill="none" stroke="#949598" stroke-width="2" stroke-miterlimit="10"><ellipse cx="55.015" cy="131.788" transform="matrix(.536 -.844 .844 .536 -85.721 107.536)" rx="3.031" ry="3.197" /><path d="M56.67 129.14l5.78-9.1 3.17 2.02M60.6 122.96l2.27 1.45" /></g><g fill="none" stroke="#949598" stroke-width="2" stroke-miterlimit="10"><ellipse cx="64.929" cy="56.645" transform="matrix(.536 -.844 .844 .536 -17.704 81.064)" rx="3.197" ry="3.031" /><path d="M62.28 55l-9.1-5.8 2.02-3.16M56.1 51.06l1.45-2.27" /></g><g><path fill="none" stroke="#949598" stroke-width="2" stroke-miterlimit="10" d="M135.28 106.06c.05.27.08 1.03.2 1.46 1.3-.53 4.46-2.52 6.38-2.25-.07.32-.37 1.27-.42 1.44 1.23-.1 4.75-.28 6.3.5-.04.12-.6 1.12-.75 1.37 2.43.16 4.93 1.07 6.3 2.37-.22.2-1.15.88-1.28.98 2.04.9 5.03 2.93 6.1 4.4-.26.22-.98.8-1.22.97 1.35.77 4.05 3.45 4.84 4.95-.28.1-1.37.4-1.55.45 2.1 2.1 3.95 4.54 4.7 6.53-.4.07-1.42.2-1.7.26 1.97 2.04 3.5 5 4.5 7.3-2.5.06-5.83-.08-8.53-1 .08.27.38 1.26.48 1.64-2.1.17-5.1-.5-7.9-1.52.04.2.22 1.3.24 1.6-1.7-.08-5.27-1.4-6.54-2.3-.07.3-.28 1.2-.38 1.5-1.77-.33-4.87-2.2-6.55-3.65-.03.15-.26 1.3-.35 1.57-1.76-.7-3.64-2.58-4.8-4.72-.18.24-.85 1.17-.93 1.26-1.37-1.08-2.7-4.34-3.1-5.5-.14.1-.87.78-1.14.98-1.04-1.63-.57-5.34-.63-6.73-.45.07-1.15.37-1.4.43-.3-7.24 5.93-12.96 9.1-14.3z" clip-rule="evenodd" /><g fill="none" stroke="#949598" stroke-width="2" stroke-miterlimit="10"><path d="M155.08 129.1l-2.1-1.35" /><path d="M149.18 125.33l-20.84-13.3" stroke-dasharray="4.4956,4.4956" /><path d="M126.44 110.83l-2.1-1.35" /></g></g><g fill="none" stroke="#949598" stroke-width="2" stroke-miterlimit="10"><path d="M164.93 52.56c-1.22-1.06-4.73-2.63-19.88-3.96-16.24-1.42-18.77-.2-19.6.22-4.32 2.13-5.68 13.16-5.9 15.4-.22 2.97-.6 12.86 3.2 15.65.72.54 3 2.18 19.25 3.6 15.16 1.33 18.9.4 20.26-.43 3.73-2.24 4.9-11 5.23-14.66.24-2.96.8-12.88-2.57-15.82zM148.7 67.36l-8.4 5.1c-.65.4-1.5-.12-1.43-.92l1-11.56c.08-.78 1-1.16 1.58-.65l7.37 6.47c.5.43.42 1.22-.13 1.56z" /></g><g fill="none" stroke="#fff" stroke-width="2" stroke-miterlimit="10"><ellipse cx="109.596" cy="20.384" transform="matrix(.987 -.163 .163 .987 -1.856 18.078)" rx="3.197" ry="3.031" /><path d="M110.08 23.47l1.75 10.64 3.7-.6M111.27 30.7l2.66-.45" /></g><g><path fill="none" stroke="#fff" stroke-width="2" stroke-miterlimit="10" d="M56.95 88.48c-.22-.16-.78-.68-1.17-.9-.54 1.3-1.37 4.94-2.92 6.1-.18-.27-.63-1.15-.72-1.3-.8.94-3.15 3.55-4.8 4.1-.06-.1-.36-1.2-.44-1.5-1.84 1.6-4.25 2.74-6.14 2.8.02-.3.2-1.45.2-1.6-2.07.78-5.62 1.47-7.4 1.18.02-.33.13-1.24.17-1.54-1.5.4-5.3.42-6.93-.1.12-.25.68-1.24.78-1.4-2.98 0-6-.4-7.94-1.3.22-.3.84-1.14 1-1.38-2.84-.05-6-1.06-8.33-1.98 1.72-1.8 4.18-4.06 6.74-5.3-.26-.16-1.17-.65-1.5-.85 1.37-1.6 3.96-3.24 6.65-4.5-.17-.1-1.08-.76-1.3-.95 1.25-1.15 4.7-2.74 6.24-3-.17-.26-.65-1.04-.8-1.33 1.5-1.02 5-1.9 7.22-2.04-.1-.14-.72-1.1-.86-1.37 1.73-.74 4.4-.73 6.74-.05-.06-.3-.24-1.42-.25-1.54 1.73-.2 4.97 1.18 6.08 1.7.02-.17.06-1.16.1-1.5 1.9.42 4.2 3.37 5.23 4.3.27-.35.56-1.06.7-1.3 5.3 4.93 4.96 13.38 3.65 16.58z" clip-rule="evenodd" /><g fill="none" stroke="#fff" stroke-width="2" stroke-miterlimit="10"><path d="M26.67 86.2l2.44-.55" /><path d="M33.5 84.68l24.14-5.34" stroke-dasharray="4.4956,4.4956" /><path d="M59.84 78.85l2.44-.53" /></g></g><g fill="none" stroke="#949598" stroke-width="2" stroke-miterlimit="10"><circle cx="21.531" cy="62.459" r="2.821" /><circle cx="72.018" cy="36.715" r="2.821" /></g></g></svg>
+</div>
+<div class="dropdown--item_text">
+<h3 class="dropdown--item_title">
+Security
+</h3>
+<p class="dropdown--item_excerpt">
+The main Spring Security guides here at Baeldung.
+</p>
+</div>
+</a>
+</li>
+</li>
+</ul>
+</li>
+<li class="nav--menu_item  menu-about"><a id="menu-item-6138" class="nav--menu_item_anchor nav--menu_item_withDropdown" href="javascript:void(0)">About&nbsp;<span class="menu--item_normal">▼</span><span class="menu--item_active">▲</span></a>
+<div class="nav--dropdown">
+<ul class="nav--dropdown_content">
+<li class="nav--dropdown_item">
+<a class="dropdown--item_anchor transition--background" href="/consulting" title="">
+<div class="dropdown--item_icon">
+<svg id="IcnAboutMarketingExperiments" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 190" enable-background="new 0 0 180 190"><g><g fill="none" stroke-width="2" stroke-miterlimit="10"><path stroke="#63B175" d="M80.56 9.02H175v9.45H80.56z" /><path stroke="#949598" d="M80.56 108.2V9H175v127.5h-9.48M80.56 18.47H175M90 30.7h37.78M99.44 36.7h66.12M108.9 42.7h47.2M90 57.7h37.78M99.44 63.7h66.12M108.9 69.7h47.2M90 84.7h37.78M99.44 90.7h66.12M108.9 96.7h47.2" /></g><g fill="none" stroke="#63B175" stroke-width="2" stroke-miterlimit="10"><path d="M31.12 117.7h9.44v9.45h-9.44zM16.95 117.7h9.45v9.45h-9.45zM45.3 117.7h9.43v9.45H45.3zM73.62 117.7h9.44v9.45h-9.44zM59.45 117.7h9.45v9.45h-9.45zM87.8 117.7h9.43v9.45H87.8zM101.66 117.7h9.44v9.45h-9.44zM31.12 146.04h9.44v9.44h-9.44zM16.95 146.04h9.45v9.44h-9.45zM45.3 146.04h9.43v9.44H45.3zM59.45 146.04h51.95v9.44H59.45zM115.83 146.04h9.44v9.44h-9.44zM130 146.04h9.44v9.44H130zM144.16 146.04h9.44v9.44h-9.44zM115.83 117.63h9.44v9.45h-9.44zM130 117.63h9.44v9.45H130zM144.16 117.63h9.44v9.45h-9.44zM23.9 131.88h9.43v9.44H23.9zM38.06 131.88h9.44v9.44h-9.44zM52.22 131.88h9.45v9.44h-9.45zM66.4 131.88h9.43v9.44H66.4zM80.56 131.88H90v9.44h-9.44zM94.72 131.88h9.45v9.44h-9.45zM108.9 131.88h9.43v9.44h-9.44zM123.06 131.88h9.44v9.44h-9.44zM137.22 131.88h9.45v9.44h-9.45zM55.3 164.93H165.5V108.2H5.04v56.73h44.12" /></g><g fill="none" stroke="#63B175" stroke-width="2" stroke-miterlimit="10"><circle cx="38.056" cy="65.69" r="33.056" /><path d="M28.6 75.13l-9.43-9.44 9.44-9.45M47.5 56.25l9.44 9.44-9.44 9.43M42.78 56.24l-9.45 18.9" /></g><g><path fill="#535353" stroke="#949598" stroke-width="2" stroke-miterlimit="10" d="M40.92 172.84h3.94M45.85 168.53l-2.7-2.57v-1.35M45.85 177.05l-2.7 2.57v1.36M63.52 172.84h-3.94M58.6 168.53l2.76-2.57v-1.35M58.6 177.05l2.76 2.57v1.36" /><path fill="none" stroke="#949598" stroke-width="2" stroke-miterlimit="10" d="M55.8 167.8c.27-1.17-.02-2.33-.72-3.2.58-1.25.16-3.62-1.84-3.62l-.58 1.54c-.47 0-.48 0-.94 0l-.58-1.54c-2 0-2.45 2.4-1.8 3.68-.7.86-.96 2-.7 3.13-1.36 1.16-2.22 2.98-2.22 5.02 0 3.53 2.6 6.4 5.8 6.4 3.2 0 5.8-2.87 5.8-6.4 0-2.04-.86-3.86-2.2-5.03z" /></g></g></svg>
+</div>
+<div class="dropdown--item_text">
+<h3 class="dropdown--item_title">
+Consulting
+</h3>
+<p class="dropdown--item_excerpt">
+My consulting engagements
+</p>
+</div>
+</a>
+</li>
+</li>
+<li class="nav--dropdown_item">
+<a class="dropdown--item_anchor transition--background" href="http://www.baeldung.com/full_archive" title="">
+<div class="dropdown--item_icon">
+<svg id="IcnAboutFullArchive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 190" enable-background="new 0 0 180 190"><g><g fill="#63B175" fill-rule="evenodd" clip-rule="evenodd"><path d="M98.27 72.5c-.54.9-1.47 1.43-2.55 1.43H84.3c-1.1 0-2.03-.52-2.57-1.42l-5.7-10.26c-.56-.9-.56-1.94 0-2.84l5.7-9.98c.54-.9 1.47-1.42 2.56-1.42H95.7c1.08 0 2 .52 2.55 1.42l5.7 9.98c.55.9.55 1.94 0 2.84l-5.7 10.27zM98.27 106.55c-.54.9-1.47 1.42-2.55 1.42H84.3c-1.1 0-2.03-.52-2.57-1.42l-5.7-10.28c-.56-.9-.56-1.94 0-2.84l5.7-9.98c.54-.9 1.47-1.42 2.56-1.42H95.7c1.08 0 2 .52 2.55 1.42l5.7 9.98c.55.9.55 1.94 0 2.84l-5.7 10.28zM69.58 90.34c-.54.9-1.47 1.42-2.55 1.42H55.6c-1.08 0-2-.52-2.55-1.42l-5.72-10.27c-.54-.9-.54-1.94 0-2.84l5.72-9.98c.54-.9 1.47-1.42 2.55-1.42h11.43c1.08 0 2 .52 2.55 1.42l5.72 9.98c.54.9.54 1.93 0 2.84l-5.72 10.27zM69.58 124.37c-.54.9-1.47 1.42-2.55 1.42H55.6c-1.08 0-2-.53-2.55-1.43l-5.72-10.27c-.54-.9-.54-1.94 0-2.84l5.72-9.98c.54-.9 1.47-1.42 2.55-1.42h11.43c1.08 0 2 .52 2.55 1.42l5.72 9.98c.54.9.54 1.94 0 2.84l-5.72 10.27zM126.96 90.34c-.54.9-1.47 1.42-2.56 1.42h-11.43c-1.08 0-2-.52-2.55-1.42l-5.7-10.27c-.56-.9-.56-1.94 0-2.84l5.7-9.98c.54-.9 1.47-1.42 2.55-1.42h11.43c1.1 0 2.02.52 2.56 1.42l5.7 9.98c.55.9.55 1.93 0 2.84l-5.7 10.27zM126.96 124.37c-.54.9-1.47 1.42-2.56 1.42h-11.43c-1.08 0-2-.53-2.55-1.43l-5.7-10.27c-.56-.9-.56-1.94 0-2.84l5.7-9.98c.54-.9 1.47-1.42 2.55-1.42h11.43c1.1 0 2.02.52 2.56 1.42l5.7 9.98c.55.9.55 1.94 0 2.84l-5.7 10.27zM98.27 140.58c-.54.9-1.47 1.42-2.55 1.42H84.3c-1.1 0-2.03-.52-2.57-1.42l-5.7-10.27c-.56-.9-.56-1.93 0-2.83l5.7-9.98c.54-.9 1.47-1.43 2.56-1.43H95.7c1.08 0 2 .52 2.55 1.42l5.7 9.97c.55.9.55 1.93 0 2.84l-5.7 10.28z" /></g><g fill="none" stroke="#949598" stroke-width="2" stroke-miterlimit="10"><path d="M81.63 10l1.24 12.6M97.13 167.4l1.24 12.6M5 103.37l12.6-1.24M162.4 87.87l12.6-1.24M23.98 40.82l9.78 8.02M146.24 141.16l9.78 8.02M35.82 161.02l8.02-9.78M136.16 38.76l8.02-9.78M49.74 19.67l5.96 11.16M124.3 159.17l5.96 11.16M14.67 135.26l11.16-5.96M154.17 60.7l11.16-5.96M8.27 70.2l12.1 3.68M159.63 116.12l12.1 3.67M65.2 176.73l3.68-12.1M111.12 25.38l3.67-12.1M98.37 10l-1.24 12.6M82.87 167.4L81.63 180M5 86.63l12.6 1.24M162.4 102.13l12.6 1.24M35.82 28.98l8.02 9.78M136.16 151.24l8.02 9.78M23.98 149.18l9.78-8.02M146.24 48.84l9.78-8.02M65.2 13.27l3.68 12.1M111.12 164.63l3.67 12.1M8.27 119.8l12.1-3.68M159.63 73.88l12.1-3.67M14.67 54.74l11.16 5.96M154.17 129.3l11.16 5.96M49.74 170.33l5.96-11.16M124.3 30.83l5.96-11.16" /></g></g></svg>
+</div>
+<div class="dropdown--item_text">
+<h3 class="dropdown--item_title">
+Full Archive
+</h3>
+<p class="dropdown--item_excerpt">
+The high level overview of all the articles on the site.
+</p>
+</div>
+</a>
+</li>
+</li>
+<li class="nav--dropdown_item">
+<a class="dropdown--item_anchor transition--background" href="http://www.baeldung.com/contribution-guidelines" title="">
+<div class="dropdown--item_icon">
+<svg id="IcnAboutWriteForBaeldung" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 190" enable-background="new 0 0 190 190"><g stroke-miterlimit="10"><g fill="none" stroke="#949598" stroke-width="2" stroke-dasharray="5,5"><path d="M90.39 105.3H12.94M94.5 105.3L41.14 60.2M94.5 105.3l38.7-54.86M94.5 105.3l.5-77.94M94.5 105.3h82.55M94.5 105.3l53.32 36.93M94.5 105.3l-60 22.57" /></g><g fill="none" stroke="#63B175" stroke-width="2"><path d="M98.54 121.2c7.1-1.8 12.36-8.23 12.36-15.9 0-9.05-7.35-16.4-16.4-16.4-9.07 0-16.42 7.35-16.42 16.4 0 7.65 5.23 14.06 12.3 15.88M120.13 137.65c9.52-7.56 15.64-19.24 15.64-32.34 0-22.8-18.48-41.27-41.28-41.27S53.2 82.5 53.2 105.3c0 15.4 8.43 28.8 20.92 35.9M98.54 114.73c3.65-1.57 6.2-5.2 6.2-9.42 0-5.66-4.6-10.25-10.25-10.25-5.68 0-10.27 4.6-10.27 10.26 0 4.2 2.53 7.82 6.15 9.4" /></g><path fill="#535353" stroke="#fff" stroke-width="2" d="M116.13 129.92c-1.3-.03-2.46.54-3.23 1.45-.3-1.98-2-3.5-4.05-3.5-1.26 0-2.38.57-3.13 1.45-.3-1.98-2-3.5-4.05-3.5-1.26 0-2.38.56-3.13 1.45V104.7c-.3-2.1-2.24-3.7-4.5-3.47-2.12.22-3.66 2.14-3.66 4.27v36.72c-3.34-2.5-7.48-4.03-11.96-4.1-2.23-.04-4.26 1.55-4.43 3.77-.2 2.42 1.7 4.43 4.08 4.43 6.78 0 12.3 9.1 12.3 15.9v6.62c0 1.1.9 2 2 2h25.75c1.1 0 2-.9 2-2v-34.63c0-2.26-1.74-4.24-4-4.3z" /><g fill="none" stroke="#63B175" stroke-width="2"><circle cx="12.949" cy="105.308" r="8.205" /><circle cx="133.205" cy="50.436" r="8.205" /><circle cx="147.821" cy="142.231" r="8.205" /><circle cx="41.154" cy="60.179" r="8.205" /><circle cx="95" cy="27.359" r="8.205" /><circle cx="34.487" cy="127.872" r="8.205" /><circle cx="53.974" cy="142.231" r="4.103" /><circle cx="136.026" cy="154.538" r="3.077" /></g><g fill="none" stroke="#fff"><circle cx="177.051" cy="105.308" r="8.205" /><circle cx="144.231" cy="68.385" r="4.103" /><circle cx="62.11" cy="35.564" r="3.077" /><circle cx="71.769" cy="155.821" r="2.821" /></g></g></svg>
+</div>
+<div class="dropdown--item_text">
+<h3 class="dropdown--item_title">
+Write For Baeldung
+</h3>
+<p class="dropdown--item_excerpt">
+Become a writer on the site.
+</p>
+</div>
+</a>
+</li>
+</li>
+<li class="nav--dropdown_item">
+<a class="dropdown--item_anchor transition--background" href="http://www.baeldung.com/about/" title="">
+<div class="dropdown--item_icon">
+<svg id="IcnAboutBaeldung" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 190" enable-background="new 0 0 180 190"><g><path fill="#63B175" fill-rule="evenodd" d="M111.14 117.57c-12 12.93-26.2 9.02-31.44 7.37 27.4-14.16 32.34-43 32.34-43s-22.94 37.5-54.18 43.3c-2.47.46-4.28-5.52-1.34-6.17 8.76-1.95 15.83-5.76 15.83-5.76-1.28-8.1-1.9-21.78 6.73-29.56 11.44-10.33 30.78-4.9 44.03-20.32 3.1-3.6 4.3 36.63-11.96 54.15z" clip-rule="evenodd" /><g fill="none" stroke="#fff" stroke-width="2" stroke-miterlimit="10"><path d="M81.63 10l1.24 12.6M97.13 167.4l1.24 12.6M5 103.37l12.6-1.24M162.4 87.87l12.6-1.24M23.98 40.82l9.78 8.02M146.24 141.16l9.78 8.02M35.82 161.02l8.02-9.78M136.16 38.76l8.02-9.78M49.74 19.67l5.96 11.16M124.3 159.17l5.96 11.16M14.67 135.26l11.16-5.96M154.17 60.7l11.16-5.96M8.27 70.2l12.1 3.68M159.63 116.12l12.1 3.67M65.2 176.73l3.68-12.1M111.12 25.38l3.67-12.1M98.37 10l-1.24 12.6M82.87 167.4L81.63 180M5 86.63l12.6 1.24M162.4 102.13l12.6 1.24M35.82 28.98l8.02 9.78M136.16 151.24l8.02 9.78M23.98 149.18l9.78-8.02M146.24 48.84l9.78-8.02M65.2 13.27l3.68 12.1M111.12 164.63l3.67 12.1M8.27 119.8l12.1-3.68M159.63 73.88l12.1-3.67M14.67 54.74l11.16 5.96M154.17 129.3l11.16 5.96M49.74 170.33l5.96-11.16M124.3 30.83l5.96-11.16" /></g></g></svg>
+</div>
+<div class="dropdown--item_text">
+<h3 class="dropdown--item_title">
+About Baeldung
+</h3>
+<p class="dropdown--item_excerpt">
+About Baeldung.
+</p>
+</div>
+</a>
+</li>
+</li>
+</ul>
+</li>
+<li class="nav--menu_item  menu-rss"><a id="menu-item-18864" class="nav--menu_item_anchor" href="/feed"><svg id="IcnRSS" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" enable-background="new 0 0 35 35"><ellipse cx="8.071" cy="26.928" fill="none" stroke="#fff" stroke-width="2" stroke-miterlimit="10" ry="3.572" rx="3.571" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(.707 -.707 .707 .707 -16.677 13.594)" /><path fill="none" stroke="#fff" stroke-width="2" stroke-miterlimit="10" d="M22.48 32.5c.48-11.35-8.65-20.46-19.98-19.98M32.48 32.5C33.02 15.58 19.43 1.98 2.5 2.52" stroke-linecap="square" stroke-linejoin="bevel" /></svg></a></li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div id="content" class="clearfix row">
+<div id="main" class="col-sm-8 clearfix" role="main">
+<article id="post-10901" class="clearfix post-10901 post type-post status-publish format-standard has-post-thumbnail hentry category-spring" role="article" itemscope itemtype="http://schema.org/BlogPosting">
+<meta itemscope itemprop="mainEntityOfPage" itemType="https://schema.org/WebPage" itemid="https://google.com/article" />
+<meta itemprop="datePublished" content="May 14, 2016" />
+<meta itemprop="dateModified" content="May 14, 2016" />
+<header>
+
+<div class="page-header"><h1 class="single-title entry-title" itemprop="headline">Intro to WebSockets with Spring</h1>
+<p class="post-modified">Last modified: <span class="updated">July 19, 2017</span></p>
+<div class="meta-row">
+<div class="author vcard" itemprop="author" itemscope itemtype="https://schema.org/Person">
+<span class="author-by"> by </span>
+<span class="author-name fn" itemprop="name">
+<a href="http://www.baeldung.com/author/baeldung/" title="Posts by baeldung" rel="author">baeldung</a> </span>
+</div>
+<span itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+<meta itemprop="url" content="http://www.baeldung.com/wp-content/uploads/2016/10/social-On-Spring-dark.jpg">
+<meta itemprop="width" content="208">
+<meta itemprop="height" content="208">
+</span>
+<span itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+<span itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+<meta itemprop="url" content="http://www.baeldung.com/wp-content/uploads/2016/10/social-On-Spring-dark.jpg">
+<meta itemprop="width" content="208">
+<meta itemprop="height" content="208">
+</span>
+<meta itemprop="name" content="Baeldung">
+</span>
+<ul class="categories">
+<li><a href="http://www.baeldung.com/category/spring/" rel="category tag">Spring</a><span class="btn-share" title="Subscribe for&nbsp;Spring"><span class="tve-leads-two-step-trigger tl-2step-trigger-19258">+</span></span></li> </ul>
+</div>
+</div>
+</header> 
+<section class="post_content clearfix" itemprop="articleBody">
+<div class="short_box short_start">
+<h3><b>The Price of all “Learn Spring Security” course packages will permanently increase<strong> by $50 on the 8th of December:</strong></b></h3>
+<p><strong><a href="/learn-spring-security-course#table">&gt;&gt;&gt; GET ACCESS NOW</a></strong></p>
+</div>
+<h2 id="overview"><strong>1. Overview</strong></h2>
+<p class="lead">In this article, we will create a simple web application that implements messaging using the <strong>new WebSocket capabilities</strong> introduced with Spring Framework 4.0.</p>
+<p>WebSockets are a <strong>bi-directional</strong>, <strong>full-duplex</strong>,<strong> persistent connection</strong> between a web browser and a server. Once a WebSocket connection is established the connection stays open until the client or server decides to close this connection.</p>
+<p>A typical use case could be when an app involves multiple users communicating with each other, like in a chat. <span id="result_box" class="" lang="en"><span id="result_box" class="" lang="en"><span class="">We will build a simple chat client in our example.</span><br />
+</span></span></p>
+<h2 id="maven"><strong>2. Maven Dependencies</strong></h2>
+<p>Since this is a Maven-based project, we first add the required dependencies to the <em>pom.xml</em>:</p>
+<pre class="brush: xml; gutter: true">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-websocket&lt;/artifactId&gt;
+    &lt;version&gt;4.2.4.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-messaging&lt;/artifactId&gt;
+    &lt;version&gt;4.2.4.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+<p>In addition, as we&#8217;ll use <em>JSON</em> to build the body of our messages, we need to add the <em>Jackson</em> dependencies. This allows Spring to convert our Java object to/from <em>JSON</em>:</p>
+<pre class="brush: xml; gutter: true">&lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-core&lt;/artifactId&gt;
+    &lt;version&gt;2.7.3&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt; 
+    &lt;version&gt;2.7.3&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+<p>If you want to get the newest version of the libraries above, look for them on <a href="http://search.maven.org/">Maven Central</a>.</p>
+<h2 id="webSocket"><strong>3. Enable WebSocket in Spring</strong></h2>
+<p>The first thing to do is to enable the WebSocket capabilities. To do this we need to add a configuration to our application and annotate this class with <em>@EnableWebSocketMessageBroker</em>. As its name suggests, it enables WebSocket message handling, backed by a message broker:</p>
+<pre class="brush: java; gutter: true">@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker(&quot;/topic&quot;);
+        config.setApplicationDestinationPrefixes(&quot;/app&quot;);
+    }
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+         registry.addEndpoint(&quot;/chat&quot;);
+         registry.addEndpoint(&quot;/chat&quot;).withSockJS();
+    }
+}
+</pre>
+<p><span id="result_box" class="short_text" lang="en"><span class="">Here can we see that</span></span> the method <em>configureMessageBroker</em> is used to <strong>configure the message broker</strong>. First, we enable an in-memory message broker to carry the messages back to the client on destinations prefixed with &#8220;/topic&#8221;.</p>
+<p>W<span id="result_box" class="short_text" lang="en"><span class="">e complete our</span> <span class="">simple</span></span> configuration by designating the &#8220;/app&#8221; prefix to filter destinations targeting application annotated methods (via <em>@MessageMapping</em>).</p>
+<p>The <em>registerStompEndpoints</em> method registers the &#8220;/chat&#8221; endpoint, enabling <strong>Spring’s <a href="http://stomp.github.io/stomp-specification-1.2.html#Abstract">STOMP</a> support</strong>. Keep in mind that we are also adding here an endpoint that works without the SockJS for the sake of elasticity.</p>
+<p>This endpoint, when prefixed with &#8220;/app&#8221;, is the endpoint that the <em>ChatController.send()</em> method is mapped to handle.</p>
+<p>It also <strong>enables the <a href="https://github.com/sockjs/sockjs-protocol">SockJS</a> fallback options,</strong> so that alternative messaging options may be used if WebSockets are not available. This is useful since WebSocket is not supported in all browsers yet and may be precluded by restrictive network proxies.</p>
+<p>The fallbacks let the applications use a WebSocket API but gracefully degrade to non-WebSocket alternatives when necessary at runtime.</p>
+<h2 id="model"><strong>4. Create the Message Model</strong></h2>
+<p>Now that we’ve set up the project and configured the WebSocket capabilities, we need to create a message to send.</p>
+<p>The endpoint will accept messages containing the sender name and a text in a STOMP message whose body is a <em>JSON</em> object. The message might look like this:</p>
+<pre class="brush: javascript; gutter: true">{
+    &quot;from&quot;: &quot;John&quot;,
+    &quot;text&quot;: &quot;Hello!&quot;
+}
+</pre>
+<p>To model the message carrying the text,  we can create a simple<i> </i>Java object with <em>from</em> and <em>text</em> properties:</p>
+<pre class="brush: java; gutter: true">public class Message {
+
+    private String from;
+    private String text;
+
+    // getters and setters
+}
+</pre>
+<p>By default, Spring will use the <em>Jackson</em> library to convert our model object to and from JSON.</p>
+<h2 id="controller"><strong>5. Create a Message-Handling Controller</strong></h2>
+<p>As we&#8217;ve seen, Spring&#8217;s approach to working with STOMP messaging is to associate a controller method to the configured endpoint. This is made possible through the <em>@MessageMapping </em>annotation.</p>
+<p>The association between the endpoint and the controller gives us the ability to handle the message if needed:</p>
+<pre class="brush: java; gutter: true">@MessageMapping(&quot;/chat&quot;)
+@SendTo(&quot;/topic/messages&quot;)
+public OutputMessage send(Message message) throws Exception {
+    String time = new SimpleDateFormat(&quot;HH:mm&quot;).format(new Date());
+    return new OutputMessage(message.getFrom(), message.getText(), time);
+}
+</pre>
+<p>F<span id="result_box" class="short_text" lang="en">or <span class="">the purposes</span> <span class="">of our example, we&#8217;ll create another model object named <em>OutputMessage</em> to represent the output message sent to the configured destination</span></span>. We populate our object with the sender and the message text taken from the incoming message and enrich it with a timestamp.</p>
+<p>After handling our message, we send it to the appropriate destination defined with the <em>@SendTo</em> annotation. All subscribers to the &#8220;<em>/topic/messages</em>&#8221; destination will receive the message.</p>
+<h2 id="client"><strong>6. Create a Browser Client</strong></h2>
+<p>After making our configurations in the server-side, we&#8217;ll use the <strong><a href="https://github.com/sockjs/sockjs-client">sockjs-client</a> library</strong> to build a simple HTML page that interacts with our messaging system.</p>
+<p>First of all, we need to import the <em>sockjs</em> and <em>stomp</em> Javascript client libraries. Next, we can create a <em>connect()</em> function to open the communication with our endpoint, a <em>sendMessage()</em> function to send our STOMP message and a <em>disconnect()</em> function to close the communication:</p>
+<pre class="brush: html; gutter: true">&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Chat WebSocket&lt;/title&gt;
+        &lt;script src=&quot;./js/sockjs-0.3.4.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;./js/stomp.js&quot;&gt;&lt;/script&gt;
+        &lt;script type=&quot;text/javascript&quot;&gt;
+            var stompClient = null;
+            
+            function setConnected(connected) {
+                document.getElementById(&#039;connect&#039;).disabled = connected;
+                document.getElementById(&#039;disconnect&#039;).disabled = !connected;
+                document.getElementById(&#039;conversationDiv&#039;).style.visibility 
+                  = connected ? &#039;visible&#039; : &#039;hidden&#039;;
+                document.getElementById(&#039;response&#039;).innerHTML = &#039;&#039;;
+            }
+            
+            function connect() {
+                var socket = new SockJS(&#039;/spring-mvc-java/chat&#039;);
+                stompClient = Stomp.over(socket);  
+                stompClient.connect({}, function(frame) {
+                    setConnected(true);
+                    console.log(&#039;Connected: &#039; + frame);
+                    stompClient.subscribe(&#039;/topic/messages&#039;, function(messageOutput) {
+                        showMessageOutput(JSON.parse(messageOutput.body));
+                    });
+                });
+            }
+            
+            function disconnect() {
+                if(stompClient != null) {
+                    stompClient.disconnect();
+                }
+                setConnected(false);
+                console.log(&quot;Disconnected&quot;);
+            }
+            
+            function sendMessage() {
+                var from = document.getElementById(&#039;from&#039;).value;
+                var text = document.getElementById(&#039;text&#039;).value;
+                stompClient.send(&quot;/app/chat&quot;, {}, 
+                  JSON.stringify({&#039;from&#039;:from, &#039;text&#039;:text}));
+            }
+            
+            function showMessageOutput(messageOutput) {
+                var response = document.getElementById(&#039;response&#039;);
+                var p = document.createElement(&#039;p&#039;);
+                p.style.wordWrap = &#039;break-word&#039;;
+                p.appendChild(document.createTextNode(messageOutput.from + &quot;: &quot; 
+                  + messageOutput.text + &quot; (&quot; + messageOutput.time + &quot;)&quot;));
+                response.appendChild(p);
+            }
+        &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body onload=&quot;disconnect()&quot;&gt;
+        &lt;div&gt;
+            &lt;div&gt;
+                &lt;input type=&quot;text&quot; id=&quot;from&quot; placeholder=&quot;Choose a nickname&quot;/&gt;
+            &lt;/div&gt;
+            &lt;br /&gt;
+            &lt;div&gt;
+                &lt;button id=&quot;connect&quot; onclick=&quot;connect();&quot;&gt;Connect&lt;/button&gt;
+                &lt;button id=&quot;disconnect&quot; disabled=&quot;disabled&quot; onclick=&quot;disconnect();&quot;&gt;
+                    Disconnect
+                &lt;/button&gt;
+            &lt;/div&gt;
+            &lt;br /&gt;
+            &lt;div id=&quot;conversationDiv&quot;&gt;
+                &lt;input type=&quot;text&quot; id=&quot;text&quot; placeholder=&quot;Write a message...&quot;/&gt;
+                &lt;button id=&quot;sendMessage&quot; onclick=&quot;sendMessage();&quot;&gt;Send&lt;/button&gt;
+                &lt;p id=&quot;response&quot;&gt;&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+    &lt;/body&gt;
+&lt;/html&gt;</pre>
+<h2 id="testing"><strong>7. Testing the Example<br />
+</strong></h2>
+<p>To test our example, we can open a couple of browser windows and access the chat page at:</p>
+<pre class="brush: html; gutter: true">http://localhost:8080/spring-mvc-java/resources/chat.html</pre>
+<p><span id="result_box" class="short_text" lang="en"><span class="">Once this is done, we can join the chat by entering a nickname and hitting the connect button. If we compose and send a message we can see it in all browser sessions that have joined the chat.</span></span></p>
+<p><span id="result_box" class="short_text" lang="en"><span class="">Take a look at the screenshot to see an example:<br />
+</span></span></p>
+<a href="/wp-content/uploads/2016/07/screenshot.png"><img class="size-medium wp-image-12867 aligncenter" src="/wp-content/uploads/2016/07/screenshot.png" alt="screenshot" width="300" height="166" /></a>
+<h2 id="conclusion"><strong>8. Conclusion</strong></h2>
+<p>In this tutorial, <span id="result_box" class="short_text" lang="en">we have <span class="">explored</span></span> Spring&#8217;s WebSocket support. We have seen its server side configuration and built a simple client-side <span id="result_box" class="short_text" lang="en"><span class="">counterpart</span></span> with the use of <em>sockjs</em> and <em>stomp</em> Javascript libraries.</p>
+<p>The example code can be found in the <a href="https://github.com/eugenp/tutorials/tree/master/spring-mvc-java" target="_blank" rel="noopener">GitHub project</a>.</p>
+<div class="short_box short_end">
+<h3>The Price of all “Learn Spring Security” course packages will permanently increase<strong> by $50 on the 8th of December:</strong></h3>
+<p><strong><a href="/learn-spring-security-course#table">&gt;&gt;&gt; GET ACCESS NOW</a></strong></p>
+</div>
+<span id="tho-end-content" style="display: block; visibility: hidden;"></span><span id="tve_leads_end_content" style="display: block; visibility: hidden; border: 1px solid transparent;"></span>
+</section> 
+ 
+</article> 
+<div class="wpdiscuz_top_clearing"></div>
+<div id="comments" class="comments-area">
+<div id="respond" style="width: 0;height: 0;clear: both;margin: 0;padding: 0;"></div>
+<div id="wpcomm" class="wpdiscuz_unauth" style="border:none;">
+<div class="wpdiscuz-front-actions">
+<div class="wpdiscuz-sort-buttons" style="font-size:14px;">Sort by: &nbsp;
+<span class="wpdiscuz-sort-button wpdiscuz-date-sort-desc">newest</span> |
+<span class="wpdiscuz-sort-button wpdiscuz-date-sort-asc">oldest</span>
+| <span class="wpdiscuz-sort-button wpdiscuz-vote-sort-up">most voted</span>
+</div>
+</div>
+<div id="wcThreadWrapper" class="wc-thread-wrapper">
+<div id="wc-comm-9700_0" class="wc-comment wc-blog-guest wc_comment_level-1"><div class="wc-comment-left "><img alt='Lisdey Pérez' src='http://2.gravatar.com/avatar/21c1b3b5d90056ab965c91a8f78c1cc0?s=64&#038;r=g' srcset='http://2.gravatar.com/avatar/21c1b3b5d90056ab965c91a8f78c1cc0?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-9700" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author ">Lisdey Pérez</div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=Hello+and+thanks+for+so+helpfull+post%26%238230%3B+I+dont+know+is+this+is+the+right+pl...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-9700" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-9700" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>Hello and thanks for so helpfull post&#8230; I dont know is this is the right place to do this, but I need some help, I need to create a Java client that is able to connect to a WebSocket server like the one created in this post&#8230; using Spring + Stomp + Sockjs like this post&#8230; I mean instead the JS client a Java client. I have tried all the post that I could find about it&#8230; but it still dont work, can anyone help me pls?</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 3 months ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-9700_0" style="clear:both"></div><div id="wc-comm-9704_9700" class="wc-comment wc-reply wc-blog-guest wc_comment_level-2"><div class="wc-comment-left "><img alt='Eugen Paraschiv' src='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=64&#038;r=g' srcset='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-9704" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author "><a rel='nofollow' href='http://www.baeldung.com/' target='_blank'>Eugen Paraschiv</a></div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=Hey+Lisdey+%26%238211%3B+sure%2C+this+is+a+good+place+to+ask+for+help.%0AThat%26%238217%3Bs+an+i...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-9704" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-9704" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>Hey Lisdey &#8211; sure, this is a good place to ask for help.<br />
+That&#8217;s an interesting topic &#8211; I&#8217;m adding it to the Content Calendar of the site &#8211; so keep an eye on the RSS feed in about a month. Cheers,<br />
+Eugen.</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">1</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 3 months ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-9704_9700" style="clear:both"></div><div id="wc-comm-9706_9704" class="wc-comment wc-reply wc-blog-guest wc_comment_level-3"><div class="wc-comment-left "><img alt='Lisdey Pérez' src='http://2.gravatar.com/avatar/21c1b3b5d90056ab965c91a8f78c1cc0?s=64&#038;r=g' srcset='http://2.gravatar.com/avatar/21c1b3b5d90056ab965c91a8f78c1cc0?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-9706" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author ">Lisdey Pérez</div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=Thanks..+I+will+do+that%26%238230%3B%0A...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-9706" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-9706" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>Thanks.. I will do that&#8230;</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 3 months ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-9706_9704" style="clear:both"></div></div><div id="wc-comm-9947_9704" class="wc-comment wc-reply wc-blog-guest wc_comment_level-3"><div class="wc-comment-left "><img alt='Andy' src='http://2.gravatar.com/avatar/2485ac8b138be6448cfd6ccc50e3fa34?s=64&#038;r=g' srcset='http://2.gravatar.com/avatar/2485ac8b138be6448cfd6ccc50e3fa34?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-9947" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author ">Andy</div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=Hi%2C+%0AThank+you+so+much+for+you+topic.+Could+you+please+help+write+android+client...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-9947" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-9947" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>Hi, </p>
+<p>Thank you so much for you topic. Could you please help write android client? I am really need an android client to send message to server application.</p>
+<p>Thanks,<br />
+Andy</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 1 month ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-9947_9704" style="clear:both"></div><div id="wc-comm-9954_9947" class="wc-comment wc-reply wc-blog-guest wc_comment_level-4"><div class="wc-comment-left "><img alt='Eugen Paraschiv' src='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=64&#038;r=g' srcset='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-9954" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author "><a rel='nofollow' href='http://www.baeldung.com/' target='_blank'>Eugen Paraschiv</a></div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=Hey+Andy%2C%0AUnfortunately+Android+is+a+bit+outside+the+scope+of+the+site.+It%26%238217...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-9954" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-9954" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>Hey Andy,<br />
+Unfortunately Android is a bit outside the scope of the site. It&#8217;s a huge area and I only have minimal experience with mobile development &#8211; which is why I&#8217;m not covering it here.<br />
+Cheers,<br />
+Eugen.</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 1 month ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-9954_9947" style="clear:both"></div></div></div><div id="wc-comm-10661_9704" class="wc-comment wc-reply wc-blog-guest wc_comment_level-3"><div class="wc-comment-left "><img alt='Matthew Concrete Blackmon' src='http://0.gravatar.com/avatar/37fa90233aa685bd38663a9e9b502d50?s=64&#038;r=g' srcset='http://0.gravatar.com/avatar/37fa90233aa685bd38663a9e9b502d50?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-10661" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author "><a rel='nofollow' href='http://www.falconcis.com' target='_blank'>Matthew Concrete Blackmon</a></div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=Any+chance+that+the+JS+client+article+has+come+out%3F%0A...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-10661" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-10661" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>Any chance that the JS client article has come out?</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>10 months 18 days ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-10661_9704" style="clear:both"></div><div id="wc-comm-10664_10661" class="wc-comment wc-reply wc-blog-guest wc_comment_level-4"><div class="wc-comment-left "><img alt='Eugen Paraschiv' src='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=64&#038;r=g' srcset='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-10664" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author "><a rel='nofollow' href='http://www.baeldung.com/' target='_blank'>Eugen Paraschiv</a></div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=It+seems+like+authors+aren%26%238217%3Bt+picking+the+WebSocket+topics%2C+so+unfortunate...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-10664" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-10664" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>It seems like authors aren&#8217;t picking the WebSocket topics, so unfortunately not 🙂<br />
+I might be able to put it on my own writing list, but that&#8217;s going to be a longer wait.<br />
+In the meantime, I&#8217;m sure there are lots of writeups out there covering the topic at least partially.<br />
+Cheers,<br />
+Eugen.</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>10 months 18 days ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-10664_10661" style="clear:both"></div></div></div></div></div><div id="wc-comm-9829_0" class="wc-comment wc-blog-guest wc_comment_level-1"><div class="wc-comment-left "><img alt='Markus Streicher' src='http://1.gravatar.com/avatar/4d2ef8793a94d85eed147700f083a2a2?s=64&#038;r=g' srcset='http://1.gravatar.com/avatar/4d2ef8793a94d85eed147700f083a2a2?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-9829" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author ">Markus Streicher</div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=Hi+%40all%2C%0Ai%26%238217%3Bve+got+a+problem+with+this+tutorial.+I+just+get+a+view+with+%26%238...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-9829" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-9829" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>Hi @all,</p>
+<p>i&#8217;ve got a problem with this tutorial. I just get a view with &#8220;Welcome to SockJS!&#8221;.<br />
+I&#8217;m working with Spring security and a database login, WebMvc and Thymleaf. </p>
+<p>When i add a MVC Config for Path i got a 404 error &#8220;localhost:8080/{project}/chat/info&#8221; not found.<br />
+And when i add also a request mapping in ChatController i got a 500 Server error because i don&#8217;t have any template resolver. When adding a template resolver then the 500 error is already there with same message.</p>
+<p>Please Help!</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 2 months ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-9829_0" style="clear:both"></div><div id="wc-comm-9906_9829" class="wc-comment wc-reply wc-blog-guest wc_comment_level-2"><div class="wc-comment-left "><img alt='Eugen Paraschiv' src='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=64&#038;r=g' srcset='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-9906" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author "><a rel='nofollow' href='http://www.baeldung.com/' target='_blank'>Eugen Paraschiv</a></div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=Hey+Markus%2C+can+you+open+a+PR+with+a+failing+test+on+the+project%3F+The+PR+should+...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-9906" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-9906" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>Hey Markus, can you open a PR with a failing test on the project? The PR should be very simple &#8211; make one of these changes and then have a live test hitting that URL and failing. I&#8217;d be happy to have a look. Cheers,<br />
+Eugen.</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">1</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 1 month ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-9906_9829" style="clear:both"></div><div id="wc-comm-10099_9906" class="wc-comment wc-reply wc-blog-guest wc_comment_level-3"><div class="wc-comment-left "><img alt='Rohit' src='http://0.gravatar.com/avatar/96a93a73832b5e036792a3cde7b7237d?s=64&#038;r=g' srcset='http://0.gravatar.com/avatar/96a93a73832b5e036792a3cde7b7237d?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-10099" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author ">Rohit</div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=Hi%2C%0AI+am+getting+the+same+error.+What+to+do%3F%0APlease+help.%0A...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-10099" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-10099" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>Hi,<br />
+I am getting the same error. What to do?<br />
+Please help.</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 1 month ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-10099_9906" style="clear:both"></div><div id="wc-comm-10100_10099" class="wc-comment wc-reply wc-blog-guest wc_comment_level-4"><div class="wc-comment-left "><img alt='Eugen Paraschiv' src='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=64&#038;r=g' srcset='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-10100" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author "><a rel='nofollow' href='http://www.baeldung.com/' target='_blank'>Eugen Paraschiv</a></div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=A+PR+is+the+way+to+go+as+well.%0A...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-10100" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-10100" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>A PR is the way to go as well.</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 1 month ago</div><div class="wc-toggle wpdiscuz-hidden"><i class="fa fa-chevron-up" aria-hidden="true" title="Hide Replies"></i></div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-10100_10099" style="clear:both"></div><div id="wc-comm-10102_10100" class="wc-comment wc-reply wc-blog-guest wc_comment_level-5"><div class="wc-comment-left "><img alt='Rohit' src='http://0.gravatar.com/avatar/96a93a73832b5e036792a3cde7b7237d?s=64&#038;r=g' srcset='http://0.gravatar.com/avatar/96a93a73832b5e036792a3cde7b7237d?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-10102" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author ">Rohit</div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=Sorry%2C+What+is+a+PR%3F%0A...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-10102" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-10102" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>Sorry, What is a PR?</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 1 month ago</div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-10102_10100" style="clear:both"></div></div><div id="wc-comm-10103_10102" class="wc-comment wc-reply wc-blog-guest wc_comment_level-5"><div class="wc-comment-left "><img alt='Eugen Paraschiv' src='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=64&#038;r=g' srcset='http://1.gravatar.com/avatar/1b2827268671d62f8556627b9623ed1e?s=128&#038;r=g 2x' class='avatar avatar-64 photo' height='64' width='64' /><div class="wc-blog-guest wc-comment-label"><span>Guest</span></div></div><div id="comment-10103" class="wc-comment-right "><div class="wc-comment-header"><div class="wc-comment-author "><a rel='nofollow' href='http://www.baeldung.com/' target='_blank'>Eugen Paraschiv</a></div><div class="wc-comment-link"><i class="fa fa-share-alt wc-share-link wpf-cta" aria-hidden="true" title="Share"></i><span class="share_buttons_box"><a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=No+worries%2C+sorry+for+using+jargon+like+that.+It%26%238217%3Bs+a+Pull+Request+over+on...+&url=http%3A%2F%2Fwww.baeldung.com%2Fwebsockets-spring%2F%23comment-10103" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>Share On Twitter</span></a><a class="wc_go" target="_blank" href="https://plus.google.com/share?url=http://www.baeldung.com/websockets-spring" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>Share On Google</span></a></span><span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true" /></i><span><input type="text" class="wc-comment-link-input" value="http://www.baeldung.com/websockets-spring/#comment-10103" /></span></span></div><div class="wpdiscuz_clear"></div></div><div class="wc-comment-text"><p>No worries, sorry for using jargon like that. It&#8217;s a Pull Request over on Github.</p>
+</div><div class="wc-comment-footer"><div class="wc-footer-left"><span class="wc-vote-link wc-up  wc_vote wc_not_clicked"><i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>Vote Up</span></span><span class="wc-vote-result">0</span><span class="wc-vote-link wc-down  wc_vote wc_not_clicked"><i class="fa fa-thumbs-down wc-vote-img-down"></i><span>Vote Down</span></span>&nbsp;</div><div class="wc-footer-right"><div class="wc-comment-date"><i class="fa fa-clock-o" aria-hidden="true"></i>1 year 1 month ago</div></div><div class="wpdiscuz_clear"></div></div></div><div class="wpdiscuz-comment-message"></div><div id="wpdiscuz_form_anchor-10103_10102" style="clear:both"></div></div></div></div></div></div>
+<div class="wpdiscuz-comment-pagination">
+</div>
+</div>
+<div class="wpdiscuz_clear"></div>
+</div>
+</div>
+<div class="wpdiscuz-loading-bar wpdiscuz-loading-bar-unauth"><img class="wpdiscuz-loading-bar-img" alt="wpDiscuz" src="http://www.baeldung.com/wp-content/plugins/wpdiscuz/assets/img/loading.gif" width="32" height="25" /></div>
+</div> 
+<div id="sidebar1" class="col-sm-4" role="complementary">
+<div style="display:none" class="tl-widget-container"><div id="widget_thrive_leads-4" class="widget widget_thrive_leads"><span style="display:none" class="tl-placeholder-f-type-widget"></span></div></div>
+</div>
+</div> 
+</div> 
+<footer role="contentinfo">
+<div id="inner-footer" class="clearfix">
+<div id="widget-footer" class="clearfix row">
+<div class="col-md-3 hidden-xs">
+<img src="http://www.baeldung.com/wp-content/themes/baeldung/icon/logo.byline.svg" id="footer-logo" class="img-responsive" alt="Baeldung Logo">
+</div>
+<div class="col-md-9 col-xs-12">
+<div id="nav_menu-5" class="widget col-sm-4 widget_nav_menu"><h4 class="widgettitle">Categories</h4><ul id="menu-categories" class="menu"><li class="current-post-ancestor active current-post-parent menu-spring"><a href="http://www.baeldung.com/category/spring/">Spring</a></li>
+<li class="menu-rest"><a href="http://www.baeldung.com/category/rest/">REST</a></li>
+<li class="menu-java"><a href="http://www.baeldung.com/category/java/">Java</a></li>
+<li class="menu-security"><a href="http://www.baeldung.com/category/security-2/">Security</a></li>
+<li class="menu-persistence"><a href="http://www.baeldung.com/category/persistence/">Persistence</a></li>
+<li class="menu-jackson"><a href="http://www.baeldung.com/category/jackson/">Jackson</a></li>
+<li class="menu-httpclient"><a href="http://www.baeldung.com/category/http/">HttpClient</a></li>
+</ul></div>
+<div id="nav_menu-3" class="widget col-sm-4 widget_nav_menu"><h4 class="widgettitle">Series</h4><ul id="menu-series" class="menu"><li class="menu-java-back-to-basics-tutorial"><a href="http://www.baeldung.com/java-tutorial">Java &#8220;Back to Basics&#8221; Tutorial</a></li>
+<li class="menu-jackson-json-tutorial"><a href="http://www.baeldung.com/jackson">Jackson JSON Tutorial</a></li>
+<li class="menu-httpclient-4-tutorial"><a href="http://www.baeldung.com/httpclient-guide">HttpClient 4 Tutorial</a></li>
+<li class="menu-rest-with-spring-tutorial"><a href="http://www.baeldung.com/rest-with-spring-series/">REST with Spring Tutorial</a></li>
+<li class="menu-spring-persistence-tutorial"><a href="http://www.baeldung.com/persistence-with-spring-series/">Spring Persistence Tutorial</a></li>
+<li class="menu-security-with-spring"><a href="http://www.baeldung.com/security-spring">Security with Spring</a></li>
+</ul></div>
+<div id="nav_menu-4" class="widget col-sm-4 widget_nav_menu"><h4 class="widgettitle">About</h4><ul id="menu-about" class="menu"><li class="menu-about-baeldung"><a href="http://www.baeldung.com/about/">About Baeldung</a></li>
+<li class="menu-the-courses"><a href="http://courses.baeldung.com">The Courses</a></li>
+<li class="menu-meta-baeldung"><a href="http://meta.baeldung.com/">Meta Baeldung</a></li>
+<li class="menu-the-full-archive"><a href="http://www.baeldung.com/full_archive">The Full Archive</a></li>
+<li class="menu-write-for-baeldung"><a href="http://www.baeldung.com/contribution-guidelines">Write for Baeldung</a></li>
+<li class="menu-privacy-policy"><a href="http://www.baeldung.com/privacy-policy">Privacy Policy</a></li>
+<li class="menu-terms-of-service"><a href="http://www.baeldung.com/terms-of-service">Terms of Service</a></li>
+<li class="menu-contact"><a href="http://www.baeldung.com/contact">Contact</a></li>
+<li class="menu-company-info"><a href="http://www.baeldung.com/baeldung-company-info">Company Info</a></li>
+<li class="menu-advertise-on-the-java-weekly"><a href="http://www.baeldung.com/java-weekly-sponsorship">Advertise on the Java Weekly</a></li>
+<li class="menu-consulting-work"><a title="My Consulting Engagements" href="http://www.baeldung.com/consulting">Consulting Work</a></li>
+</ul></div> </div>
+<div class="col-xs-12 visible-xs">
+<img src="http://www.baeldung.com/wp-content/themes/baeldung/icon/whiteleaf.svg" id="footer-logo1" class="center-block" alt="Baeldung Logo">
+</div>
+</div>
+
+
+</div> 
+</footer> 
+</div> 
+<!--[if lt IE 7 ]>
+  			<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+  			<script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+		<![endif]-->
+<div data-placeholder="ad"></div>
+<div id="survey-container">
+<div class="survey-collapse-bar">
+<a href="#" class="close-survey"></a>
+</div>
+<div class="survey-question"></div>
+<ul class="survey-answers"></ul>
+</div><style>
+  iframe[name='google_conversion_frame'] { 
+    height: 0 !important;
+    width: 0 !important; 
+    line-height: 0 !important; 
+    font-size: 0 !important;
+    margin-top: -13px;
+    float:left;
+}
+
+#carbonads {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: solid 1px #e6e6e6;
+  border-radius: 6px;
+  background-color: #f8f8f8;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#carbonads a:hover {
+  text-decoration: none;
+}
+
+#carbonads span {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.carbon-img {
+  float: left;
+  margin-right: 1em;
+}
+
+.carbon-img img {
+  display: block;
+}
+
+.carbon-text {
+  display: block;
+  float: left;
+  max-width: calc(100% - 130px - 1em);
+  text-align: left;
+}
+
+.carbon-poweredby {
+  position: absolute;
+  bottom: 0;
+  left: 143px;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 9px;
+  line-height: 1;
+}
+
+</style>
+
+<script>
+jQuery(window).load(function(){
+    setTimeout( function(){
+      jQuery('.like_box_slideup_close .sidbar_slide_header').trigger('click');
+    },'10000');
+});
+</script>
+<style>
+  .main_sidbar_slide {
+    top: 40%;
+}
+</style>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        var count;
+        if ( !jQuery.cookie('wwsgd_visits') ) {
+            count = 1;
+        }
+        else {
+            count = parseInt(jQuery.cookie('wwsgd_visits'), 10) + 1;
+        }
+        jQuery.cookie('wwsgd_visits', count, { expires: 365, path: "/" });
+
+        if ( count <= 20 ) {
+            jQuery(".wwsgd").show();
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shCore.js?ver=3.0"></script>
+<script type="text/javascript" src="http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shAutoloader.js?ver=3.0"></script>
+<script type="text/javascript" src="http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushXml.js?ver=3.0"></script>
+<script type="text/javascript">//<![CDATA[
+	SyntaxHighlighter.autoloader(
+	"applescript	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushAppleScript.js?ver=3.0"
+	,"as3 actionscript3	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushAS3.js?ver=3.0"
+	,"bash shell	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushBash.js?ver=3.0"
+	,"cf coldfusion	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushColdFusion.js?ver=3.0"
+	,"cpp c	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushCpp.js?ver=3.0"
+	,"c# c-sharp csharp	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushCSharp.js?ver=3.0"
+	,"css	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushCss.js?ver=3.0"
+	,"delphi pas pascal	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushDelphi.js?ver=3.0"
+	,"diff patch	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushDiff.js?ver=3.0"
+	,"erl erlang	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushErlang.js?ver=3.0"
+	,"groovy	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushGroovy.js?ver=3.0"
+	,"java	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushJava.js?ver=3.0"
+	,"jfx javafx	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushJavaFX.js?ver=3.0"
+	,"js jscript javascript	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushJScript.js?ver=3.0"
+	,"perl pl	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushPerl.js?ver=3.0"
+	,"php	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushPhp.js?ver=3.0"
+	,"plain text	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushPlain.js?ver=3.0"
+	,"ps powershell	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushPowerShell.js?ver=3.0"
+	,"py python	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushPython.js?ver=3.0"
+	,"rails ror ruby rb	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushRuby.js?ver=3.0"
+	,"sass scss	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushSass.js?ver=3.0"
+	,"scala	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushScala.js?ver=3.0"
+	,"sql	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushSql.js?ver=3.0"
+	,"vb vbnet	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushVb.js?ver=3.0"
+	,"xml xhtml xslt html	http://www.baeldung.com/wp-content/plugins/wp-syntaxhighlighter/syntaxhighlighter3/scripts/shBrushXml.js?ver=3.0"
+	);
+	SyntaxHighlighter.defaults['auto-links'] = true;
+	SyntaxHighlighter.defaults['quick-code'] = true;
+	SyntaxHighlighter.defaults['title'] = '';
+	SyntaxHighlighter.defaults['class-name'] = 'notranslate';
+	SyntaxHighlighter.defaults['collapse'] = false;
+	SyntaxHighlighter.defaults['first-line'] = 1;
+	SyntaxHighlighter.defaults['gutter'] = true;
+	SyntaxHighlighter.defaults['pad-line-numbers'] = false;
+	SyntaxHighlighter.defaults['smart-tabs'] = true;
+	SyntaxHighlighter.defaults['tab-size'] = 4;
+	SyntaxHighlighter.defaults['toolbar'] = true;
+	SyntaxHighlighter.config.strings.expandSource = '+ expand source';
+	SyntaxHighlighter.config.strings.help = '?';
+	SyntaxHighlighter.config.strings.alert = 'SyntaxHighlighter\n\n';
+	SyntaxHighlighter.config.strings.noBrush = "Can't find brush for: ";
+	SyntaxHighlighter.config.strings.brushNotHtmlScript = "Brush wasn't configured for html-script option: ";
+	SyntaxHighlighter.all();
+	
+//]]></script>
+
+<span style="display:none" class="tl-placeholder-f-type-ribbon"></span><script type='text/javascript' src='http://www.baeldung.com/wp-content/plugins/thrive-headline-optimizer/frontend/js/triggers.min.js?ver=1.1.8'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var tve_frontend_options = {"is_editor_page":"","page_events":[],"is_single":"1","ajaxurl":"http:\/\/www.baeldung.com\/wp-admin\/admin-ajax.php","social_fb_app_id":"","dash_url":"http:\/\/www.baeldung.com\/wp-content\/plugins\/thrive-visual-editor\/thrive-dashboard","translations":{"Copy":"Copy"}};
+/* ]]> */
+</script>
+<script type='text/javascript' src='//www.baeldung.com/wp-content/plugins/thrive-leads/js/frontend.min.js?ver=2.0.15'></script>
+<script type='text/javascript' src='http://www.baeldung.com/wp-includes/js/jquery/jquery.form.min.js?ver=4.2.1'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var tve_dash_front = {"ajaxurl":"http:\/\/www.baeldung.com\/wp-admin\/admin-ajax.php","is_crawler":""};
+/* ]]> */
+</script>
+<script type='text/javascript'>
+var q2w3_sidebar_options = new Array();
+q2w3_sidebar_options[0] = { "sidebar" : "sidebar1", "margin_top" : 50, "margin_bottom" : 0, "stop_id" : "inner-footer", "screen_max_width" : 1169, "screen_max_height" : 599, "width_inherit" : false, "refresh_interval" : 100, "window_load_hook" : false, "disable_mo_api" : true, "widgets" : ['widget_thrive_leads-4'] };
+</script>
+<script type='text/javascript' src='http://www.baeldung.com/wp-includes/js/wp-embed.min.js?ver=4.9'></script>
+<script type='text/javascript'>
+      function svginit_veggieBurger() {
+        var svgTarget = document.getElementById('veggieBurger');
+        if (svgTarget) {
+          veggieBurger  = new Vivus('veggieBurger', {type: 'delayed', duration: 30,  start: 'autostart'});
+        }
+      }
+      document.addEventListener("DOMContentLoaded", svginit_veggieBurger);
+    
+
+          function svginit_17021() {
+            IcnCoursesRestWithSpring = new Vivus('IcnCoursesRestWithSpring', {type: 'delayed', duration: 60,  start: 'manual'});
+IcnCoursesLearnSpringSecurity = new Vivus('IcnCoursesLearnSpringSecurity', {type: 'delayed', duration: 60,  start: 'manual'});
+            
+          document.getElementById('menu-item-17021').onmouseenter = function(){
+            IcnCoursesRestWithSpring.reset().play();
+IcnCoursesLearnSpringSecurity.reset().play();
+          };
+        
+          }
+          document.addEventListener("DOMContentLoaded", svginit_17021);
+        
+
+          function svginit_17022() {
+            IcnGuidesPersistence = new Vivus('IcnGuidesPersistence', {type: 'delayed', duration: 60,  start: 'manual'});
+IcnGuidesRest = new Vivus('IcnGuidesRest', {type: 'delayed', duration: 60,  start: 'manual'});
+IcnGuidesSecurity = new Vivus('IcnGuidesSecurity', {type: 'delayed', duration: 60,  start: 'manual'});
+            
+          document.getElementById('menu-item-17022').onmouseenter = function(){
+            IcnGuidesPersistence.reset().play();
+IcnGuidesRest.reset().play();
+IcnGuidesSecurity.reset().play();
+          };
+        
+          }
+          document.addEventListener("DOMContentLoaded", svginit_17022);
+        
+
+          function svginit_6138() {
+            IcnAboutMarketingExperiments = new Vivus('IcnAboutMarketingExperiments', {type: 'delayed', duration: 60,  start: 'manual'});
+IcnAboutFullArchive = new Vivus('IcnAboutFullArchive', {type: 'delayed', duration: 60,  start: 'manual'});
+IcnAboutWriteForBaeldung = new Vivus('IcnAboutWriteForBaeldung', {type: 'delayed', duration: 60,  start: 'manual'});
+IcnAboutBaeldung = new Vivus('IcnAboutBaeldung', {type: 'delayed', duration: 60,  start: 'manual'});
+            
+          document.getElementById('menu-item-6138').onmouseenter = function(){
+            IcnAboutMarketingExperiments.reset().play();
+IcnAboutFullArchive.reset().play();
+IcnAboutWriteForBaeldung.reset().play();
+IcnAboutBaeldung.reset().play();
+          };
+        
+          }
+          document.addEventListener("DOMContentLoaded", svginit_6138);
+        
+
+          function svginit_IcnRSS() {
+            IcnRSS = new Vivus('IcnRSS', {type: 'delayed', duration: 60,  start: 'autostart'});
+            
+          document.getElementById('menu-item-18864').onmouseenter = function(){
+            IcnRSS.reset().play();
+          };
+        
+          }
+          document.addEventListener("DOMContentLoaded", svginit_IcnRSS);
+        
+</script>
+<script type="text/javascript">/*<![CDATA[*/var THO_Front = THO_Front || {}; THO_Front.data = {"end_of_content_id":"tho-end-content","is_single":true,"log_url":"http:\/\/www.baeldung.com\/wp-json\/tho\/v1\/logs","active_triggers":{"viewport":"thrive_headline"},"log_engagements":[],"post_id":10901,"test_id":0,"const":{"_e_click":1,"_e_scroll":2,"_e_time":3,"_impression":1,"_engagement":2}}/*]]> */</script><script type="text/javascript">/*<![CDATA[*/if ( !window.TL_Const ) var TL_Const={"security":"ec1a4d7f62","ajax_url":"\/\/www.baeldung.com\/wp-admin\/admin-ajax.php","forms":[],"action_conversion":"tve_leads_ajax_conversion","action_impression":"tve_leads_ajax_impression","ajax_load":1,"main_group_id":20291,"display_options":{"allowed_post_types":[],"flag_url_match":false},"two_step_ids":["19258"],"custom_post_data":{"http_referrer":"https:\/\/www.google.com\/"},"current_screen":{"screen_type":4,"screen_id":10901},"ignored_fields":["email","_captcha_size","_captcha_theme","_captcha_type","_submit_option","_use_captcha","g-recaptcha-response","__tcb_lg_fc","__tcb_lg_msg","_state","_form_type","_error_message_option","_back_url","_submit_option","url","_asset_group","_asset_option","mailchimp_optin"]}/*]]> */</script><span style="display:none" class="tl-placeholder-f-type-two_step_19258"></span> <script type="text/javascript" defer src="http://www.baeldung.com/wp-content/cache/autoptimize/js/autoptimize_6792b5c70c741d2e89f93301e9657cfc.js"></script></body>
+</html>
