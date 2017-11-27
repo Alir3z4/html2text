@@ -205,7 +205,7 @@ def skipwrap(para, wrap_links):
 
 def wrapwrite(text, errors='strict'):
     text = text.encode('utf-8', errors)
-    
+
     try:  # Python3
         sys.stdout.buffer.write(text)
     except AttributeError:

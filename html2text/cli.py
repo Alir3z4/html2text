@@ -90,7 +90,8 @@ def main():
         dest="surrogate_escape",
         action="store_true",
         default=config.SURROGATE_ESCAPE,
-        help="Escaping some special characters and avoid error during printing in console"
+        help="Escaping some special characters and avoid error "
+             "during printing in console"
     )
 
     p.add_option(
