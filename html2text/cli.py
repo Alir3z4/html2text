@@ -3,7 +3,7 @@ import warnings
 
 from html2text.compat import urllib
 from html2text import HTML2Text, config, __version__
-from html2text.utils import wrapwrite,wrapwrite_surrogate_escape, wrap_read
+from html2text.utils import wrapwrite, wrap_read
 
 
 def main():
@@ -313,6 +313,6 @@ def main():
     h.default_image_alt = options.default_image_alt
 
     if options.surrogate_escape:
-        wrapwrite_surrogate_escape(h.handle(data))
+        wrapwrite(h.handle(data), errors='surrogateescape')
     else:
         wrapwrite(h.handle(data))
