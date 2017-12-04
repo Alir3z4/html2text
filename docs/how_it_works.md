@@ -68,7 +68,6 @@ Some functions are:
     - wrapwrite                 :write to buffer
     - wrap_read                 :read from buffer
     - escape_md                 :escape md sensitive within other md
-    - escape_md_section         :escape md sensitive across whole doc
 
 
 cli.py

@@ -26,7 +26,6 @@ from html2text.utils import (
     google_list_style,
     list_numbering_start,
     dumb_css_parser,
-    escape_md_section,
     skipwrap,
     pad_tables_in_text
 )
@@ -38,7 +37,7 @@ except NameError:
     # python3 uses chr
     nochr = str('')
 
-__version__ = (2017, 10, 4)
+__version__ = (2017, 12, 4)
 
 
 # TODO:
@@ -810,8 +809,6 @@ class HTML2Text(HTMLParser.HTMLParser):
                 self.maybe_automatic_link = None
                 self.empty_link = False
 
-        if not self.code and not self.pre and not entity_char:
-            data = escape_md_section(data, snob=self.escape_snob)
         self.preceding_data = data
         self.o(data, 1)
 
