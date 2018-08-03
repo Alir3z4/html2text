@@ -799,6 +799,7 @@ class HTML2Text(HTMLParser.HTMLParser):
             self.stressed = False
             self.preceding_stressed = True
         elif (self.preceding_stressed
+              and data
               and re.match(r'[^\s.!?]', data[0])
               and not hn(self.current_tag)
               and self.current_tag not in ['a', 'code', 'pre']):
