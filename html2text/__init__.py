@@ -183,7 +183,11 @@ class HTML2Text(HTMLParser.HTMLParser):
         return outtext
 
     def handle_charref(self, c):
-        self.handle_data(self.charref(c), True)
+        ref = self.charref(c)
+        # ref may be an empty string (e.g. for &#8206;/&#8207; markers that should
+        # not contribute to the final output).
+        if ref:
+            self.handle_data(ref, True)
 
     def handle_entityref(self, c):
         self.handle_data(self.entityref(c), True)
