@@ -78,6 +78,7 @@ class HTML2Text(HTMLParser.HTMLParser):
         self.ignore_emphasis = config.IGNORE_EMPHASIS  # covered in cli
         self.bypass_tables = config.BYPASS_TABLES  # covered in cli
         self.ignore_tables = config.IGNORE_TABLES  # covered in cli
+        self.surrogate_escape = config.SURROGATE_ESCAPE
         self.google_doc = False  # covered in cli
         self.ul_item_mark = '*'  # covered in cli
         self.emphasis_mark = '_'  # covered in cli

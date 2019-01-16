@@ -101,6 +101,14 @@ def main():
         help="Discard image data, only keep alt text"
     )
     p.add_option(
+        "--surrogate-escape",
+        dest="surrogate_escape",
+        action="store_true",
+        default=config.SURROGATE_ESCAPE,
+        help="Escaping some special characters and avoid error "
+             "during printing in console"
+    )
+    p.add_option(
         "--images-with-size",
         dest="images_with_size",
         action="store_true",
@@ -320,6 +328,7 @@ def main():
     h.escape_snob = options.escape_snob
     h.bypass_tables = options.bypass_tables
     h.ignore_tables = options.ignore_tables
+    h.surrogate_escape = options.surrogate_escape
     h.single_line_break = options.single_line_break
     h.inline_links = options.inline_links
     h.unicode_snob = options.unicode_snob
@@ -334,4 +343,7 @@ def main():
     h.open_quote = options.open_quote
     h.close_quote = options.close_quote
 
-    wrapwrite(h.handle(data))
+    if options.surrogate_escape:
+        wrapwrite(h.handle(data), errors='surrogateescape')
+    else:
+        wrapwrite(h.handle(data))

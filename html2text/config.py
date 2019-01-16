@@ -49,6 +49,7 @@ MARK_CODE = False
 DECODE_ERRORS = 'strict'
 DEFAULT_IMAGE_ALT = ''
 PAD_TABLES = False
+SURROGATE_ESCAPE = False
 
 # Convert links with same href and text to <href> format
 # if they are absolute links

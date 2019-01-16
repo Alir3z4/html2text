@@ -30,6 +30,7 @@ The AUTHORS/Contributors are (and/or have been):
 * Germain Z. <gh: GermainZ>
 * Jacek Kołodziej <kolodziejj@gmail.com>
 * Jonathan Vanasco <jonathan@findmeon.com>
+* Mohiuddin Ahmed <ahmed.mohi.duet@gmail.com>
 
 Maintainer:
 
