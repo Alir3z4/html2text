@@ -88,9 +88,10 @@ def get_baseline_name(fn):
 
 def get_baseline(fn):
     name = get_baseline_name(fn)
-    with codecs.open(name, mode='r', encoding='utf8',
-        errors='surrogateescape') as f:
-                out = f.read()
+    with codecs.open(
+                     name, mode='r', encoding='utf8',
+                     errors='surrogateescape') as f:
+        out = f.read()
     out = cleanup_eol(out)
     return out
 
