@@ -202,6 +202,7 @@ def skipwrap(para, wrap_links, wrap_list_items):
 
     return False
 
+
 def wrapwrite(text, errors='strict'):
     text = text.encode('utf-8', errors)
 

@@ -90,7 +90,8 @@ def main():
         dest="images_as_html",
         action="store_true",
         default=config.IMAGES_AS_HTML,
-        help="Always write image tags as raw html; preserves `height`, `width` "
+        help="Always write image tags as raw html; "
+             "preserves `height`, `width` "
              "and `alt` if possible."
     )
     p.add_option(
