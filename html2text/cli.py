@@ -267,24 +267,8 @@ def main():
             baseurl = file_
             j = urllib.urlopen(baseurl)
             data = j.read()
-            if encoding is None:
-                try:
-                    from feedparser import _getCharacterEncoding as enc
-                except ImportError:
-                    def enc(x, y):
-                        return ('utf-8', 1)
-                encoding = enc(j.headers, data)[0]
-                if encoding == 'us-ascii':
-                    encoding = 'utf-8'
         else:
             data = open(file_, 'rb').read()
-            if encoding is None:
-                try:
-                    from chardet import detect
-                except ImportError:
-                    def detect(x):
-                        return {'encoding': 'utf-8'}
-                encoding = detect(data)['encoding']
     else:
         data = wrap_read()
 
