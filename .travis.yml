@@ -14,7 +14,6 @@ install:
 before_script:
   - pip install flake8
   - flake8
-  - export COVERAGE_PROCESS_START=$PWD/.coveragerc
 script:
   - coverage run --source=html2text setup.py test
   - coverage combine
