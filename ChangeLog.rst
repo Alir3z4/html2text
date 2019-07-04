@@ -16,6 +16,7 @@
   * ``html2text.HTML2Text.unescape()``
   * ``html2text.unescape()``
 * Fix #208: handle LEFT-TO-RIGHT MARK after a stressed tag.
+* Fix long blockquotes wrapping
 
 2018.1.9
 ========

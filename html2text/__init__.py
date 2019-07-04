@@ -905,6 +905,8 @@ class HTML2Text(HTMLParser.HTMLParser):
                     indent = ""
                     if para.startswith("  " + self.ul_item_mark):
                         indent = "    "  # For list items.
+                    elif para.startswith("> "):
+                        indent = "> "
                     wrapped = wrap(
                         para,
                         self.body_width,
