@@ -904,8 +904,12 @@ class HTML2Text(HTMLParser.HTMLParser):
                 if not skipwrap(para, self.wrap_links, self.wrap_list_items):
                     indent = ""
                     if para.startswith("  " + self.ul_item_mark):
-                        indent = "    "  # For list items.
+                        # list item continuation: add a double indent to the
+                        # new lines
+                        indent = "    "
                     elif para.startswith("> "):
+                        # blockquote continuation: add the greater than symbol
+                        # to the new lines
                         indent = "> "
                     wrapped = wrap(
                         para,
