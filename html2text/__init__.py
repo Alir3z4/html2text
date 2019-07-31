@@ -918,8 +918,11 @@ class HTML2Text(HTMLParser.HTMLParser):
                         subsequent_indent=indent,
                     )
                     result += "\n".join(wrapped)
-                    if indent or para.endswith("  "):
+                    if para.endswith("  "):
                         result += "  \n"
+                        newlines = 1
+                    elif indent:
+                        result += "\n"
                         newlines = 1
                     else:
                         result += "\n\n"

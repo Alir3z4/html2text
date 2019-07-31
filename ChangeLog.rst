@@ -17,6 +17,8 @@
   * ``html2text.unescape()``
 * Fix #208: handle LEFT-TO-RIGHT MARK after a stressed tag.
 * Fix long blockquotes wrapping
+* Remove the trailing whitespaces that were added after wrapping list items & blockquotes
+
 
 2018.1.9
 ========
