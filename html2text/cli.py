@@ -246,6 +246,13 @@ def main():
         help="The character used to close quotes",
     )
     p.add_argument(
+        "--backquote-code",
+        action="store_true",
+        dest="backquote_code",
+        default=config.BACKQUOTE_CODE,
+        help="Wrap program code blocks with ```...```",
+    )
+    p.add_argument(
         "--version", action="version", version=".".join(map(str, __version__))
     )
     p.add_argument("filename", nargs="?")
@@ -302,5 +309,6 @@ def main():
     h.default_image_alt = args.default_image_alt
     h.open_quote = args.open_quote
     h.close_quote = args.close_quote
+    h.backquote_code = args.backquote_code
 
     sys.stdout.write(h.handle(data))
