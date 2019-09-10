@@ -130,6 +130,11 @@ def generate_testdata():
             # CLI doesn't support baseurl.
             cmdline_args = skip
 
+        if base_fn.startswith("backquote_code"):
+            module_args["backquote_code"] = True
+            cmdline_args.append("--backquote-code")
+            func_args = skip
+
         yield fn, module_args, cmdline_args, func_args
 
 
