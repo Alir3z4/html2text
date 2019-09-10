@@ -69,7 +69,6 @@ class HTML2Text(html.parser.HTMLParser):
         self.hide_strikethrough = False  # covered in cli
         self.mark_code = config.MARK_CODE
         self.backquote_code = config.BACKQUOTE_CODE
-        self.code_class = ""
         self.wrap_list_items = config.WRAP_LIST_ITEMS  # covered in cli
         self.wrap_links = config.WRAP_LINKS  # covered in cli
         self.pad_tables = config.PAD_TABLES  # covered in cli
@@ -658,15 +657,18 @@ class HTML2Text(html.parser.HTMLParser):
                 self.pre = False
                 if self.mark_code:
                     self.out("\n[/code]")
-                elif self.backquote_code:
-                    self.out("```")
+
             self.p()
 
-        if tag == "code" and self.startpre:
-            if attrs.get('class'):
-                self.code_class = attrs['class']
-            else:
-                self.code_class = ""
+        if tag == "code" and self.pre:
+            if self.backquote_code:
+                if start:
+                    code_class = ""
+                    if attrs.get("class"):
+                        code_class = attrs["class"]
+                    self.out("\n```%s" % code_class)
+                else:
+                    self.out("\n```")
 
     # TODO: Add docstring for these one letter functions
     def pbr(self):
@@ -718,9 +720,6 @@ class HTML2Text(html.parser.HTMLParser):
                     data = "\n" + data
                 if self.mark_code:
                     self.out("\n[code]")
-                    self.p_p = 0
-                elif self.backquote_code:
-                    self.out("\n\n```%s" % self.code_class)
                     self.p_p = 0
 
             bq = ">" * self.blockquote
