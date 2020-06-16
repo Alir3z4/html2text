@@ -201,14 +201,16 @@ class HTML2Text(html.parser.HTMLParser):
         self.a list. If the set of attributes is not found, returns None
         :rtype: int
         """
-        attrs_href = attrs.get("href") 
+        attrs_href = attrs.get("href")
         if attrs_href is None:
             return None
 
         attrs_title = attrs.get("title")
         for i, a in enumerate(self.a):
-            if ((attrs_href == a.attrs.get("href")) and
-                (attrs_title == a.attrs.get("title"))):
+            if (
+                (attrs_href == a.attrs.get("href"))
+                and (attrs_title == a.attrs.get("title"))
+            ):
                 return i
 
         return None
@@ -499,8 +501,8 @@ class HTML2Text(html.parser.HTMLParser):
                 img_attrs_width = attrs.get("width")
                 img_attrs_height = attrs.get("height")
                 if self.images_as_html or (
-                    self.images_with_size and
-                    not (img_attrs_width is img_attrs_height is None)
+                    self.images_with_size
+                    and not (img_attrs_width is img_attrs_height is None)
                 ):
                     self.o("<img src='" + img_attrs_src + "' ")
                     if img_attrs_width is not None:
