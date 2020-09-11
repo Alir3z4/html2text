@@ -537,7 +537,8 @@ class HTML2Text(html.parser.HTMLParser):
                 else:
                     self.o("![" + alt + "]")
                     if self.inline_links:
-                        href = attrs.get("href", "")
+                        href = attrs.get("href")
+                        href = "" if href is None else href
                         self.o(
                             "(" + escape_md(urlparse.urljoin(self.baseurl, href)) + ")"
                         )
