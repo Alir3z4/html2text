@@ -207,9 +207,8 @@ class HTML2Text(html.parser.HTMLParser):
 
         attrs_title = attrs.get("title")
         for i, a in enumerate(self.a):
-            if (
-                (attrs_href == a.attrs.get("href"))
-                and (attrs_title == a.attrs.get("title"))
+            if (attrs_href == a.attrs.get("href")) and (
+                attrs_title == a.attrs.get("title")
             ):
                 return i
 
@@ -453,9 +452,8 @@ class HTML2Text(html.parser.HTMLParser):
         if tag == "a" and not self.ignore_links:
             if start:
                 attrs_href = attrs.get("href")
-                if (
-                    attrs_href is None
-                    or (self.skip_internal_links and attrs_href.startswith("#"))
+                if attrs_href is None or (
+                    self.skip_internal_links and attrs_href.startswith("#")
                 ):
                     self.astack.append(None)
                 else:
