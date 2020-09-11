@@ -475,6 +475,7 @@ class HTML2Text(html.parser.HTMLParser):
                             self.maybe_automatic_link = None
                         if self.inline_links:
                             title = a.get("title", "")
+                            assert title is not None
                             title = escape_md(title)
                             link_url(self, a["href"], title)
                         else:
@@ -493,6 +494,7 @@ class HTML2Text(html.parser.HTMLParser):
                 if not self.images_to_alt:
                     attrs["href"] = img_attrs_src
                 alt = attrs.get("alt", self.default_image_alt)
+                assert alt is not None
 
                 # If we have images_with_size, write raw html including width,
                 # height, and alt attributes
