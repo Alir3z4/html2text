@@ -474,9 +474,8 @@ class HTML2Text(html.parser.HTMLParser):
                             self.empty_link = False
                             self.maybe_automatic_link = None
                         if self.inline_links:
-                            title = a.get("title", "")
-                            assert title is not None
-                            title = escape_md(title)
+                            title = a.get("title")
+                            title = "" if title is None else escape_md(title)
                             link_url(self, a["href"], title)
                         else:
                             i = self.previousIndex(a)
@@ -494,35 +493,33 @@ class HTML2Text(html.parser.HTMLParser):
                 if not self.images_to_alt:
                     attrs["href"] = img_attrs_src
                 alt = attrs.get("alt", self.default_image_alt)
-                assert alt is not None
 
                 # If we have images_with_size, write raw html including width,
                 # height, and alt attributes
                 img_attrs_width = attrs.get("width")
                 img_attrs_height = attrs.get("height")
-                if self.images_as_html or (
-                    self.images_with_size
-                    and not (img_attrs_width is img_attrs_height is None)
-                ):
+                if self.images_as_html or self.images_with_size:
                     self.o("<img src='" + img_attrs_src + "' ")
-                    if img_attrs_width is not None:
+                    if img_attrs_width:
                         self.o("width='" + img_attrs_width + "' ")
-                    if img_attrs_height is not None:
+                    if img_attrs_height:
                         self.o("height='" + img_attrs_height + "' ")
                     if alt:
                         self.o("alt='" + alt + "' ")
                     self.o("/>")
                     return
 
+                alt = "" if alt is None else escape_md(alt)
+
                 # If we have a link to create, output the start
                 if self.maybe_automatic_link is not None:
                     href = self.maybe_automatic_link
                     if (
                         self.images_to_alt
-                        and escape_md(alt) == href
+                        and alt == href
                         and self.absolute_url_matcher.match(href)
                     ):
-                        self.o("<" + escape_md(alt) + ">")
+                        self.o("<" + alt + ">")
                         self.empty_link = False
                         return
                     else:
@@ -533,9 +530,9 @@ class HTML2Text(html.parser.HTMLParser):
                 # If we have images_to_alt, we discard the image itself,
                 # considering only the alt text.
                 if self.images_to_alt:
-                    self.o(escape_md(alt))
+                    self.o(alt)
                 else:
-                    self.o("![" + escape_md(alt) + "]")
+                    self.o("![" + alt + "]")
                     if self.inline_links:
                         href = attrs.get("href", "")
                         self.o(
