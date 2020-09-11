@@ -498,7 +498,10 @@ class HTML2Text(html.parser.HTMLParser):
                 # height, and alt attributes
                 img_attrs_width = attrs.get("width")
                 img_attrs_height = attrs.get("height")
-                if self.images_as_html or self.images_with_size:
+                if self.images_as_html or (
+                    self.images_with_size
+                    and not (not img_attrs_width and not img_attrs_height)
+                ):
                     self.o("<img src='" + img_attrs_src + "' ")
                     if img_attrs_width:
                         self.o("width='" + img_attrs_width + "' ")
