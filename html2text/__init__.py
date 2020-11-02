@@ -201,24 +201,17 @@ class HTML2Text(html.parser.HTMLParser):
         self.a list. If the set of attributes is not found, returns None
         :rtype: int
         """
-        if "href" not in attrs:
+        attrs_href = attrs.get("href")
+        if attrs_href is None:
             return None
 
-        match = False
+        attrs_title = attrs.get("title")
         for i, a in enumerate(self.a):
-            if "href" in a.attrs and a.attrs["href"] == attrs["href"]:
-                if "title" in a.attrs or "title" in attrs:
-                    if (
-                        "title" in a.attrs
-                        and "title" in attrs
-                        and a.attrs["title"] == attrs["title"]
-                    ):
-                        match = True
-                else:
-                    match = True
-
-            if match:
+            if (attrs_href == a.attrs.get("href")) and (
+                attrs_title == a.attrs.get("title")
+            ):
                 return i
+
         return None
 
     def handle_emphasis(
@@ -435,10 +428,8 @@ class HTML2Text(html.parser.HTMLParser):
 
         if tag == "abbr":
             if start:
-                self.abbr_title = None
+                self.abbr_title = attrs.get("title")
                 self.abbr_data = ""
-                if "title" in attrs:
-                    self.abbr_title = attrs["title"]
             else:
                 if self.abbr_title is not None:
                     assert self.abbr_data is not None
@@ -460,18 +451,17 @@ class HTML2Text(html.parser.HTMLParser):
 
         if tag == "a" and not self.ignore_links:
             if start:
-                if (
-                    "href" in attrs
-                    and attrs["href"] is not None
-                    and not (self.skip_internal_links and attrs["href"].startswith("#"))
+                attrs_href = attrs.get("href")
+                if attrs_href is None or (
+                    self.skip_internal_links and attrs_href.startswith("#")
                 ):
+                    self.astack.append(None)
+                else:
                     self.astack.append(attrs)
-                    self.maybe_automatic_link = attrs["href"]
+                    self.maybe_automatic_link = attrs_href
                     self.empty_link = True
                     if self.protect_links:
-                        attrs["href"] = "<" + attrs["href"] + ">"
-                else:
-                    self.astack.append(None)
+                        attrs["href"] = "<" + attrs_href + ">"
             else:
                 if self.astack:
                     a = self.astack.pop()
@@ -484,8 +474,8 @@ class HTML2Text(html.parser.HTMLParser):
                             self.empty_link = False
                             self.maybe_automatic_link = None
                         if self.inline_links:
-                            title = a.get("title") or ""
-                            title = escape_md(title)
+                            title = a.get("title")
+                            title = "" if title is None else escape_md(title)
                             link_url(self, a["href"], title)
                         else:
                             i = self.previousIndex(a)
@@ -498,38 +488,41 @@ class HTML2Text(html.parser.HTMLParser):
                             self.o("][" + str(a_props.count) + "]")
 
         if tag == "img" and start and not self.ignore_images:
-            if "src" in attrs:
-                assert attrs["src"] is not None
+            img_attrs_src = attrs.get("src")
+            if img_attrs_src is not None:
                 if not self.images_to_alt:
-                    attrs["href"] = attrs["src"]
-                alt = attrs.get("alt") or self.default_image_alt
+                    attrs["href"] = img_attrs_src
+                alt = attrs.get("alt", self.default_image_alt)
 
                 # If we have images_with_size, write raw html including width,
                 # height, and alt attributes
+                img_attrs_width = attrs.get("width")
+                img_attrs_height = attrs.get("height")
                 if self.images_as_html or (
-                    self.images_with_size and ("width" in attrs or "height" in attrs)
+                    self.images_with_size
+                    and not (not img_attrs_width and not img_attrs_height)
                 ):
-                    self.o("<img src='" + attrs["src"] + "' ")
-                    if "width" in attrs:
-                        assert attrs["width"] is not None
-                        self.o("width='" + attrs["width"] + "' ")
-                    if "height" in attrs:
-                        assert attrs["height"] is not None
-                        self.o("height='" + attrs["height"] + "' ")
+                    self.o("<img src='" + img_attrs_src + "' ")
+                    if img_attrs_width:
+                        self.o("width='" + img_attrs_width + "' ")
+                    if img_attrs_height:
+                        self.o("height='" + img_attrs_height + "' ")
                     if alt:
                         self.o("alt='" + alt + "' ")
                     self.o("/>")
                     return
+
+                alt = "" if alt is None else escape_md(alt)
 
                 # If we have a link to create, output the start
                 if self.maybe_automatic_link is not None:
                     href = self.maybe_automatic_link
                     if (
                         self.images_to_alt
-                        and escape_md(alt) == href
+                        and alt == href
                         and self.absolute_url_matcher.match(href)
                     ):
-                        self.o("<" + escape_md(alt) + ">")
+                        self.o("<" + alt + ">")
                         self.empty_link = False
                         return
                     else:
@@ -540,9 +533,9 @@ class HTML2Text(html.parser.HTMLParser):
                 # If we have images_to_alt, we discard the image itself,
                 # considering only the alt text.
                 if self.images_to_alt:
-                    self.o(escape_md(alt))
+                    self.o(alt)
                 else:
-                    self.o("![" + escape_md(alt) + "]")
+                    self.o("![" + alt + "]")
                     if self.inline_links:
                         href = attrs.get("href") or ""
                         self.o(
@@ -777,9 +770,9 @@ class HTML2Text(html.parser.HTMLParser):
                             + "]: "
                             + urlparse.urljoin(self.baseurl, link.attrs["href"])
                         )
-                        if "title" in link.attrs:
-                            assert link.attrs["title"] is not None
-                            self.out(" (" + link.attrs["title"] + ")")
+                        link_attrs_title = link.attrs.get("title")
+                        if link_attrs_title is not None:
+                            self.out(" (" + link_attrs_title + ")")
                         self.out("\n")
                     else:
                         newa.append(link)
