@@ -24,7 +24,7 @@ Used to provide various configuration settings to the converter. They are as fol
     - INLINE_LINKS for formatting images and links
     - PROTECT_LINKS protect from line breaks
     - GOOGLE_LIST_INDENT no of pixels to indent nested lists
-    - IGNORE_ANCHORS
+    - IGNORE_LINKS
     - IGNORE_IMAGES
     - IMAGES_AS_HTML always generate HTML tags for images; preserves `height`, `width`, `alt` if possible.
     - IMAGES_TO_ALT

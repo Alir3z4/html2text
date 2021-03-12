@@ -63,7 +63,7 @@ def main() -> None:
         "--ignore-links",
         dest="ignore_links",
         action="store_true",
-        default=config.IGNORE_ANCHORS,
+        default=config.IGNORE_LINKS,
         help="don't include any formatting for links",
     )
     p.add_argument(

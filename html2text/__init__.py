@@ -34,11 +34,39 @@ __version__ = (2020, 1, 16)
 
 
 class HTML2Text(html.parser.HTMLParser):
+    init_params = [
+        "bypass_tables",
+        "close_quote",
+        "default_image_alt",
+        "escape_snob",
+        "google_list_indent",
+        "ignore_emphasis",
+        "ignore_images",
+        "ignore_links",
+        "ignore_tables",
+        "images_as_html",
+        "images_to_alt",
+        "images_with_size",
+        "inline_links",
+        "links_each_paragraph",
+        "mark_code",
+        "open_quote",
+        "pad_tables",
+        "protect_links",
+        "single_line_break",
+        "skip_internal_links",
+        "unicode_snob",
+        "use_automatic_links",
+        "wrap_links",
+        "wrap_list_items",
+    ]
+
     def __init__(
         self,
         out: Optional[OutCallback] = None,
         baseurl: str = "",
         bodywidth: int = config.BODY_WIDTH,
+        **kwargs
     ) -> None:
         """
         Input parameters:
@@ -52,37 +80,16 @@ class HTML2Text(html.parser.HTMLParser):
         self.split_next_td = False
         self.td_count = 0
         self.table_start = False
-        self.unicode_snob = config.UNICODE_SNOB  # covered in cli
-        self.escape_snob = config.ESCAPE_SNOB  # covered in cli
-        self.links_each_paragraph = config.LINKS_EACH_PARAGRAPH
-        self.body_width = bodywidth  # covered in cli
-        self.skip_internal_links = config.SKIP_INTERNAL_LINKS  # covered in cli
-        self.inline_links = config.INLINE_LINKS  # covered in cli
-        self.protect_links = config.PROTECT_LINKS  # covered in cli
-        self.google_list_indent = config.GOOGLE_LIST_INDENT  # covered in cli
-        self.ignore_links = config.IGNORE_ANCHORS  # covered in cli
-        self.ignore_images = config.IGNORE_IMAGES  # covered in cli
-        self.images_as_html = config.IMAGES_AS_HTML  # covered in cli
-        self.images_to_alt = config.IMAGES_TO_ALT  # covered in cli
-        self.images_with_size = config.IMAGES_WITH_SIZE  # covered in cli
-        self.ignore_emphasis = config.IGNORE_EMPHASIS  # covered in cli
-        self.bypass_tables = config.BYPASS_TABLES  # covered in cli
-        self.ignore_tables = config.IGNORE_TABLES  # covered in cli
-        self.google_doc = False  # covered in cli
-        self.ul_item_mark = "*"  # covered in cli
-        self.emphasis_mark = "_"  # covered in cli
+        self.google_doc = False
+        self.ul_item_mark = "*"
+        self.emphasis_mark = "_"
         self.strong_mark = "**"
-        self.single_line_break = config.SINGLE_LINE_BREAK  # covered in cli
-        self.use_automatic_links = config.USE_AUTOMATIC_LINKS  # covered in cli
-        self.hide_strikethrough = False  # covered in cli
-        self.mark_code = config.MARK_CODE
-        self.wrap_list_items = config.WRAP_LIST_ITEMS  # covered in cli
-        self.wrap_links = config.WRAP_LINKS  # covered in cli
-        self.pad_tables = config.PAD_TABLES  # covered in cli
-        self.default_image_alt = config.DEFAULT_IMAGE_ALT  # covered in cli
+        self.hide_strikethrough = False
         self.tag_callback = None
-        self.open_quote = config.OPEN_QUOTE  # covered in cli
-        self.close_quote = config.CLOSE_QUOTE  # covered in cli
+        self.body_width = bodywidth
+
+        for param in self.init_params:
+            setattr(self, param, kwargs.get(param, getattr(config, param.upper())))
 
         if out is None:
             self.out = self.outtextf
@@ -963,9 +970,14 @@ class HTML2Text(html.parser.HTMLParser):
         return result
 
 
-def html2text(html: str, baseurl: str = "", bodywidth: Optional[int] = None) -> str:
+def html2text(
+    html: str,
+    baseurl: str = "",
+    bodywidth: Optional[int] = None,
+    **kwargs: Optional[OutCallback]
+) -> str:
     if bodywidth is None:
         bodywidth = config.BODY_WIDTH
-    h = HTML2Text(baseurl=baseurl, bodywidth=bodywidth)
+    h = HTML2Text(baseurl=baseurl, bodywidth=bodywidth, **kwargs)
 
     return h.handle(html)

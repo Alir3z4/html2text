@@ -226,3 +226,15 @@ def test_tag_callback():
         "some <i>italics</i> too."
     )
     assert ret == ("this is a txt and this is a with text and some _italics_ too.\n\n")
+
+
+def test_kwargs_in_class():
+    h = html2text.HTML2Text(wrap_links=False)
+    assert h.wrap_links is False
+
+
+def test_kwargs_in_function():
+    test_data = "<a href='http://foo.com/" + "foo-bar/" * 10 + "'>Foo</a>"
+    wrapped = html2text.html2text(test_data, wrap_links=True)
+    unwrapped = html2text.html2text(test_data, wrap_links=False)
+    assert wrapped != unwrapped
