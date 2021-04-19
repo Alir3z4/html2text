@@ -216,9 +216,11 @@ def escape_md_section(text: str, snob: bool = False) -> str:
 
 def reformat_table(lines: List[str], right_margin: int) -> List[str]:
     """
-    Given the lines of a table
-    padds the cells and returns the new lines
+    Given the lines of a table pads the cells and returns the new lines
     """
+    if not lines:
+        return []
+
     # find the maximum width of the columns
     max_width = [len(x.rstrip()) + right_margin for x in lines[0].split("|")]
     max_cols = len(max_width)
