@@ -2,11 +2,14 @@ UNRELEASED
 ==========
 ----
 
+* Fix #332: Insert at most one space for multiple emphasis
 * Feature #318: Make padded tables more similar to pandoc's pipe_tables.
 * Add support for Python 3.9.
 * Fix extra line breaks inside html link text (between '[' and ']')
 * Fix #344: indent ``<ul>`` inside ``<ol>`` three spaces instead of two to comply with CommonMark, GFM, etc.
-* Feature #198: Ignore ``<p>`` tags inside table rows
+* Fix #324: unnecessary spaces around ``<b>``, ``<em>``, and ``strike`` tags.
+* Don't wrap tables by default and add a ``--wrap-tables`` config option.
+* Feature #198: Ignore ``<p>`` tags inside table rows.
 
 2020.1.16
 =========
