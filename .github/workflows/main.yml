@@ -19,6 +19,10 @@ jobs:
     strategy:
       matrix:
         python-version: 
+          - 3.9
+          - 3.9
+          - 3.9
+          - 3.9
           - 3.6
           - 3.7
           - 3.8
@@ -43,6 +47,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TOXENV: ${{ matrix.toxenv }}
+    name: "Python ${{ matrix.python-version }} | Tox ${{ matrix.toxenv }}"
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
