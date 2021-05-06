@@ -48,6 +48,9 @@ jobs:
             toxenv: py38
           - python-version: 3.9
             toxenv: py39
+    
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -67,5 +70,5 @@ jobs:
           TOXENV: ${{ matrix.toxenv }}
         run: tox
         
-      - name: Covergae
+      - name: Coverage
         run: pip install coveralls && coveralls
