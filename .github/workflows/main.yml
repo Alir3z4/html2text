@@ -64,7 +64,7 @@ jobs:
       
       - name: Run tests
         env:
-          TOXENV: $${{ matrix.toxenv }}
+          TOXENV: ${{ matrix.toxenv }}
         run: tox
         
       - name: Covergae
