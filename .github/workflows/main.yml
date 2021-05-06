@@ -19,10 +19,6 @@ jobs:
     strategy:
       matrix:
         python-version: 
-          - 3.9
-          - 3.9
-          - 3.9
-          - 3.9
           - 3.6
           - 3.7
           - 3.8
@@ -44,7 +40,6 @@ jobs:
             toxenv: py38
           - python-version: 3.9
             toxenv: py39
-    
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TOXENV: ${{ matrix.toxenv }}
