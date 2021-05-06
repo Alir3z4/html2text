@@ -67,7 +67,4 @@ jobs:
         run: tox
       
       - name: Upload coverage to Codecov
-        run: |
-          pip install coveragepy
-          coverage xml
-          bash <(curl -s https://codecov.io/bash)
+        run: bash <(curl -s https://codecov.io/bash)
