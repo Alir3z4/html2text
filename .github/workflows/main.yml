@@ -53,16 +53,18 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
       
       - name: setup python
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
         
-      - name: Install Requirements [${{ matrix.python-version }}]
+      - name: Install Requirements [Python-${{ matrix.python-version }}]
         run: pip install tox
       
-      - name: Tox [${{ matrix.toxenv }}]
+      - name: Tox-${{ matrix.toxenv }}
         run: tox
       
       - name: Upload coverage to Codecov
