@@ -19,24 +19,35 @@ jobs:
     strategy:
       matrix:
         python-version: 
-          - '3.7'
-          - '3.7'
-          - '3.7'
-          - '3.5'
-          - '3.6'
-          - '3.7'
-          - '3.8'
-          - '3.9'
-        toxenv:
-          - 'black'
-          - 'flake8'
-          - 'mypy'
-          - 'isort'
-          - 'py35'
-          - 'py36'
-          - 'py37'
-          - 'py38'
-          - 'py39'
+          - 3.7
+          - 3.7
+          - 3.7
+          - 3.5
+          - 3.6
+          - 3.7
+          - 3.8
+          - 3.9
+        include:
+          - python-version: 3.7
+            toxenv: black
+          - python-version: 3.7
+            toxenv: flake8
+          - python-version: 3.7
+            toxenv: mypy
+          - python-version: 3.7
+            toxenv: isort
+          - python-version: 3.7
+            toxenv: black
+          - python-version: 3.5
+            toxenv: py35
+          - python-version: 3.6
+            toxenv: py36
+          - python-version: 3.7
+            toxenv: py37
+          - python-version: 3.8
+            toxenv: py38
+          - python-version: 3.9
+            toxenv: py39
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
