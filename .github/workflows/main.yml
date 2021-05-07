@@ -18,7 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: 
+        toxenv:
+          - black
+          - flake8
+          - mypy
+          - isort
+          - py36
+          - py37
+          - py38
+          - py39
           - 3.9
           - 3.9
           - 3.9
@@ -28,22 +36,22 @@ jobs:
           - 3.8
           - 3.9
         include:
-          - python-version: 3.9
-            toxenv: black
-          - python-version: 3.9
-            toxenv: flake8
-          - python-version: 3.9
-            toxenv: mypy
-          - python-version: 3.9
-            toxenv: isort
-          - python-version: 3.6
-            toxenv: py36
-          - python-version: 3.7
-            toxenv: py37
-          - python-version: 3.8
-            toxenv: py38
-          - python-version: 3.9
-            toxenv: py39
+          - toxenv: black
+            python-version: 3.9
+          - toxenv: flake8
+            python-version: 3.9
+          - toxenv: mypy
+            python-version: 3.9
+          - toxenv: isort
+            python-version: 3.9
+          - toxenv: py36
+            python-version: 3.6
+          - toxenv: py37
+            python-version: 3.7
+          - toxenv: py38
+            python-version: 3.8
+          - toxenv: py39
+            python-version: 3.9
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TOXENV: ${{ matrix.toxenv }}
