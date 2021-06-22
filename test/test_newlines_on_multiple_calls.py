@@ -5,6 +5,8 @@ import html2text
 
 def test_newline_on_multiple_calls():
     h = html2text.HTML2Text()
-    md1 = h.handle("<p>test</test>")
-    md2 = h.handle("<p>test</test>")
-    assert md1 == md2
+    html = "<p>test</p>"
+    md1 = h.handle(html)
+    md2 = h.handle(html)
+    md3 = h.handle(html)
+    assert md1 == md2 == md3
