@@ -86,7 +86,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.tag_callback = None
         self.open_quote = config.OPEN_QUOTE  # covered in cli
         self.close_quote = config.CLOSE_QUOTE  # covered in cli
-
+        
         if out is None:
             self.out = self.outtextf
         else:
@@ -120,6 +120,8 @@ class HTML2Text(html.parser.HTMLParser):
         self.tag_stack = (
             []
         )  # type: List[Tuple[str, Dict[str, Optional[str]], Dict[str, str]]]
+        self.emphasis_tag_stack = {}
+        self.remove_space = False
         self.emphasis = 0
         self.drop_white_space = 0
         self.inheader = False
@@ -302,10 +304,19 @@ class HTML2Text(html.parser.HTMLParser):
     ) -> None:
         self.current_tag = tag
 
+        if tag in ["b","em","i","u"]:
+            if start:
+                if tag in self.emphasis_tag_stack:
+                    self.emphasis_tag_stack[tag] += 1
+                else:
+                    self.emphasis_tag_stack[tag] = 1 
+            elif list(self.emphasis_tag_stack.keys()):
+                self.emphasis_tag_stack.popitem()
+
         if self.tag_callback is not None:
             if self.tag_callback(self, tag, attrs, start) is True:
                 return
-
+        
         # first thing inside the anchor tag is another tag
         # that produces some output
         if (
@@ -372,10 +383,24 @@ class HTML2Text(html.parser.HTMLParser):
                 self.p()
 
         if tag == "br" and start:
+            for key in list(self.emphasis_tag_stack.keys())[::-1]: 
+                if(key == "b"):
+                    self.o(self.strong_mark)
+                elif key in ["em","i","u"]:
+                    self.o(self.emphasis_mark)
+
             if self.blockquote > 0:
                 self.o("  \n> ")
             else:
                 self.o("  \n")
+                
+            for key in list(self.emphasis_tag_stack.keys()): 
+                if(key == "b"):
+                    self.o(self.strong_mark)
+                elif key in ["em","i","u"]:
+                    self.o(self.emphasis_mark)
+                self.remove_space = True
+                self.drop_white_space = 1
 
         if tag == "hr" and start:
             self.p()
@@ -640,11 +665,11 @@ class HTML2Text(html.parser.HTMLParser):
                     # https://spec.commonmark.org/0.28/#motivation
                     # TODO: line up <ol><li>s > 9 correctly.
                     parent_list = None
-                    for list in self.list:
+                    for item in self.list:
                         self.o(
-                            "   " if parent_list == "ol" and list.name == "ul" else "  "
+                            "   " if parent_list == "ol" and item.name == "ul" else "  "
                         )
-                        parent_list = list.name
+                        parent_list = item.name
 
                 if li.name == "ul":
                     self.o(self.ul_item_mark + " ")
@@ -743,7 +768,7 @@ class HTML2Text(html.parser.HTMLParser):
             self.abbr_data += data
 
         if not self.quiet:
-            if self.google_doc:
+            if self.google_doc or self.remove_space:
                 # prevent white space immediately after 'begin emphasis'
                 # marks ('**' and '_')
                 lstripped_data = data.lstrip()
