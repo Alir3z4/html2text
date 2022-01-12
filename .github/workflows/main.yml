@@ -55,8 +55,6 @@ jobs:
           - py39
           - py310
         include:
-          - toxenv: py35
-            python-version: '3.5'
           - toxenv: py36
             python-version: '3.6'
           - toxenv: py37
