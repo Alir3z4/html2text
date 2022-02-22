@@ -34,7 +34,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: '3.9'
         
       - name: Install Requirements [${{ matrix.toxenv }}]
         run: pip install tox
@@ -52,15 +52,18 @@ jobs:
           - py37
           - py38
           - py39
+          - py310
         include:
           - toxenv: py36
-            python-version: 3.6
+            python-version: '3.6'
           - toxenv: py37
-            python-version: 3.7
+            python-version: '3.7'
           - toxenv: py38
-            python-version: 3.8
+            python-version: '3.8'
           - toxenv: py39
-            python-version: 3.9
+            python-version: '3.9'
+          - toxenv: py310
+            python-version: '3.10'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TOXENV: ${{ matrix.toxenv }}
@@ -85,7 +88,31 @@ jobs:
         run: tox
       
       - name: Upload coverage to Codecov
-        run: |
-          pip install coveragepy
-          coverage xml
-          bash <(curl -s https://codecov.io/bash)
+        # see https://github.com/codecov/codecov-action/blob/master/README.md
+        uses: codecov/codecov-action@v2
+        with:
+          # token: ${{ secrets.CODECOV_TOKEN }}  # not required for public repos
+          # files: coverage.xml
+          # directory: ./coverage/reports/
+          # dry_run: false
+          flags: unittests
+          # commit_parent:
+          # env_vars:
+          fail_ci_if_error: true  # default = false
+          # file:
+          # functionalities:
+          # network:
+          # move_coverage_to_trash: false
+          # name: codecov-umbrella  # optional
+          # override_branch:
+          # override_build:
+          # override_commit:
+          # override_pr:
+          # override_tag:
+          os: toxenv
+          # root_dir:
+          # slug:
+          # url:
+          verbose: true  # default = false
+          # version:
+          # working-directory:
