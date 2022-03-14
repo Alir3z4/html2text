@@ -53,6 +53,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.split_next_td = False
         self.td_count = 0
         self.table_start = False
+        self.table_label_start = False
         self.unicode_snob = config.UNICODE_SNOB  # covered in cli
         self.escape_snob = config.ESCAPE_SNOB  # covered in cli
         self.links_each_paragraph = config.LINKS_EACH_PARAGRAPH
@@ -366,18 +367,26 @@ class HTML2Text(html.parser.HTMLParser):
                     self.p()
                 else:
                     self.soft_br()
-            elif self.astack:
+            elif self.astack and tag == "div" :
                 pass
+            elif self.table_label_start and tag == "p" and  start:
+                pass
+            elif self.table_label_start and tag == "p" and not start:
+                self.o("</br>")
             else:
                 self.p()
 
         if tag == "br" and start:
-            if self.astack:
-                self.space = True
-            elif self.blockquote > 0:
-                self.o("  \n> ")
+            if start:
+                if self.blockquote > 0:
+                    self.o("  \n> ")
+                elif self.table_label_start:
+                    pass
+                else:
+                    self.o("  \n")
             else:
-                self.o("  \n")
+                if self.table_label_start:
+                    self.o("</br>")
 
         if tag == "hr" and start:
             self.p()
@@ -683,10 +692,12 @@ class HTML2Text(html.parser.HTMLParser):
                 if tag == "table":
                     if start:
                         self.table_start = True
+                        self.table_label_start = True
                         if self.pad_tables:
                             self.o("<" + config.TABLE_MARKER_FOR_PAD + ">")
                             self.o("  \n")
                     else:
+                        self.table_label_start = False
                         if self.pad_tables:
                             # add break in case the table is empty or its 1 row table
                             self.soft_br()
