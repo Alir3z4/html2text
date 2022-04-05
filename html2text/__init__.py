@@ -710,7 +710,7 @@ class HTML2Text(html.parser.HTMLParser):
                 if tag in ["td", "th"] and start:
                     self.td_count += 1
 
-        if tag == "pre":
+        if tag == "pre" or element_style(attrs, self.style_def, {}).get("white-space", "") == "pre-wrap":
             if start:
                 self.startpre = True
                 self.pre = True
