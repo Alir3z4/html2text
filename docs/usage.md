@@ -104,7 +104,7 @@ simple indications of their function.
 Options that are not in the config.py file:
 
     - emphasis_mark is the character used when replacing the `<em>` tag. It defaults to `_`.
-    - strong_mark is the characer used when replacing the `<strong>` tag. It defaults to `**`.
+    - strong_mark is the character used when replacing the `<strong>` tag. It defaults to `**`.
 
 To alter any option the procedure is to create a parser with
 `parser = html2text.HTML2Text()` and to set the option on the parser.
