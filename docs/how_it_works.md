@@ -43,7 +43,7 @@ Used to provide various configuration settings to the converter. They are as fol
     - RE_MD_DOT_MATCHER for matching lines starting with <space>1.<space>
     - RE_MD_PLUS_MATCHER for matching lines starting with <space>+<space>
     - RE_MD_DASH_MATCHER for matching lines starting with <space>(-)<space>
-    - RE_SLASH_CHARS a string of slash escapeable characters
+    - RE_SLASH_CHARS a string of slash escapable characters
     - RE_MD_BACKSLASH_MATCHER to match \char
     - USE_AUTOMATIC_LINKS to convert <a href='http://xyz'>http://xyz</a> to <http://xyz>
 
