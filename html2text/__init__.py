@@ -490,7 +490,12 @@ class HTML2Text(html.parser.HTMLParser):
             self.quote = not self.quote
 
         def link_url(self: HTML2Text, link: str, title: str = "") -> None:
-            url = urlparse.urljoin(self.baseurl, link)
+            url = link
+            try:
+                url = urlparse.urljoin(self.baseurl, link)
+            except ValueError:
+                # Ignore malformed URLs.
+                pass
             title = ' "{}"'.format(title) if title.strip() else ""
             self.o("]({url}{title})".format(url=escape_md(url), title=title))
 
@@ -585,9 +590,12 @@ class HTML2Text(html.parser.HTMLParser):
                     self.o("![" + escape_md(alt) + "]")
                     if self.inline_links:
                         href = attrs.get("href") or ""
-                        self.o(
-                            "(" + escape_md(urlparse.urljoin(self.baseurl, href)) + ")"
-                        )
+                        try:
+                            href = urlparse.urljoin(self.baseurl, href)
+                        except ValueError:
+                            # Ignore malformed URLs.
+                            pass
+                        self.o("(" + escape_md(href) + ")")
                     else:
                         i = self.previousIndex(attrs)
                         if i is not None:
@@ -821,12 +829,13 @@ class HTML2Text(html.parser.HTMLParser):
                 newa = []
                 for link in self.a:
                     if self.outcount > link.outcount:
-                        self.out(
-                            "   ["
-                            + str(link.count)
-                            + "]: "
-                            + urlparse.urljoin(self.baseurl, link.attrs["href"])
-                        )
+                        href = link.attrs["href"]
+                        try:
+                            href = urlparse.urljoin(self.baseurl, href)
+                        except ValueError:
+                            # Ignore malformed URLs, and also calm mypy.
+                            assert href is not None
+                        self.out("   [" + str(link.count) + "]: " + href)
                         if "title" in link.attrs:
                             assert link.attrs["title"] is not None
                             self.out(" (" + link.attrs["title"] + ")")
