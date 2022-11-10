@@ -9,6 +9,7 @@ from textwrap import wrap
 from typing import Dict, List, Optional, Tuple, Union
 
 from . import config
+from ._version import __version_tuple__ as __version__
 from .elements import AnchorElement, ListElement
 from .typing import OutCallback
 from .utils import (
@@ -26,9 +27,6 @@ from .utils import (
     skipwrap,
     unifiable_n,
 )
-
-__version__ = (2020, 1, 16)
-
 
 # TODO:
 # Support decoded entities with UNIFIABLE.

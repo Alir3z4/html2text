@@ -21,7 +21,7 @@ $ pip install html2text
 Clone the repository from https://github.com/Alir3z4/html2text
 
 ```
-$ git clone --depth 1 https://github.com/Alir3z4/html2text.git
+$ git clone --depth 50 https://github.com/Alir3z4/html2text.git
 $ python -m build -nwx
 $ python -m pip install --upgrade ./dist/*.whl
 ```
