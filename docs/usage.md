@@ -22,8 +22,8 @@ Clone the repository from https://github.com/Alir3z4/html2text
 
 ```
 $ git clone --depth 1 https://github.com/Alir3z4/html2text.git
-$ python setup.py build
-$ python setup.py install
+$ python -m build -nwx
+$ python -m pip install --upgrade ./dist/*.whl
 ```
 
 
