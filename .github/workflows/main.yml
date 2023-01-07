@@ -108,7 +108,6 @@ jobs:
           # override_build:
           # override_commit:
           # override_pr:
-          # override_tag:
           os: toxenv
           # root_dir:
           # slug:
