@@ -48,14 +48,11 @@ jobs:
     strategy:
       matrix:
         toxenv:
-          - py36
           - py37
           - py38
           - py39
           - py310
         include:
-          - toxenv: py36
-            python-version: '3.6'
           - toxenv: py37
             python-version: '3.7'
           - toxenv: py38
