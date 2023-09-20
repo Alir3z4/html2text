@@ -27,7 +27,7 @@ from .utils import (
     unifiable_n,
 )
 
-__version__ = (2020, 1, 16)
+__version__ = (2023, 9, 20)
 
 
 # TODO:
@@ -662,6 +662,7 @@ class HTML2Text(html.parser.HTMLParser):
                 if tag == "table":
                     if start:
                         self.table_start = True
+                        self.out("\n")
                         if self.pad_tables:
                             self.o("<" + config.TABLE_MARKER_FOR_PAD + ">")
                             self.o("  \n")
