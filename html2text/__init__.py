@@ -142,6 +142,7 @@ class HTML2Text(html.parser.HTMLParser):
         super().feed(data)
 
     def handle(self, data: str) -> str:
+        self.start = True
         self.feed(data)
         self.feed("")
         markdown = self.optwrap(self.finish())
@@ -372,9 +373,7 @@ class HTML2Text(html.parser.HTMLParser):
                 self.p()
 
         if tag == "br" and start:
-            if self.astack:
-                self.space = True
-            elif self.blockquote > 0:
+            if self.blockquote > 0:
                 self.o("  \n> ")
             else:
                 self.o("  \n")
