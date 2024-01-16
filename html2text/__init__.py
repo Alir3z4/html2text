@@ -823,8 +823,7 @@ class HTML2Text(html.parser.HTMLParser):
                             + "]: "
                             + urlparse.urljoin(self.baseurl, link.attrs["href"])
                         )
-                        if "title" in link.attrs:
-                            assert link.attrs["title"] is not None
+                        if "title" in link.attrs and link.attrs["title"] is not None:
                             self.out(" (" + link.attrs["title"] + ")")
                         self.out("\n")
                     else:
