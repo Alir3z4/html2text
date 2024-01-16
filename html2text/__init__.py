@@ -548,11 +548,9 @@ class HTML2Text(html.parser.HTMLParser):
                     self.images_with_size and ("width" in attrs or "height" in attrs)
                 ):
                     self.o("<img src='" + attrs["src"] + "' ")
-                    if "width" in attrs:
-                        assert attrs["width"] is not None
+                    if "width" in attrs and attrs["width"] is not None:
                         self.o("width='" + attrs["width"] + "' ")
-                    if "height" in attrs:
-                        assert attrs["height"] is not None
+                    if "height" in attrs and attrs["height"] is not None:
                         self.o("height='" + attrs["height"] + "' ")
                     if alt:
                         self.o("alt='" + alt + "' ")
