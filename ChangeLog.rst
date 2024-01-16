@@ -11,8 +11,11 @@ UNRELEASED
 * Don't wrap tables by default and add a ``--wrap-tables`` config option.
 * Feature #198: Ignore ``<p>`` tags inside table rows.
 * Don't wrap tables by default and add a ``--wrap-tables`` config option
+* Remove support for Python ≤ 3.5. Now requires Python 3.6+.
+* Support for Python 3.10.
 * Fix #320 padding empty tables and tables with no </tr> tags.
 * Add ``ignore_mailto_links`` config option to ignore ``mailto:`` style links.
+
 
 
 2020.1.16
