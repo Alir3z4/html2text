@@ -236,3 +236,12 @@ def test_tag_callback():
         "some <i>italics</i> too."
     )
     assert ret == "this is a txt and this is a with text and some _italics_ too.\n\n"
+
+
+def test_table_empty_first_cell():
+    h = html2text.HTML2Text()
+    ret = h.handle(
+        "<table><tr><th></th><th>b</th></tr>"
+        "<tr><td>c</td><td>d</td></tr></table>"
+    ).strip().replace(" ", "")
+    assert ret == "||b\n---|---\nc|d"
