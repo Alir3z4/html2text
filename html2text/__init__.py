@@ -716,6 +716,12 @@ class HTML2Text(html.parser.HTMLParser):
                     self.out("\n[/code]")
             self.p()
 
+        if tag in ["sup", "sub"]:
+            if start:
+                self.o("<{}>".format(tag))
+            else:
+                self.o("</{}>".format(tag))
+
     # TODO: Add docstring for these one letter functions
     def pbr(self) -> None:
         "Pretty print has a line break"
