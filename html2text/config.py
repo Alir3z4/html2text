@@ -163,3 +163,6 @@ SINGLE_LINE_BREAK = False
 # Use double quotation marks when converting the <q> tag.
 OPEN_QUOTE = '"'
 CLOSE_QUOTE = '"'
+
+# Ignore the sup and sub tags
+IGNORE_SUP_SUB = True

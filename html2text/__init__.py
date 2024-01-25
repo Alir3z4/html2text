@@ -86,6 +86,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.tag_callback = None
         self.open_quote = config.OPEN_QUOTE  # covered in cli
         self.close_quote = config.CLOSE_QUOTE  # covered in cli
+        self.ignore_sup_sub = config.IGNORE_SUP_SUB  # covered in cli
 
         if out is None:
             self.out = self.outtextf
@@ -716,7 +717,7 @@ class HTML2Text(html.parser.HTMLParser):
                     self.out("\n[/code]")
             self.p()
 
-        if tag in ["sup", "sub"]:
+        if not self.ignore_sup_sub and tag in ["sup", "sub"]:
             if start:
                 self.o("<{}>".format(tag))
             else:

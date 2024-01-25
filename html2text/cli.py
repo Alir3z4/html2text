@@ -264,6 +264,12 @@ def main() -> None:
     )
     p.add_argument("filename", nargs="?")
     p.add_argument("encoding", nargs="?", default="utf-8")
+    p.add_argument(
+        "--ignore-sup-sub",
+        dest="ignore_sup_sub",
+        default=config.IGNORE_SUP_SUB,
+        help="Ignore the sup and sub tags",
+    )
     args = p.parse_args()
 
     if args.filename and args.filename != "-":
