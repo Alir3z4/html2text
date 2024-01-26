@@ -265,8 +265,9 @@ def main() -> None:
     p.add_argument("filename", nargs="?")
     p.add_argument("encoding", nargs="?", default="utf-8")
     p.add_argument(
-        "--ignore-sup-sub",
+        "--no-ignore-sup-sub",
         dest="ignore_sup_sub",
+        action="store_false",
         default=config.IGNORE_SUP_SUB,
         help="Ignore the sup and sub tags",
     )
@@ -324,5 +325,6 @@ def main() -> None:
     h.default_image_alt = args.default_image_alt
     h.open_quote = args.open_quote
     h.close_quote = args.close_quote
+    h.ignore_sup_sub = args.ignore_sup_sub
 
     sys.stdout.write(h.handle(html))

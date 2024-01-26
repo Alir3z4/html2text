@@ -140,6 +140,11 @@ def generate_testdata():
             # CLI doesn't support baseurl.
             cmdline_args = skip
 
+        if base_fn in ["sup_tag.html", "sub_tag.html"]:
+            module_args["ignore_sup_sub"] = False
+            cmdline_args.append("--no-ignore-sup-sub")
+            func_args = skip
+
         yield fn, module_args, cmdline_args, func_args
 
 
