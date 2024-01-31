@@ -9,8 +9,8 @@ from textwrap import wrap
 from typing import Dict, List, Optional, Tuple, Union
 
 from . import config
+from ._typing import OutCallback
 from .elements import AnchorElement, ListElement
-from .typing import OutCallback
 from .utils import (
     dumb_css_parser,
     element_style,
@@ -93,20 +93,20 @@ class HTML2Text(html.parser.HTMLParser):
             self.out = out
 
         # empty list to store output characters before they are "joined"
-        self.outtextlist = []  # type: List[str]
+        self.outtextlist: List[str] = []
 
         self.quiet = 0
         self.p_p = 0  # number of newline character to print before next output
         self.outcount = 0
         self.start = True
         self.space = False
-        self.a = []  # type: List[AnchorElement]
-        self.astack = []  # type: List[Optional[Dict[str, Optional[str]]]]
-        self.maybe_automatic_link = None  # type: Optional[str]
+        self.a: List[AnchorElement] = []
+        self.astack: List[Optional[Dict[str, Optional[str]]]] = []
+        self.maybe_automatic_link: Optional[str] = None
         self.empty_link = False
         self.absolute_url_matcher = re.compile(r"^[a-zA-Z+]+://")
         self.acount = 0
-        self.list = []  # type: List[ListElement]
+        self.list: List[ListElement] = []
         self.blockquote = 0
         self.pre = False
         self.startpre = False
@@ -116,17 +116,17 @@ class HTML2Text(html.parser.HTMLParser):
         self.lastWasNL = False
         self.lastWasList = False
         self.style = 0
-        self.style_def = {}  # type: Dict[str, Dict[str, str]]
-        self.tag_stack = []  # type: List[Tuple[str, Dict[str, Optional[str]], Dict[str, str]]]
+        self.style_def: Dict[str, Dict[str, str]] = {}
+        self.tag_stack: List[Tuple[str, Dict[str, Optional[str]], Dict[str, str]]] = []
         self.emphasis = 0
         self.drop_white_space = 0
         self.inheader = False
         # Current abbreviation definition
-        self.abbr_title = None  # type: Optional[str]
+        self.abbr_title: Optional[str] = None
         # Last inner HTML (for abbr being defined)
-        self.abbr_data = None  # type: Optional[str]
+        self.abbr_data: Optional[str] = None
         # Stack of abbreviations to write later
-        self.abbr_list = {}  # type: Dict[str, str]
+        self.abbr_list: Dict[str, str] = {}
         self.baseurl = baseurl
         self.stressed = False
         self.preceding_stressed = False
@@ -142,6 +142,7 @@ class HTML2Text(html.parser.HTMLParser):
         super().feed(data)
 
     def handle(self, data: str) -> str:
+        self.start = True
         self.feed(data)
         self.feed("")
         markdown = self.optwrap(self.finish())
@@ -320,7 +321,7 @@ class HTML2Text(html.parser.HTMLParser):
             # need the attributes of the parent nodes in order to get a
             # complete style description for the current element. we assume
             # that google docs export well formed html.
-            parent_style = {}  # type: Dict[str, str]
+            parent_style: Dict[str, str] = {}
             if start:
                 if self.tag_stack:
                     parent_style = self.tag_stack[-1][2]
@@ -363,13 +364,13 @@ class HTML2Text(html.parser.HTMLParser):
                     self.soft_br()
             elif self.astack:
                 pass
+            elif self.split_next_td:
+                pass
             else:
                 self.p()
 
         if tag == "br" and start:
-            if self.astack:
-                self.space = True
-            elif self.blockquote > 0:
+            if self.blockquote > 0:
                 self.o("  \n> ")
             else:
                 self.o("  \n")
@@ -527,8 +528,7 @@ class HTML2Text(html.parser.HTMLParser):
                             self.o("][" + str(a_props.count) + "]")
 
         if tag == "img" and start and not self.ignore_images:
-            if "src" in attrs:
-                assert attrs["src"] is not None
+            if "src" in attrs and attrs["src"] is not None:
                 if not self.images_to_alt:
                     attrs["href"] = attrs["src"]
                 alt = attrs.get("alt") or self.default_image_alt
@@ -537,11 +537,9 @@ class HTML2Text(html.parser.HTMLParser):
                 # height, and alt attributes
                 if self.images_as_html or (self.images_with_size and ("width" in attrs or "height" in attrs)):
                     self.o("<img src='" + attrs["src"] + "' ")
-                    if "width" in attrs:
-                        assert attrs["width"] is not None
+                    if "width" in attrs and attrs["width"] is not None:
                         self.o("width='" + attrs["width"] + "' ")
-                    if "height" in attrs:
-                        assert attrs["height"] is not None
+                    if "height" in attrs and attrs["height"] is not None:
                         self.o("height='" + attrs["height"] + "' ")
                     if alt:
                         self.o("alt='" + alt + "' ")
@@ -803,8 +801,7 @@ class HTML2Text(html.parser.HTMLParser):
                 for link in self.a:
                     if self.outcount > link.outcount:
                         self.out("   [" + str(link.count) + "]: " + urlparse.urljoin(self.baseurl, link.attrs["href"]))
-                        if "title" in link.attrs:
-                            assert link.attrs["title"] is not None
+                        if "title" in link.attrs and link.attrs["title"] is not None:
                             self.out(" (" + link.attrs["title"] + ")")
                         self.out("\n")
                     else:
