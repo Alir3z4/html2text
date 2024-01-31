@@ -27,7 +27,7 @@ from .utils import (
     unifiable_n,
 )
 
-__version__ = (2023, 9, 20)
+__version__ = (2024, 1, 31)
 
 
 # TODO:
@@ -436,6 +436,12 @@ class HTML2Text(html.parser.HTMLParser):
                 self.preceding_data += " "
             else:
                 strong = self.strong_mark
+
+            if not start:
+                matches = re.findall(r".*(\s+)$", self.outtextlist[-1])
+                if matches:
+                    strong += matches[0]
+                    self.outtextlist[-1] = self.outtextlist[-1].rstrip()
 
             self.o(strong)
             if start:
