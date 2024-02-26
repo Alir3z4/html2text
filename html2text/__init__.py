@@ -438,6 +438,7 @@ class HTML2Text(html.parser.HTMLParser):
             if (
                 start
                 and self.preceding_data
+                and len(self.strong_mark) > 0
                 and self.preceding_data[-1] == self.strong_mark[0]
             ):
                 strong = " " + self.strong_mark
