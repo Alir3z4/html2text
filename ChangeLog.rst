@@ -2,7 +2,7 @@ Unreleased
 ==========
 ----
 
-* Fixe #409: IndexError on empty strong mark.
+* Fixes #409: IndexError on empty strong mark.
 
 
 2024.2.25
