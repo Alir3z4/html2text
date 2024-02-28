@@ -30,15 +30,15 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      
+
       - name: setup python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
-        
+          python-version: '3.12'
+
       - name: Install Requirements [${{ matrix.toxenv }}]
         run: pip install tox
-      
+
       - name: Tox-${{ matrix.toxenv }}
         run: tox
   # This workflow contains a single job called "build"
@@ -51,6 +51,8 @@ jobs:
           - py38
           - py39
           - py310
+          - py311
+          - py312
         include:
           - toxenv: py38
             python-version: '3.8'
@@ -73,18 +75,18 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
-      
+
       - name: setup python
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-        
+
       - name: Install Requirements [Python-${{ matrix.python-version }}]
         run: pip install tox
-      
+
       - name: Tox-${{ matrix.toxenv }}
         run: tox
-      
+
       - name: Upload coverage to Codecov
         # see https://github.com/codecov/codecov-action/blob/master/README.md
         uses: codecov/codecov-action@v2
