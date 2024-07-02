@@ -541,10 +541,16 @@ class HTML2Text(html.parser.HTMLParser):
                                 self.a.append(a_props)
                             self.o("][" + str(a_props.count) + "]")
 
-        if tag == "img" and start and not self.ignore_images:
-            if "src" in attrs and attrs["src"] is not None:
+        if tag in ["img", "source"] and start and not self.ignore_images:
+            if "src" in attrs or "data-src" in attrs:
+                if "src" in attrs:
+                    assert attrs["src"] is not None
+                    img_src = attrs["src"]
+                elif "data-src" in attrs:
+                    assert attrs["data-src"] is not None
+                    img_src = attrs["data-src"]
                 if not self.images_to_alt:
-                    attrs["href"] = attrs["src"]
+                    attrs["href"] = img_src
                 alt = attrs.get("alt") or self.default_image_alt
 
                 # If we have images_with_size, write raw html including width,
