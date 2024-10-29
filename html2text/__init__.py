@@ -12,6 +12,7 @@ from . import config
 from ._typing import OutCallback
 from .elements import AnchorElement, ListElement
 from .utils import (
+    control_character_replacements,
     dumb_css_parser,
     element_style,
     escape_md,
@@ -903,13 +904,14 @@ class HTML2Text(html.parser.HTMLParser):
         else:
             c = int(name)
 
+        if not 0 < c < 0x110000 or 0xD800 <= c < 0xE000:  # invalid or surrogate
+            c = 0xFFFD  # REPLACEMENT CHARACTER
+        c = control_character_replacements.get(c, c)
+
         if not self.unicode_snob and c in unifiable_n:
             return unifiable_n[c]
         else:
-            try:
-                return chr(c)
-            except ValueError:  # invalid unicode
-                return ""
+            return chr(c)
 
     def entityref(self, c: str) -> str:
         if not self.unicode_snob and c in config.UNIFIABLE:
