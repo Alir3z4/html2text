@@ -27,14 +27,14 @@ jobs:
     name: "Tox ${{ matrix.toxenv }}"
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
 
       - name: Install Requirements [${{ matrix.toxenv }}]
         run: pip install tox
@@ -48,14 +48,12 @@ jobs:
     strategy:
       matrix:
         toxenv:
-          - py38
           - py39
           - py310
           - py311
           - py312
+          - py313
         include:
-          - toxenv: py38
-            python-version: '3.8'
           - toxenv: py39
             python-version: '3.9'
           - toxenv: py310
@@ -64,6 +62,8 @@ jobs:
             python-version: '3.11'
           - toxenv: py312
             python-version: '3.12'
+          - toxenv: py313
+            python-version: '3.13'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TOXENV: ${{ matrix.toxenv }}
@@ -72,12 +72,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
       - name: setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -88,10 +88,9 @@ jobs:
         run: tox
 
       - name: Upload coverage to Codecov
-        # see https://github.com/codecov/codecov-action/blob/master/README.md
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v5
         with:
           flags: unittests-${{ matrix.python-version }}
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true  # default = false
-          os: toxenv
           verbose: true  # default = false
