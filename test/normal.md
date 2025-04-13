@@ -12,8 +12,8 @@ text to separate lists
 
   1. now with numbers
   2. the prisoner
-    1. not an _italic number_
-    2. a **bold human** being
+     1. not an _italic number_
+     2. a **bold human** being
   3. end
 
 **bold**  
