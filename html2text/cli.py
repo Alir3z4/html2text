@@ -239,6 +239,13 @@ def main() -> None:
         help="Mark program code blocks with [code]...[/code]",
     )
     p.add_argument(
+        "--backquote-code-style",
+        action="store_true",
+        dest="backquote_code_style",
+        default=config.BACKQUOTE_CODE_STYLE,
+        help="Multi line code block using tri-backquote style",
+    )
+    p.add_argument(
         "--decode-errors",
         dest="decode_errors",
         default=config.DECODE_ERRORS,
@@ -318,6 +325,7 @@ def main() -> None:
     h.skip_internal_links = args.skip_internal_links
     h.links_each_paragraph = args.links_each_paragraph
     h.mark_code = args.mark_code
+    h.backquote_code_style = args.backquote_code_style
     h.wrap_links = args.wrap_links
     h.wrap_list_items = args.wrap_list_items
     h.wrap_tables = args.wrap_tables
