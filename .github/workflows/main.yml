@@ -34,7 +34,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.12'
+          python-version: '3.13'
 
       - name: Install Requirements [${{ matrix.toxenv }}]
         run: pip install tox
@@ -48,14 +48,12 @@ jobs:
     strategy:
       matrix:
         toxenv:
-          - py38
           - py39
           - py310
           - py311
           - py312
+          - py313
         include:
-          - toxenv: py38
-            python-version: '3.8'
           - toxenv: py39
             python-version: '3.9'
           - toxenv: py310
@@ -64,6 +62,8 @@ jobs:
             python-version: '3.11'
           - toxenv: py312
             python-version: '3.12'
+          - toxenv: py313
+            python-version: '3.13'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TOXENV: ${{ matrix.toxenv }}
