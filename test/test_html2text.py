@@ -117,6 +117,11 @@ def generate_testdata():
             cmdline_args.append("--mark-code")
             func_args = skip
 
+        if base_fn.startswith("backquote_code_style"):
+            module_args["backquote_code_style"] = True
+            cmdline_args.append("--backquote-code-style")
+            func_args = skip
+
         if base_fn.startswith("pad_table"):
             module_args["pad_tables"] = True
             cmdline_args.append("--pad-tables")
