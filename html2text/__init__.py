@@ -12,6 +12,7 @@ from . import config
 from ._typing import OutCallback
 from .elements import AnchorElement, ListElement
 from .utils import (
+    control_character_replacements,
     dumb_css_parser,
     element_style,
     escape_md,
@@ -78,6 +79,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.use_automatic_links = config.USE_AUTOMATIC_LINKS  # covered in cli
         self.hide_strikethrough = False  # covered in cli
         self.mark_code = config.MARK_CODE
+        self.backquote_code_style = config.BACKQUOTE_CODE_STYLE
         self.wrap_list_items = config.WRAP_LIST_ITEMS  # covered in cli
         self.wrap_links = config.WRAP_LINKS  # covered in cli
         self.wrap_tables = config.WRAP_TABLES
@@ -111,6 +113,8 @@ class HTML2Text(html.parser.HTMLParser):
         self.blockquote = 0
         self.pre = False
         self.startpre = False
+        self.pre_indent = ""
+        self.list_code_indent = ""
         self.code = False
         self.quote = False
         self.br_toggle = ""
@@ -629,6 +633,7 @@ class HTML2Text(html.parser.HTMLParser):
             self.lastWasList = False
 
         if tag == "li":
+            self.list_code_indent = ""
             self.pbr()
             if start:
                 if self.list:
@@ -644,15 +649,16 @@ class HTML2Text(html.parser.HTMLParser):
                     # TODO: line up <ol><li>s > 9 correctly.
                     parent_list = None
                     for list in self.list:
-                        self.o(
-                            "   " if parent_list == "ol" and list.name == "ul" else "  "
-                        )
+                        self.list_code_indent += "   " if parent_list == "ol" else "  "
                         parent_list = list.name
+                    self.o(self.list_code_indent)
 
                 if li.name == "ul":
+                    self.list_code_indent += "  "
                     self.o(self.ul_item_mark + " ")
                 elif li.name == "ol":
                     li.num += 1
+                    self.list_code_indent += "   "
                     self.o(str(li.num) + ". ")
                 self.start = True
 
@@ -715,8 +721,11 @@ class HTML2Text(html.parser.HTMLParser):
             if start:
                 self.startpre = True
                 self.pre = True
+                self.pre_indent = ""
             else:
                 self.pre = False
+                if self.backquote_code_style:
+                    self.out("\n" + self.pre_indent + "```")
                 if self.mark_code:
                     self.out("\n[/code]")
             self.p()
@@ -786,17 +795,23 @@ class HTML2Text(html.parser.HTMLParser):
                 bq += " "
 
             if self.pre:
-                if not self.list:
+                if self.list:
+                    bq += self.list_code_indent
+
+                if not self.backquote_code_style:
                     bq += "    "
-                # else: list content is already partially indented
-                bq += "    " * len(self.list)
+
                 data = data.replace("\n", "\n" + bq)
+                self.pre_indent = bq
 
             if self.startpre:
                 self.startpre = False
-                if self.list:
+                if self.backquote_code_style:
+                    self.out("\n" + self.pre_indent + "```")
+                    self.p_p = 0
+                elif self.list:
                     # use existing initial indentation
-                    data = data.lstrip("\n")
+                    data = data.lstrip("\n" + self.pre_indent)
 
             if self.start:
                 self.space = False
@@ -903,13 +918,14 @@ class HTML2Text(html.parser.HTMLParser):
         else:
             c = int(name)
 
+        if not 0 < c < 0x110000 or 0xD800 <= c < 0xE000:  # invalid or surrogate
+            c = 0xFFFD  # REPLACEMENT CHARACTER
+        c = control_character_replacements.get(c, c)
+
         if not self.unicode_snob and c in unifiable_n:
             return unifiable_n[c]
         else:
-            try:
-                return chr(c)
-            except ValueError:  # invalid unicode
-                return ""
+            return chr(c)
 
     def entityref(self, c: str) -> str:
         if not self.unicode_snob and c in config.UNIFIABLE:
@@ -952,8 +968,15 @@ class HTML2Text(html.parser.HTMLParser):
         # because of the presence of a link in it
         if not self.wrap_links:
             self.inline_links = False
+        start_code = False
         for para in text.split("\n"):
-            if len(para) > 0:
+            # If the text is between tri-backquote pairs, it's a code block;
+            # don't wrap
+            if self.backquote_code_style and para.lstrip().startswith("```"):
+                start_code = not start_code
+            if start_code:
+                result += para + "\n"
+            elif len(para) > 0:
                 if not skipwrap(
                     para, self.wrap_links, self.wrap_list_items, self.wrap_tables
                 ):
