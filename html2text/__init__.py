@@ -10,9 +10,10 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from . import config
 from ._version import __version_tuple__ as __version__
+from ._typing import OutCallback
 from .elements import AnchorElement, ListElement
-from .typing import OutCallback
 from .utils import (
+    control_character_replacements,
     dumb_css_parser,
     element_style,
     escape_md,
@@ -76,6 +77,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.use_automatic_links = config.USE_AUTOMATIC_LINKS  # covered in cli
         self.hide_strikethrough = False  # covered in cli
         self.mark_code = config.MARK_CODE
+        self.backquote_code_style = config.BACKQUOTE_CODE_STYLE
         self.wrap_list_items = config.WRAP_LIST_ITEMS  # covered in cli
         self.wrap_links = config.WRAP_LINKS  # covered in cli
         self.wrap_tables = config.WRAP_TABLES
@@ -84,6 +86,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.tag_callback = None
         self.open_quote = config.OPEN_QUOTE  # covered in cli
         self.close_quote = config.CLOSE_QUOTE  # covered in cli
+        self.include_sup_sub = config.INCLUDE_SUP_SUB  # covered in cli
 
         if out is None:
             self.out = self.outtextf
@@ -91,42 +94,42 @@ class HTML2Text(html.parser.HTMLParser):
             self.out = out
 
         # empty list to store output characters before they are "joined"
-        self.outtextlist = []  # type: List[str]
+        self.outtextlist: List[str] = []
 
         self.quiet = 0
         self.p_p = 0  # number of newline character to print before next output
         self.outcount = 0
         self.start = True
         self.space = False
-        self.a = []  # type: List[AnchorElement]
-        self.astack = []  # type: List[Optional[Dict[str, Optional[str]]]]
-        self.maybe_automatic_link = None  # type: Optional[str]
+        self.a: List[AnchorElement] = []
+        self.astack: List[Optional[Dict[str, Optional[str]]]] = []
+        self.maybe_automatic_link: Optional[str] = None
         self.empty_link = False
         self.absolute_url_matcher = re.compile(r"^[a-zA-Z+]+://")
         self.acount = 0
-        self.list = []  # type: List[ListElement]
+        self.list: List[ListElement] = []
         self.blockquote = 0
         self.pre = False
         self.startpre = False
+        self.pre_indent = ""
+        self.list_code_indent = ""
         self.code = False
         self.quote = False
         self.br_toggle = ""
         self.lastWasNL = False
         self.lastWasList = False
         self.style = 0
-        self.style_def = {}  # type: Dict[str, Dict[str, str]]
-        self.tag_stack = (
-            []
-        )  # type: List[Tuple[str, Dict[str, Optional[str]], Dict[str, str]]]
+        self.style_def: Dict[str, Dict[str, str]] = {}
+        self.tag_stack: List[Tuple[str, Dict[str, Optional[str]], Dict[str, str]]] = []
         self.emphasis = 0
         self.drop_white_space = 0
         self.inheader = False
         # Current abbreviation definition
-        self.abbr_title = None  # type: Optional[str]
+        self.abbr_title: Optional[str] = None
         # Last inner HTML (for abbr being defined)
-        self.abbr_data = None  # type: Optional[str]
+        self.abbr_data: Optional[str] = None
         # Stack of abbreviations to write later
-        self.abbr_list = {}  # type: Dict[str, str]
+        self.abbr_list: Dict[str, str] = {}
         self.baseurl = baseurl
         self.stressed = False
         self.preceding_stressed = False
@@ -140,6 +143,7 @@ class HTML2Text(html.parser.HTMLParser):
         super().feed(data)
 
     def handle(self, data: str) -> str:
+        self.start = True
         self.feed(data)
         self.feed("")
         markdown = self.optwrap(self.finish())
@@ -321,7 +325,7 @@ class HTML2Text(html.parser.HTMLParser):
             # need the attributes of the parent nodes in order to get a
             # complete style description for the current element. we assume
             # that google docs export well formed html.
-            parent_style = {}  # type: Dict[str, str]
+            parent_style: Dict[str, str] = {}
             if start:
                 if self.tag_stack:
                     parent_style = self.tag_stack[-1][2]
@@ -366,13 +370,13 @@ class HTML2Text(html.parser.HTMLParser):
                     self.soft_br()
             elif self.astack:
                 pass
+            elif self.split_next_td:
+                pass
             else:
                 self.p()
 
         if tag == "br" and start:
-            if self.astack:
-                self.space = True
-            elif self.blockquote > 0:
+            if self.blockquote > 0:
                 self.o("  \n> ")
             else:
                 self.o("  \n")
@@ -436,6 +440,10 @@ class HTML2Text(html.parser.HTMLParser):
             if (
                 start
                 and self.preceding_data
+                # When `self.strong_mark` is set to empty, the next condition
+                # will cause IndexError since it's trying to match the data
+                # with the first character of the `self.strong_mark`.
+                and len(self.strong_mark) > 0
                 and self.preceding_data[-1] == self.strong_mark[0]
             ):
                 strong = " " + self.strong_mark
@@ -536,8 +544,7 @@ class HTML2Text(html.parser.HTMLParser):
                             self.o("][" + str(a_props.count) + "]")
 
         if tag == "img" and start and not self.ignore_images:
-            if "src" in attrs:
-                assert attrs["src"] is not None
+            if "src" in attrs and attrs["src"] is not None:
                 if not self.images_to_alt:
                     attrs["href"] = attrs["src"]
                 alt = attrs.get("alt") or self.default_image_alt
@@ -548,11 +555,9 @@ class HTML2Text(html.parser.HTMLParser):
                     self.images_with_size and ("width" in attrs or "height" in attrs)
                 ):
                     self.o("<img src='" + attrs["src"] + "' ")
-                    if "width" in attrs:
-                        assert attrs["width"] is not None
+                    if "width" in attrs and attrs["width"] is not None:
                         self.o("width='" + attrs["width"] + "' ")
-                    if "height" in attrs:
-                        assert attrs["height"] is not None
+                    if "height" in attrs and attrs["height"] is not None:
                         self.o("height='" + attrs["height"] + "' ")
                     if alt:
                         self.o("alt='" + alt + "' ")
@@ -626,6 +631,7 @@ class HTML2Text(html.parser.HTMLParser):
             self.lastWasList = False
 
         if tag == "li":
+            self.list_code_indent = ""
             self.pbr()
             if start:
                 if self.list:
@@ -641,15 +647,16 @@ class HTML2Text(html.parser.HTMLParser):
                     # TODO: line up <ol><li>s > 9 correctly.
                     parent_list = None
                     for list in self.list:
-                        self.o(
-                            "   " if parent_list == "ol" and list.name == "ul" else "  "
-                        )
+                        self.list_code_indent += "   " if parent_list == "ol" else "  "
                         parent_list = list.name
+                    self.o(self.list_code_indent)
 
                 if li.name == "ul":
+                    self.list_code_indent += "  "
                     self.o(self.ul_item_mark + " ")
                 elif li.name == "ol":
                     li.num += 1
+                    self.list_code_indent += "   "
                     self.o(str(li.num) + ". ")
                 self.start = True
 
@@ -712,11 +719,20 @@ class HTML2Text(html.parser.HTMLParser):
             if start:
                 self.startpre = True
                 self.pre = True
+                self.pre_indent = ""
             else:
                 self.pre = False
+                if self.backquote_code_style:
+                    self.out("\n" + self.pre_indent + "```")
                 if self.mark_code:
                     self.out("\n[/code]")
             self.p()
+
+        if tag in ["sup", "sub"] and self.include_sup_sub:
+            if start:
+                self.o("<{}>".format(tag))
+            else:
+                self.o("</{}>".format(tag))
 
     # TODO: Add docstring for these one letter functions
     def pbr(self) -> None:
@@ -777,17 +793,23 @@ class HTML2Text(html.parser.HTMLParser):
                 bq += " "
 
             if self.pre:
-                if not self.list:
+                if self.list:
+                    bq += self.list_code_indent
+
+                if not self.backquote_code_style:
                     bq += "    "
-                # else: list content is already partially indented
-                bq += "    " * len(self.list)
+
                 data = data.replace("\n", "\n" + bq)
+                self.pre_indent = bq
 
             if self.startpre:
                 self.startpre = False
-                if self.list:
+                if self.backquote_code_style:
+                    self.out("\n" + self.pre_indent + "```")
+                    self.p_p = 0
+                elif self.list:
                     # use existing initial indentation
-                    data = data.lstrip("\n")
+                    data = data.lstrip("\n" + self.pre_indent)
 
             if self.start:
                 self.space = False
@@ -825,8 +847,7 @@ class HTML2Text(html.parser.HTMLParser):
                             + "]: "
                             + urlparse.urljoin(self.baseurl, link.attrs["href"])
                         )
-                        if "title" in link.attrs:
-                            assert link.attrs["title"] is not None
+                        if "title" in link.attrs and link.attrs["title"] is not None:
                             self.out(" (" + link.attrs["title"] + ")")
                         self.out("\n")
                     else:
@@ -895,13 +916,14 @@ class HTML2Text(html.parser.HTMLParser):
         else:
             c = int(name)
 
+        if not 0 < c < 0x110000 or 0xD800 <= c < 0xE000:  # invalid or surrogate
+            c = 0xFFFD  # REPLACEMENT CHARACTER
+        c = control_character_replacements.get(c, c)
+
         if not self.unicode_snob and c in unifiable_n:
             return unifiable_n[c]
         else:
-            try:
-                return chr(c)
-            except ValueError:  # invalid unicode
-                return ""
+            return chr(c)
 
     def entityref(self, c: str) -> str:
         if not self.unicode_snob and c in config.UNIFIABLE:
@@ -944,8 +966,15 @@ class HTML2Text(html.parser.HTMLParser):
         # because of the presence of a link in it
         if not self.wrap_links:
             self.inline_links = False
+        start_code = False
         for para in text.split("\n"):
-            if len(para) > 0:
+            # If the text is between tri-backquote pairs, it's a code block;
+            # don't wrap
+            if self.backquote_code_style and para.lstrip().startswith("```"):
+                start_code = not start_code
+            if start_code:
+                result += para + "\n"
+            elif len(para) > 0:
                 if not skipwrap(
                     para, self.wrap_links, self.wrap_list_items, self.wrap_tables
                 ):

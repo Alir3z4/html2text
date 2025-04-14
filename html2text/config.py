@@ -48,6 +48,7 @@ IMAGES_TO_ALT = False
 IMAGES_WITH_SIZE = False
 IGNORE_EMPHASIS = False
 MARK_CODE = False
+BACKQUOTE_CODE_STYLE = False
 DECODE_ERRORS = "strict"
 DEFAULT_IMAGE_ALT = ""
 PAD_TABLES = False
@@ -163,3 +164,6 @@ SINGLE_LINE_BREAK = False
 # Use double quotation marks when converting the <q> tag.
 OPEN_QUOTE = '"'
 CLOSE_QUOTE = '"'
+
+# Include the <sup> and <sub> tags
+INCLUDE_SUP_SUB = False

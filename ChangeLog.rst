@@ -1,5 +1,12 @@
-UNRELEASED
-==========
+2024.2.26
+=========
+----
+
+* Fixes #409: IndexError on empty strong mark.
+
+
+2024.2.25
+=========
 ----
 
 * Fix #332: Insert at most one space for multiple emphasis
@@ -8,9 +15,17 @@ UNRELEASED
 * Fix extra line breaks inside html link text (between '[' and ']')
 * Fix #344: indent ``<ul>`` inside ``<ol>`` three spaces instead of two to comply with CommonMark, GFM, etc.
 * Fix #324: unnecessary spaces around ``<b>``, ``<em>``, and ``strike`` tags.
+* Don't wrap tables by default and add a ``--wrap-tables`` config option.
+* Feature #198: Ignore ``<p>`` tags inside table rows.
 * Don't wrap tables by default and add a ``--wrap-tables`` config option
-* Fix #320 padding empty tables and tables with no </tr> tags.
+* Remove support for Python ≤ 3.5. Now requires Python 3.6+.
+* Support for Python 3.10+.
+* Fix #320 padding empty tables and tables with no ``</tr>`` tags.
 * Add ``ignore_mailto_links`` config option to ignore ``mailto:`` style links.
+* Feature #407: Support the superscript and subscript tags.
+* Fix #373: ``\n`` inside text of a Markdown link.
+* Feature #406: Improve support for null atttibute values.
+
 
 
 2020.1.16
