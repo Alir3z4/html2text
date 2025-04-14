@@ -9,8 +9,8 @@ from textwrap import wrap
 from typing import Dict, List, Optional, Tuple, Union
 
 from . import config
-from ._version import __version_tuple__ as __version__
 from ._typing import OutCallback
+from ._version import __version_tuple__
 from .elements import AnchorElement, ListElement
 from .utils import (
     control_character_replacements,
@@ -28,6 +28,8 @@ from .utils import (
     skipwrap,
     unifiable_n,
 )
+
+__version__ = __version_tuple__
 
 # TODO:
 # Support decoded entities with UNIFIABLE.

@@ -1,7 +1,8 @@
 import argparse
 import sys
 
-from . import HTML2Text, __version__, config
+from . import HTML2Text, config
+from ._version import __version_tuple__ as __version__
 
 
 def main() -> None:

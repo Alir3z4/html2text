@@ -62,20 +62,40 @@ Hello, [world](https://www.google.com/earth/)!
 `html2text` is available on pypi
 https://pypi.org/project/html2text/
 
-```
+```shell
 $ pip install html2text
 ```
 
+##  Development
 
-## How to run unit tests
+### How to run unit tests
 
-    tox
+```shell
+$ tox
+```
 
 To see the coverage results:
 
-    coverage html
+```shell
+$ coverage html
+```
 
 then open the `./htmlcov/index.html` file in your browser.
+
+
+### Code Quality & Pre Commit
+
+The CI runs several linting steps, including:
+
+- mypy
+- Flake8
+- Black
+
+To make sure the code passes the CI linting steps, run:
+
+```shell
+$ tox -e pre-commit
+```
 
 ## Documentation
 
