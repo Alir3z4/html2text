@@ -10,6 +10,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from . import config
 from ._typing import OutCallback
+from ._version import __version_tuple__
 from .elements import AnchorElement, ListElement
 from .utils import (
     control_character_replacements,
@@ -28,8 +29,7 @@ from .utils import (
     unifiable_n,
 )
 
-__version__ = (2024, 2, 26)
-
+__version__ = __version_tuple__
 
 # TODO:
 # Support decoded entities with UNIFIABLE.

@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=61.2", "setuptools_scm[toml]>=3.4.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "html2text"
+description = "Turn HTML into equivalent Markdown-structured text."
+readme = "README.md"
+authors = [{name = "Aaron Swartz", email = "me@aaronsw.com"}]
+maintainers = [{name = "Alireza Savand", email = "alireza.savand@gmail.com"}]
+license = "GPL-3.0-or-later"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+urls = {Homepage = "https://github.com/Alir3z4/html2text/"}
+requires-python = ">=3.9"
+dynamic = ["version"]
+
+[project.scripts]
+html2text = "html2text.cli:main"
+
+[tool.setuptools]
+zip-safe = false
+packages = ["html2text"]
+platforms = ["OS Independent"]
+include-package-data = false
+
+[tool.setuptools.package-data]
+html2text = ["py.typed"]
+
+[tool.setuptools_scm]
+write_to = "html2text/_version.py"
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
+extend-exclude = '''
+/(
+  html2text/_version.py
+)
+'''
+
+[tool.flake8]  # you will need Flake8-pyproject
+max_line_length = "88"
+extend-ignore = "E203"
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+extend_skip = ["html2text/_version.py"]
+
+[tool.mypy]
+python_version = "3.9"
