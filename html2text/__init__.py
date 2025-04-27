@@ -133,7 +133,8 @@ class HTML2Text(html.parser.HTMLParser):
         # Stack of abbreviations to write later
         self.abbr_list: Dict[str, str] = {}
         self.baseurl = baseurl
-        self.stressed = False
+        self.start_stressed = False
+        self.within_stressed_cnt = 0
         self.preceding_stressed = False
         self.preceding_data = ""
         self.current_tag = ""
@@ -413,6 +414,16 @@ class HTML2Text(html.parser.HTMLParser):
                 self.blockquote -= 1
                 self.p()
 
+        def enter_stressed():
+            if start:
+                self.start_stressed = True
+                self.within_stressed_cnt += 1
+            else:
+                self.within_stressed_cnt -= 1
+                self.start_stressed = False
+                self.preceding_stressed = True
+
+
         if tag in ["em", "i", "u"] and not self.ignore_emphasis:
             # Separate with a space if we immediately follow an alphanumeric
             # character, since otherwise Markdown won't render the emphasis
@@ -431,8 +442,7 @@ class HTML2Text(html.parser.HTMLParser):
                 emphasis = self.emphasis_mark
 
             self.o(emphasis)
-            if start:
-                self.stressed = True
+            enter_stressed()
 
         if tag in ["strong", "b"] and not self.ignore_emphasis:
             # Separate with space if we immediately follow an * character, since
@@ -454,8 +464,7 @@ class HTML2Text(html.parser.HTMLParser):
                 strong = self.strong_mark
 
             self.o(strong)
-            if start:
-                self.stressed = True
+            enter_stressed()
 
         if tag in ["del", "strike", "s"]:
             if start and self.preceding_data and self.preceding_data[-1] == "~":
@@ -465,8 +474,7 @@ class HTML2Text(html.parser.HTMLParser):
                 strike = "~~"
 
             self.o(strike)
-            if start:
-                self.stressed = True
+            enter_stressed()
 
         if self.google_doc:
             if not self.inheader:
@@ -875,10 +883,15 @@ class HTML2Text(html.parser.HTMLParser):
             # LEFT-TO-RIGHT MARK.
             return
 
-        if self.stressed:
-            data = data.strip()
-            self.stressed = False
-            self.preceding_stressed = True
+        stripped_data = data.strip()
+        if self.start_stressed:
+            data = stripped_data
+            self.start_stressed = False
+        elif self.within_stressed_cnt:
+            if stripped_data:
+                data = " " + stripped_data
+            else:
+                data = stripped_data
         elif self.preceding_stressed:
             if (
                 re.match(r"[^][(){}\s.!?]", data[0])
