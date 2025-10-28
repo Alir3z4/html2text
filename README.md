@@ -40,7 +40,7 @@ Or with some configuration options:
 >>> h = html2text.HTML2Text()
 >>> # Ignore converting links from HTML
 >>> h.ignore_links = True
->>> print h.handle("<p>Hello, <a href='https://www.google.com/earth/'>world</a>!")
+>>> print(h.handle("<p>Hello, <a href='https://www.google.com/earth/'>world</a>!"))
 Hello, world!
 
 >>> print(h.handle("<p>Hello, <a href='https://www.google.com/earth/'>world</a>!"))
