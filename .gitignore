@@ -1,3 +1,5 @@
+/html2text/_version.py
+
 *.py[co]
 *.bak
 build

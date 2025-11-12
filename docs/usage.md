@@ -21,9 +21,9 @@ $ pip install html2text
 Clone the repository from https://github.com/Alir3z4/html2text
 
 ```
-$ git clone --depth 1 https://github.com/Alir3z4/html2text.git
-$ python setup.py build
-$ python setup.py install
+$ git clone --depth 50 https://github.com/Alir3z4/html2text.git
+$ python -m build -nwx
+$ python -m pip install --upgrade ./dist/*.whl
 ```
 
 
@@ -136,7 +136,7 @@ Command line options
 | `--single-line-break`                                  | Use a single line break after a block element rather than two.
 | `--reference-links`                                    | Use reference links instead of inline links to create markdown
 | `--ignore-emphasis`                                    | Ignore all emphasis formatting in the html.
-| `--include-sup-sub`                                    | Include `<sub>` and `<sub>` tags.
+| `--include-sup-sub`                                    | Include `<sub>` and `<sup>` tags.
 | `-e`, `--asterisk-emphasis`                            | Use asterisk rather than underscore to emphasize text
 | `--unicode-snob`                                       | Use unicode throughout instead of ASCII
 | `--no-automatic-links`                                 | Do not use automatic links like <https://www.google.com/>

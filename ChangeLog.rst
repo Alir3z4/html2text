@@ -1,3 +1,12 @@
+2025.4.15
+=========
+----
+
+* Fix #418: Publishing wheels to PyPI.
+* Feature #386: Support tri-backquote style code block and fix ordered list indent.
+* Fix #310: Fix invalid character reference parsing.
+* #436 & #396: Modernization of wheel building process.
+
 2024.2.26
 =========
 ----

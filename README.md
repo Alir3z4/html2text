@@ -40,7 +40,7 @@ Or with some configuration options:
 >>> h = html2text.HTML2Text()
 >>> # Ignore converting links from HTML
 >>> h.ignore_links = True
->>> print h.handle("<p>Hello, <a href='https://www.google.com/earth/'>world</a>!")
+>>> print(h.handle("<p>Hello, <a href='https://www.google.com/earth/'>world</a>!"))
 Hello, world!
 
 >>> print(h.handle("<p>Hello, <a href='https://www.google.com/earth/'>world</a>!"))
@@ -62,20 +62,40 @@ Hello, [world](https://www.google.com/earth/)!
 `html2text` is available on pypi
 https://pypi.org/project/html2text/
 
-```
+```shell
 $ pip install html2text
 ```
 
+##  Development
 
-## How to run unit tests
+### How to run unit tests
 
-    tox
+```shell
+$ tox
+```
 
 To see the coverage results:
 
-    coverage html
+```shell
+$ coverage html
+```
 
 then open the `./htmlcov/index.html` file in your browser.
+
+
+### Code Quality & Pre Commit
+
+The CI runs several linting steps, including:
+
+- mypy
+- Flake8
+- Black
+
+To make sure the code passes the CI linting steps, run:
+
+```shell
+$ tox -e pre-commit
+```
 
 ## Documentation
 
