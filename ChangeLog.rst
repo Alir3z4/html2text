@@ -1,3 +1,9 @@
+Unreleased
+==========
+----
+
+* Fix #405: Don't insert a spurious space between a closing emphasis marker and following punctuation.
+
 2025.4.15
 =========
 ----

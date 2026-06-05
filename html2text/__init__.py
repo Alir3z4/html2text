@@ -881,11 +881,15 @@ class HTML2Text(html.parser.HTMLParser):
             self.preceding_stressed = True
         elif self.preceding_stressed:
             if (
-                re.match(r"[^][(){}\s.!?]", data[0])
+                re.match(r"\w", data[0])
                 and not hn(self.current_tag)
                 and self.current_tag not in ["a", "code", "pre"]
             ):
-                # should match a letter or common punctuation
+                # A following word character (letter, digit or underscore)
+                # attaches to the closing emphasis marker and stops Markdown
+                # from recognising it, so the separating space is needed only
+                # before word characters -- not before punctuation, which
+                # previously received a spurious space.
                 data = " " + data
             self.preceding_stressed = False
 
