@@ -104,8 +104,7 @@ RE_MD_BACKSLASH_MATCHER = re.compile(
     r"""
     (\\)          # match one slash
     (?=[%s])      # followed by a char that requires escaping
-    """
-    % re.escape(RE_SLASH_CHARS),
+    """ % re.escape(RE_SLASH_CHARS),
     flags=re.VERBOSE,
 )
 
