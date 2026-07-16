@@ -256,6 +256,11 @@ def reformat_table(lines: List[str], right_margin: int) -> List[str]:
     Given the lines of a table
     padds the cells and returns the new lines
     """
+    # A nested table emits two adjacent pad markers with no buffered rows
+    # between them, so the caller can hand us an empty list. There is nothing
+    # to pad in that case, and indexing lines[0] below would raise IndexError.
+    if not lines:
+        return []
     # find the maximum width of the columns
     max_width = [len(x.rstrip()) + right_margin for x in lines[0].split("|")]
     max_cols = len(max_width)

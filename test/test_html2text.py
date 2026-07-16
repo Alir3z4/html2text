@@ -254,3 +254,19 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+
+def test_reformat_table_empty_returns_empty() -> None:
+    """An empty table buffer has nothing to pad and must not raise."""
+    from html2text.utils import reformat_table
+
+    assert reformat_table([], right_margin=1) == []
+
+
+def test_pad_tables_nested_empty_table() -> None:
+    """A nested table produces two adjacent pad markers with no rows between
+    them; padding must not raise IndexError on the resulting empty buffer."""
+    h = html2text.HTML2Text()
+    h.pad_tables = True
+    # Nested tables are common in real-world (e.g. email) HTML.
+    assert h.handle("<table><table></table></table>") == "\n  \n|  |\n\n\n"
