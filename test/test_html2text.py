@@ -254,3 +254,22 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+
+def test_google_doc_non_px_margin_left() -> None:
+    """google_doc mode must tolerate non-px margin-left instead of ValueError."""
+    h = html2text.HTML2Text()
+    h.google_doc = True
+    h.body_width = 0
+    assert h.handle('<ul style="margin-left:5"><li>x</li></ul>') == "1. x\n"
+    assert h.handle('<ul style="margin-left:auto"><li>y</li></ul>') == "1. y\n"
+    assert h.handle('<ul style="margin-left:36px"><li>z</li></ul>') == "  1. z\n"
+
+
+def test_google_nest_count_non_px() -> None:
+    h = html2text.HTML2Text()
+    h.google_doc = True
+    assert h.google_nest_count({"margin-left": "5"}) == 0
+    assert h.google_nest_count({"margin-left": "auto"}) == 0
+    assert h.google_nest_count({"margin-left": ""}) == 0
+    assert h.google_nest_count({"margin-left": "36px"}) == 36 // h.google_list_indent
