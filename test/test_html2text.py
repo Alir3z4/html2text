@@ -254,3 +254,14 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+
+def test_pad_tables_empty_table() -> None:
+    """An empty table block should not crash table padding."""
+    from html2text import config
+    from html2text.utils import pad_tables_in_text
+
+    # Two consecutive markers leave the table buffer empty, which used to
+    # raise IndexError on lines[0].
+    marker = config.TABLE_MARKER_FOR_PAD
+    pad_tables_in_text(f"{marker}\n{marker}\n")
