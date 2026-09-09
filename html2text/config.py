@@ -62,6 +62,7 @@ RE_SPACE = re.compile(r"\s\+")
 
 RE_ORDERED_LIST_MATCHER = re.compile(r"\d+\.\s")
 RE_UNORDERED_LIST_MATCHER = re.compile(r"[-\*\+]\s")
+RE_MD_HEADING_MATCHER = re.compile(r"(?:>[ \t]*)*#{1,6}[ \t]")
 RE_MD_CHARS_MATCHER = re.compile(r"([\\\[\]\(\)])")
 RE_MD_CHARS_MATCHER_ALL = re.compile(r"([`\*_{}\[\]\(\)#!])")
 
@@ -104,8 +105,7 @@ RE_MD_BACKSLASH_MATCHER = re.compile(
     r"""
     (\\)          # match one slash
     (?=[%s])      # followed by a char that requires escaping
-    """
-    % re.escape(RE_SLASH_CHARS),
+    """ % re.escape(RE_SLASH_CHARS),
     flags=re.VERBOSE,
 )
 

@@ -254,3 +254,37 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+
+@pytest.mark.parametrize("level", range(1, 7))
+@pytest.mark.parametrize("depth", [0, 1, 2])
+@pytest.mark.parametrize("body_width", [12, 0])
+def test_heading_is_not_wrapped(level, depth, body_width):
+    heading = "A long heading with several words that must stay together"
+    source = (
+        "<blockquote>" * depth
+        + f"<h{level}>{heading}</h{level}>"
+        + "</blockquote>" * depth
+    )
+    expected = "> " * depth + "#" * level + " " + heading
+    assert html2text.HTML2Text(bodywidth=body_width).handle(source).strip() == expected
+
+
+@pytest.mark.parametrize("prefix", ["", "#hashtag ", "####### "])
+def test_non_heading_paragraph_still_wraps(prefix):
+    text = prefix + "Some ordinary paragraph words that should still wrap."
+    result = html2text.html2text(f"<p>{text}</p>", bodywidth=20).strip()
+    assert "\n" in result
+    assert " ".join(result.splitlines()) == text
+    assert all(len(line) <= 20 for line in result.splitlines())
+
+
+@pytest.mark.parametrize("prefix", ["#&nbsp;", "&gt;&nbsp;# ", "&nbsp;# "])
+def test_non_ascii_heading_whitespace_still_wraps(prefix):
+    h = html2text.HTML2Text(bodywidth=20)
+    h.unicode_snob = True
+    result = h.handle(
+        "<p>" + prefix + "Several ordinary words that should still wrap.</p>"
+    ).strip()
+    assert "\n" in result
+    assert all(len(line) <= 20 for line in result.splitlines())

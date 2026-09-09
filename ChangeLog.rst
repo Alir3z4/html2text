@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #424: Keep long headings on one line, including headings in blockquotes.
+
 2025.4.15
 =========
 ----

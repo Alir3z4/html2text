@@ -202,6 +202,10 @@ def skipwrap(
     if para[0:4] == "    " or para[0] == "\t":
         return True
 
+    # ATX headings, including quoted headings, must stay on a single line.
+    if config.RE_MD_HEADING_MATCHER.match(para.lstrip(" \t")):
+        return True
+
     # If the text begins with only two "--", possibly preceded by
     # whitespace, that's an emdash; so wrap.
     stripped = para.lstrip()
