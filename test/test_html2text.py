@@ -254,3 +254,31 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+
+def test_automatic_link_with_ampersand_entity() -> None:
+    """Entity callbacks must not make an equal link label look different."""
+    html = '<a href="https://foo/?x=1&amp;y=2">https://foo/?x=1&amp;y=2</a>'
+    assert html2text.html2text(html) == "<https://foo/?x=1&y=2>\n\n"
+
+
+def test_automatic_link_keeps_regular_links_when_label_differs() -> None:
+    html = '<a href="https://foo/?x=1&amp;y=2">https://foo/?x=1&amp;y=3</a>'
+    assert html2text.html2text(html) == (
+        "[https://foo/?x=1&y=3](https://foo/?x=1&y=2)\n\n"
+    )
+
+
+def test_automatic_link_compares_before_markdown_escaping() -> None:
+    h = html2text.HTML2Text()
+    h.escape_snob = True
+    html = '<a href="https://foo/a_b">https://foo/a_b</a>'
+    assert h.handle(html) == "<https://foo/a_b>\n\n"
+
+
+def test_automatic_link_handles_streamed_entity_callbacks() -> None:
+    h = html2text.HTML2Text()
+    h.feed('<a href="https://foo/?x=1&amp;')
+    h.feed('y=2">https://foo/?x=1&amp;')
+    h.feed("y=2</a>")
+    assert h.finish() == "<https://foo/?x=1&y=2>\n"

@@ -106,6 +106,8 @@ class HTML2Text(html.parser.HTMLParser):
         self.a: List[AnchorElement] = []
         self.astack: List[Optional[Dict[str, Optional[str]]]] = []
         self.maybe_automatic_link: Optional[str] = None
+        self.maybe_automatic_link_text: List[Tuple[str, bool]] = []
+        self.automatic_link_emitted = False
         self.empty_link = False
         self.absolute_url_matcher = re.compile(r"^[a-zA-Z+]+://")
         self.acount = 0
@@ -162,6 +164,11 @@ class HTML2Text(html.parser.HTMLParser):
     def finish(self) -> str:
         self.close()
 
+        # HTMLParser does not synthesize an end tag for an unclosed anchor.
+        # Close a pending auto-link so buffered text is not lost.
+        if self.should_buffer_maybe_automatic_link():
+            self.handle_tag("a", {}, start=False)
+
         self.pbr()
         self.o("", force="end")
 
@@ -199,6 +206,51 @@ class HTML2Text(html.parser.HTMLParser):
 
     def handle_endtag(self, tag: str) -> None:
         self.handle_tag(tag, {}, start=False)
+
+    def should_buffer_maybe_automatic_link(self) -> bool:
+        return bool(
+            self.maybe_automatic_link
+            and self.use_automatic_links
+            and self.absolute_url_matcher.match(self.maybe_automatic_link)
+            and "&" in self.maybe_automatic_link
+        )
+
+    def flush_maybe_automatic_link(self) -> None:
+        """Start a regular link and replay text buffered for auto-link detection."""
+        if self.maybe_automatic_link is None:
+            return
+
+        self.o("[")
+        for data, entity_char in self.maybe_automatic_link_text:
+            if not self.code and not self.pre and not entity_char:
+                data = escape_md_section(data, snob=self.escape_snob)
+            self.o(data, puredata=True)
+        self.maybe_automatic_link = None
+        self.maybe_automatic_link_text = []
+        self.automatic_link_emitted = False
+        self.empty_link = False
+
+    def finish_maybe_automatic_link(self) -> bool:
+        """Emit an automatic link if its complete label matches its href."""
+        if self.maybe_automatic_link is None:
+            return False
+
+        href = self.maybe_automatic_link
+        label = "".join(data for data, _ in self.maybe_automatic_link_text)
+        if (
+            label == href
+            and self.absolute_url_matcher.match(href)
+            and self.use_automatic_links
+        ):
+            self.o("<" + href + ">")
+            self.maybe_automatic_link = None
+            self.maybe_automatic_link_text = []
+            self.automatic_link_emitted = True
+            self.empty_link = False
+            return True
+
+        self.flush_maybe_automatic_link()
+        return False
 
     def previousIndex(self, attrs: Dict[str, Optional[str]]) -> Optional[int]:
         """
@@ -318,9 +370,13 @@ class HTML2Text(html.parser.HTMLParser):
             and tag not in ["p", "div", "style", "dl", "dt"]
             and (tag != "img" or self.ignore_images)
         ):
-            self.o("[")
-            self.maybe_automatic_link = None
-            self.empty_link = False
+            if self.should_buffer_maybe_automatic_link():
+                self.flush_maybe_automatic_link()
+            else:
+                self.o("[")
+                self.maybe_automatic_link = None
+                self.automatic_link_emitted = False
+                self.empty_link = False
 
         if self.google_doc:
             # the attrs parameter is empty for a closing tag. in addition, we
@@ -514,6 +570,8 @@ class HTML2Text(html.parser.HTMLParser):
                 ):
                     self.astack.append(attrs)
                     self.maybe_automatic_link = attrs["href"]
+                    self.maybe_automatic_link_text = []
+                    self.automatic_link_emitted = False
                     self.empty_link = True
                     if self.protect_links:
                         attrs["href"] = "<" + attrs["href"] + ">"
@@ -522,7 +580,18 @@ class HTML2Text(html.parser.HTMLParser):
             else:
                 if self.astack:
                     a = self.astack.pop()
-                    if self.maybe_automatic_link and not self.empty_link:
+                    automatic_link = self.automatic_link_emitted
+                    if (
+                        self.should_buffer_maybe_automatic_link()
+                        and not self.empty_link
+                    ):
+                        if automatic_link:
+                            self.maybe_automatic_link = None
+                        else:
+                            automatic_link = self.finish_maybe_automatic_link()
+                    if automatic_link:
+                        pass
+                    elif self.maybe_automatic_link and not self.empty_link:
                         self.maybe_automatic_link = None
                     elif a:
                         assert a["href"] is not None
@@ -544,6 +613,7 @@ class HTML2Text(html.parser.HTMLParser):
                                 a_props = AnchorElement(a, self.acount, self.outcount)
                                 self.a.append(a_props)
                             self.o("][" + str(a_props.count) + "]")
+                    self.automatic_link_emitted = False
 
         if tag == "img" and start and not self.ignore_images:
             if "src" in attrs and attrs["src"] is not None:
@@ -567,20 +637,33 @@ class HTML2Text(html.parser.HTMLParser):
                     return
 
                 # If we have a link to create, output the start
+                if (
+                    self.maybe_automatic_link is not None
+                    and self.automatic_link_emitted
+                ):
+                    self.o("[")
+                    self.maybe_automatic_link = None
+                    self.automatic_link_emitted = False
+                    self.empty_link = False
                 if self.maybe_automatic_link is not None:
-                    href = self.maybe_automatic_link
-                    if (
-                        self.images_to_alt
-                        and escape_md(alt) == href
-                        and self.absolute_url_matcher.match(href)
-                    ):
-                        self.o("<" + escape_md(alt) + ">")
-                        self.empty_link = False
-                        return
+                    if self.maybe_automatic_link_text:
+                        self.flush_maybe_automatic_link()
                     else:
-                        self.o("[")
-                        self.maybe_automatic_link = None
-                        self.empty_link = False
+                        href = self.maybe_automatic_link
+                        if (
+                            self.images_to_alt
+                            and escape_md(alt) == href
+                            and self.absolute_url_matcher.match(href)
+                        ):
+                            self.o("<" + escape_md(alt) + ">")
+                            self.empty_link = False
+                            self.automatic_link_emitted = True
+                            return
+                        else:
+                            self.o("[")
+                            self.maybe_automatic_link = None
+                            self.automatic_link_emitted = False
+                            self.empty_link = False
 
                 # If we have images_to_alt, we discard the image itself,
                 # considering only the alt text.
@@ -892,20 +975,39 @@ class HTML2Text(html.parser.HTMLParser):
         if self.style:
             self.style_def.update(dumb_css_parser(data))
 
+        if self.maybe_automatic_link is not None and self.automatic_link_emitted:
+            self.o("[")
+            self.maybe_automatic_link = None
+            self.automatic_link_emitted = False
+            self.empty_link = False
+
         if self.maybe_automatic_link is not None:
-            href = self.maybe_automatic_link
-            if (
-                href == data
-                and self.absolute_url_matcher.match(href)
-                and self.use_automatic_links
-            ):
-                self.o("<" + data + ">")
-                self.empty_link = False
-                return
+            if self.should_buffer_maybe_automatic_link():
+                if data.strip():
+                    self.maybe_automatic_link_text.append((data, entity_char))
+                    self.empty_link = False
+                    self.preceding_data = (
+                        escape_md_section(data, snob=self.escape_snob)
+                        if not self.code and not self.pre and not entity_char
+                        else data
+                    )
+                    return
+                self.flush_maybe_automatic_link()
             else:
-                self.o("[")
-                self.maybe_automatic_link = None
-                self.empty_link = False
+                href = self.maybe_automatic_link
+                if (
+                    href == data
+                    and self.absolute_url_matcher.match(href)
+                    and self.use_automatic_links
+                ):
+                    self.o("<" + data + ">")
+                    self.empty_link = False
+                    return
+                else:
+                    self.o("[")
+                    self.maybe_automatic_link = None
+                    self.automatic_link_emitted = False
+                    self.empty_link = False
 
         if not self.code and not self.pre and not entity_char:
             data = escape_md_section(data, snob=self.escape_snob)

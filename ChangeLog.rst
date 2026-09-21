@@ -2,6 +2,7 @@
 =========
 ----
 
+* Fix #441: Preserve automatic links when HTML entities split link text.
 * Fix #418: Publishing wheels to PyPI.
 * Feature #386: Support tri-backquote style code block and fix ordered list indent.
 * Fix #310: Fix invalid character reference parsing.
