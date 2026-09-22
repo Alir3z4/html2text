@@ -111,6 +111,43 @@ To alter any option the procedure is to create a parser with
 example: `parser.unicode_snob = True` to set the UNICODE_SNOB option.
 
 
+Custom tag handling
+-------------------
+
+Assign a callable to an `HTML2Text` instance's `tag_callback` attribute to
+customize tag handling. It is called as `callback(converter, tag, attrs, start)`:
+
+- `converter` is the `HTML2Text` instance.
+- `tag` is the tag name, such as `"b"` or `"a"`.
+- `attrs` is a dictionary of attributes (values may be `None`); it is empty
+  for closing tags.
+- `start` is `True` for an opening tag and `False` for a closing tag.
+
+Return exactly `True` to skip the converter's default handling of that tag.
+Returning `False` or `None` allows normal handling to continue. Skipping a tag
+does not skip its text or child tags, which are processed separately.
+
+For example, omit bold formatting while retaining the enclosed text and other
+formatting:
+
+```python
+import html2text
+
+
+def skip_bold(converter, tag, attrs, start):
+    return tag in ("b", "strong")
+
+
+converter = html2text.HTML2Text()
+converter.tag_callback = skip_bold
+text = converter.handle("<b>Bold</b> and <i>italic</i>.")
+assert text == "Bold and _italic_.\n\n"
+```
+
+The callback handles both opening and closing bold tags. Set `tag_callback`
+back to `None` to restore default tag handling.
+
+
 Command line options
 --------------------
 
