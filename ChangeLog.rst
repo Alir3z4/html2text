@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Document the ``tag_callback`` hook and its return value (#432).
+
 2025.4.15
 =========
 ----
