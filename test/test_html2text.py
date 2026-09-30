@@ -254,3 +254,16 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+
+@pytest.mark.parametrize(
+    "protect_links,expected",
+    [
+        (False, "alpha-\nbeta-gamma\n\n"),
+        (True, "alpha-beta-gamma\n\n"),
+    ],
+)
+def test_hyphen_wrapping_with_protect_links(protect_links, expected):
+    h = html2text.HTML2Text(bodywidth=10)
+    h.protect_links = protect_links
+    assert h.handle("alpha-beta-gamma") == expected

@@ -1,3 +1,10 @@
+Unreleased
+==========
+----
+
+* Fix #425: Keep protected URLs intact during wrapping, including at hyphens.
+  With ``protect_links`` enabled, hyphenated words are also kept together.
+
 2025.4.15
 =========
 ----
