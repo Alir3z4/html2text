@@ -914,9 +914,15 @@ class HTML2Text(html.parser.HTMLParser):
 
     def charref(self, name: str) -> str:
         if name[0] in ["x", "X"]:
-            c = int(name[1:], 16)
+            digits, base = name[1:], 16
         else:
-            c = int(name)
+            digits, base = name, 10
+
+        # Unicode code points need at most seven decimal (six hex) digits.
+        # Bound conversion before int() reaches Python's decimal digit limit,
+        # but keep valid references with arbitrarily many leading zeros.
+        digits = digits.lstrip("0") or "0"
+        c = int(digits, base) if len(digits) <= 7 else 0xFFFD
 
         if not 0 < c < 0x110000 or 0xD800 <= c < 0xE000:  # invalid or surrogate
             c = 0xFFFD  # REPLACEMENT CHARACTER

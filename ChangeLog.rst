@@ -1,3 +1,9 @@
+Unreleased
+==========
+
+* Bound numeric character reference conversion to avoid Python's integer digit
+  limit while preserving valid references with many leading zeros.
+
 2025.4.15
 =========
 ----
