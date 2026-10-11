@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix emphasis spacing leaking between calls to ``HTML2Text.handle``.
+
 2025.4.15
 =========
 ----

@@ -40,6 +40,7 @@ The AUTHORS/Contributors are (and/or have been):
 * Edward Ross <gh: EdwardJRoss>
 * Gregory Anders <gh: gpanders>
 * Alex Vandiver <gh: alexmv>
+* AC <ac@fabtek.cn>
 
 Maintainer:
 
