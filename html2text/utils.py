@@ -221,9 +221,12 @@ def skipwrap(
     # If the text begins with a single -, *, or +, followed by a space,
     # or an integer, followed by a ., followed by a space (in either
     # case optionally proceeded by whitespace), it's a list; don't wrap.
-    return bool(
-        config.RE_ORDERED_LIST_MATCHER.match(stripped)
-        or config.RE_UNORDERED_LIST_MATCHER.match(stripped)
+    return (
+        bool(
+            config.RE_ORDERED_LIST_MATCHER.match(stripped)
+            or config.RE_UNORDERED_LIST_MATCHER.match(stripped)
+        )
+        and not wrap_list_items
     )
 
 

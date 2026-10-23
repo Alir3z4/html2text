@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #352: Honor wrap_list_items for ordered lists and plus-marked lists.
+
 2025.4.15
 =========
 ----
