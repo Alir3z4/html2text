@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Preserve inline_links when wrapping documents with wrap_links disabled.
+
 2025.4.15
 =========
 ----

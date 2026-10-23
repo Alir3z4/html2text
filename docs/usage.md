@@ -93,7 +93,7 @@ simple indications of their function.
     - RE_MD_BACKSLASH_MATCHER to match \char
     - USE_AUTOMATIC_LINKS to convert <a href='http://xyz'>http://xyz</a> to <http://xyz>
     - MARK_CODE to wrap 'pre' blocks with [code]...[/code] tags
-    - WRAP_LINKS to decide if links have to be wrapped during text wrapping (implies INLINE_LINKS = False)
+    - WRAP_LINKS to decide if links have to be wrapped during text wrapping
     - WRAP_LIST_ITEMS to decide if list items have to be wrapped during text wrapping
     - WRAP_TABLES to decide if tables have to be wrapped during text wrapping
     - DECODE_ERRORS to handle decoding errors. 'strict', 'ignore', 'replace' are the acceptable values.
@@ -143,7 +143,7 @@ Command line options
 | `--no-skip-internal-links`                             | Turn off skipping of internal links
 | `--links-after-para`                                   | Put the links after the paragraph and not at end of document
 | `--mark-code`                                          | Mark code with [code]...[/code] blocks
-| `--no-wrap-links`                                      | Do not wrap links during text wrapping. Implies `--reference-links`
+| `--no-wrap-links`                                      | Do not wrap links during text wrapping.
 | `--wrap-list-items`                                    | Wrap list items during text wrapping.
 | `--wrap-tables`                                        | Wrap tables during text wrapping.
 | `--decode-errors`=`HANDLER`                            | What to do in case an error is encountered. `ignore`, `strict`, `replace` etc.
