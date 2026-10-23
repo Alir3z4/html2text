@@ -254,3 +254,19 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+
+def test_protect_links_does_not_wrap_at_hyphens() -> None:
+    h = html2text.HTML2Text(bodywidth=12)
+    h.protect_links = True
+
+    html = '<a href="https://example.invalid/a-b-c-d">link</a>'
+
+    assert h.handle(html) == "[link](<https://example.invalid/a-b-c-d>)\n\n"
+
+
+def test_protect_links_keeps_hyphenated_words_together() -> None:
+    h = html2text.HTML2Text(bodywidth=10)
+    h.protect_links = True
+
+    assert h.handle("alpha-beta-gamma") == "alpha-beta-gamma\n\n"

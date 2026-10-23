@@ -68,7 +68,8 @@ simple indications of their function.
     - BODY_WIDTH for wrapping long lines
     - SKIP_INTERNAL_LINKS to skip #local-anchor things
     - INLINE_LINKS for formatting images and links
-    - PROTECT_LINKS protect from line breaks
+    - PROTECT_LINKS protect URLs from line breaks, including at hyphens; hyphenated
+      words are also kept together
     - GOOGLE_LIST_INDENT no of pixels to indent nested lists
     - IGNORE_ANCHORS
     - IGNORE_IMAGES

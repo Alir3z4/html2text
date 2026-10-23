@@ -993,6 +993,7 @@ class HTML2Text(html.parser.HTMLParser):
                         para,
                         self.body_width,
                         break_long_words=False,
+                        break_on_hyphens=not self.protect_links,
                         subsequent_indent=indent,
                     )
                     result += "\n".join(wrapped)

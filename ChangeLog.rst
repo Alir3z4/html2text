@@ -1,3 +1,9 @@
+Unreleased
+==========
+----
+
+* Fix #425: Keep protected URLs intact during wrapping, including at hyphens.
+
 2025.4.15
 =========
 ----
