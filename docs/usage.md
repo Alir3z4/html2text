@@ -70,7 +70,7 @@ simple indications of their function.
     - INLINE_LINKS for formatting images and links
     - PROTECT_LINKS protect from line breaks
     - GOOGLE_LIST_INDENT no of pixels to indent nested lists
-    - IGNORE_ANCHORS
+    - IGNORE_ANCHORS to omit link formatting (set `parser.ignore_links`)
     - IGNORE_IMAGES
     - IMAGES_AS_HTML always generate HTML tags for images; preserves `height`, `width`, `alt` if possible.
     - IMAGES_TO_ALT
@@ -109,6 +109,11 @@ Options that are not in the config.py file:
 To alter any option the procedure is to create a parser with
 `parser = html2text.HTML2Text()` and to set the option on the parser.
 example: `parser.unicode_snob = True` to set the UNICODE_SNOB option.
+
+The `IGNORE_ANCHORS` configuration constant is an exception to this naming
+convention: set `parser.ignore_links = True`, rather than
+`parser.ignore_anchors`, to keep link text without its Markdown link formatting.
+This is also the Python equivalent of the `--ignore-links` command line option.
 
 
 Command line options

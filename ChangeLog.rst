@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Clarify that IGNORE_ANCHORS maps to HTML2Text.ignore_links in the usage guide.
+
 2025.4.15
 =========
 ----
