@@ -99,14 +99,14 @@ def element_style(
     :rtype: dict
     """
     style = parent_style.copy()
-    if "class" in attrs:
-        assert attrs["class"] is not None
-        for css_class in attrs["class"].split():
+    classes = attrs.get("class")
+    if classes:
+        for css_class in classes.split():
             css_style = style_def.get("." + css_class, {})
             style.update(css_style)
-    if "style" in attrs:
-        assert attrs["style"] is not None
-        immediate_style = dumb_property_dict(attrs["style"])
+    inline_style = attrs.get("style")
+    if inline_style:
+        immediate_style = dumb_property_dict(inline_style)
         style.update(immediate_style)
 
     return style
