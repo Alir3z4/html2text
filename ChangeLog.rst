@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix crashes on valueless ``class`` and ``style`` attributes in Google Docs mode.
+
 2025.4.15
 =========
 ----
