@@ -254,3 +254,40 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+
+@pytest.mark.parametrize("depth", [1, 2, 3])
+@pytest.mark.parametrize("inner_text", ["", "inside"])
+@pytest.mark.parametrize("quoted", [False, True])
+def test_padded_nested_tables_preserve_unpadded_text(
+    depth: int, inner_text: str, quoted: bool
+) -> None:
+    table = "<table><tr><td>" + inner_text + "</td></tr></table>"
+    for _ in range(depth):
+        table = "<table><tr><td>before" + table + "after</td></tr></table>"
+    document = "<p>start</p>" + table + "<p>end</p>"
+    if quoted:
+        document = "<blockquote>" + document + "</blockquote>"
+    plain = html2text.HTML2Text(bodywidth=0)
+    padded = html2text.HTML2Text(bodywidth=0)
+    padded.pad_tables = True
+
+    def content_lines(markdown: str):
+        return [line.rstrip() for line in markdown.splitlines() if line.strip()]
+
+    assert content_lines(padded.handle(document)) == content_lines(
+        plain.handle(document)
+    )
+
+
+def test_padded_flat_tables_surrounding_nested_table() -> None:
+    flat = "<table><tr><td>a</td><td>longer</td></tr></table>"
+    nested = "<table><tr><td><table><tr><td>inside</td></tr></table></td></tr></table>"
+    h = html2text.HTML2Text(bodywidth=0)
+    h.pad_tables = True
+    flat_result = h.handle(flat).strip()
+    result = h.handle(flat + nested + flat)
+
+    assert result.count(flat_result) == 2
+    assert "inside" in result
+    assert "special_marker_for_table_padding" not in result

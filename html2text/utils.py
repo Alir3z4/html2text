@@ -301,20 +301,46 @@ def pad_tables_in_text(text: str, right_margin: int = 1) -> str:
     """
     lines = text.split("\n")
     table_buffer = []  # type: List[str]
-    table_started = False
+    table_depth = 0
+    nested_table = False
+    table_prefix = ""
+    start_marker = "<" + config.TABLE_MARKER_FOR_PAD + ">"
+    end_marker = "</" + config.TABLE_MARKER_FOR_PAD + ">"
     new_lines = []
     for line in lines:
-        # Toggle table started
-        if config.TABLE_MARKER_FOR_PAD in line:
-            table_started = not table_started
-            if not table_started:
-                table = reformat_table(table_buffer, right_margin)
-                new_lines.extend(table)
-                table_buffer = []
-                new_lines.append("")
+        if start_marker in line:
+            if table_depth:
+                nested_table = True
+                table_buffer.append(line)
+            else:
+                table_prefix = line.split(start_marker, 1)[0]
+            table_depth += 1
+            continue
+        if end_marker in line:
+            if not table_depth:
+                continue
+            table_depth -= 1
+            if table_depth:
+                table_buffer.append(line)
+                continue
+            if nested_table:
+                # Nested tables cannot be padded as one rectangular table.
+                # Remove only the markers, preserving text on their lines.
+                table = "\n".join(table_buffer) + "\n"
+                for marker in (start_marker, end_marker):
+                    table = table.replace(marker + "  \n" + table_prefix, "")
+                    table = table.replace(marker + "  \n", "")
+                if table_prefix and not table.startswith(table_prefix):
+                    table = table_prefix + table
+                new_lines.extend(table.splitlines())
+            else:
+                new_lines.extend(reformat_table(table_buffer, right_margin))
+            table_buffer = []
+            nested_table = False
+            new_lines.append("")
             continue
         # Process lines
-        if table_started:
+        if table_depth:
             table_buffer.append(line)
         else:
             new_lines.append(line)

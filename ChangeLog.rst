@@ -1,3 +1,9 @@
+Unreleased
+==========
+
+* Fix #370: Fall back to unpadded output for nested tables, preserving text
+  instead of crashing when table padding is enabled.
+
 2025.4.15
 =========
 ----
