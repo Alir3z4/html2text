@@ -40,6 +40,7 @@ The AUTHORS/Contributors are (and/or have been):
 * Edward Ross <gh: EdwardJRoss>
 * Gregory Anders <gh: gpanders>
 * Alex Vandiver <gh: alexmv>
+* momooo15 <gh: momooo15>
 
 Maintainer:
 

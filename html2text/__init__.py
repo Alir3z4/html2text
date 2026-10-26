@@ -103,6 +103,8 @@ class HTML2Text(html.parser.HTMLParser):
         self.outcount = 0
         self.start = True
         self.space = False
+        self.option_boundary = False
+        self.last_output = ""
         self.a: List[AnchorElement] = []
         self.astack: List[Optional[Dict[str, Optional[str]]]] = []
         self.maybe_automatic_link: Optional[str] = None
@@ -376,6 +378,9 @@ class HTML2Text(html.parser.HTMLParser):
                 pass
             else:
                 self.p()
+
+        if tag == "option" and not (self.pre or self.code or self.quiet):
+            self.option_boundary = True
 
         if tag == "br" and start:
             if self.blockquote > 0:
@@ -813,6 +818,16 @@ class HTML2Text(html.parser.HTMLParser):
                     # use existing initial indentation
                     data = data.lstrip("\n" + self.pre_indent)
 
+            if self.option_boundary:
+                self.option_boundary = False
+                if not (
+                    self.last_output[-1:].isspace()
+                    or data[:1].isspace()
+                    or self.last_output.endswith("&nbsp_place_holder;")
+                    or data.startswith("&nbsp_place_holder;")
+                ):
+                    self.space = True
+
             if self.start:
                 self.space = False
                 self.p_p = 0
@@ -867,6 +882,7 @@ class HTML2Text(html.parser.HTMLParser):
 
             self.p_p = 0
             self.out(data)
+            self.last_output = data
             self.outcount += 1
 
     def handle_data(self, data: str, entity_char: bool = False) -> None:

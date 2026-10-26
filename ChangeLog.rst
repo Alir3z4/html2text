@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #377: Separate adjacent option labels with whitespace.
+
 2025.4.15
 =========
 ----
