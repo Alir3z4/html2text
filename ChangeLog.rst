@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Escape special characters in raw HTML image attributes.
+
 2025.4.15
 =========
 ----
