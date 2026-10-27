@@ -137,6 +137,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.preceding_stressed = False
         self.preceding_data = ""
         self.current_tag = ""
+        self._emphasis_depth: Dict[str, int] = {}
 
         config.UNIFIABLE["nbsp"] = "&nbsp_place_holder;"
 
@@ -146,6 +147,7 @@ class HTML2Text(html.parser.HTMLParser):
 
     def handle(self, data: str) -> str:
         self.start = True
+        self._emphasis_depth.clear()
         self.feed(data)
         self.feed("")
         markdown = self.optwrap(self.finish())
@@ -402,6 +404,8 @@ class HTML2Text(html.parser.HTMLParser):
 
         if tag in ["body"]:
             self.quiet = 0  # sites like 9rules.com never close <head>
+            if start:
+                self._emphasis_depth.clear()
 
         if tag == "blockquote":
             if start:
@@ -413,7 +417,16 @@ class HTML2Text(html.parser.HTMLParser):
                 self.blockquote -= 1
                 self.p()
 
-        if tag in ["em", "i", "u"] and not self.ignore_emphasis:
+        nested_emphasis = False
+        if tag in ["em", "i", "u", "strong", "b"] and not self.ignore_emphasis:
+            # Aliases share a depth: <b><strong> is one strong span, while
+            # <b><em> still needs both kinds of Markdown marker.
+            emphasis_type = "strong" if tag in ["strong", "b"] else "em"
+            depth = self._emphasis_depth.get(emphasis_type, 0)
+            nested_emphasis = depth > (0 if start else 1)
+            self._emphasis_depth[emphasis_type] = max(depth + (1 if start else -1), 0)
+
+        if tag in ["em", "i", "u"] and not self.ignore_emphasis and not nested_emphasis:
             # Separate with a space if we immediately follow an alphanumeric
             # character, since otherwise Markdown won't render the emphasis
             # marks, and we'll be left with eg 'foo_bar_' visible.
@@ -434,7 +447,7 @@ class HTML2Text(html.parser.HTMLParser):
             if start:
                 self.stressed = True
 
-        if tag in ["strong", "b"] and not self.ignore_emphasis:
+        if tag in ["strong", "b"] and not self.ignore_emphasis and not nested_emphasis:
             # Separate with space if we immediately follow an * character, since
             # without it, Markdown won't render the resulting *** correctly.
             # (Don't add a space otherwise, though, since there isn't one in the

@@ -1,3 +1,9 @@
+Unreleased
+==========
+----
+
+* Fix #271: Avoid redundant Markdown markers for nested strong and emphasis tags.
+
 2025.4.15
 =========
 ----
