@@ -2,6 +2,7 @@
 
 The AUTHORS/Contributors are (and/or have been):
 
+* Dang Pham <gh: PNHD>
 * Aaron Swartz
 * Yariv Barkan
 * Alex Musayev

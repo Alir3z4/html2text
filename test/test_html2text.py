@@ -254,3 +254,49 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+
+@pytest.mark.parametrize("tag", ["td", "th"])
+@pytest.mark.parametrize("command", [False, True])
+@pytest.mark.parametrize(
+    "attributes,expected",
+    [
+        ("", ""),
+        (' title="ignored"', ""),
+        (" colspan rowspan", ""),
+        (' colspan="" rowspan="0"', ' colspan="" rowspan="0"'),
+        (' colspan="2" rowspan="3"', ' colspan="2" rowspan="3"'),
+        (
+            ' colspan="2&quot; onclick=&quot;x&amp;&lt;&gt;"',
+            ' colspan="2&quot; onclick=&quot;x&amp;&lt;&gt;"',
+        ),
+    ],
+)
+def test_bypass_table_spans(tag, command, attributes, expected):
+    source = f"<table><tr><{tag}{attributes}>cell</{tag}></tr></table>"
+    if command:
+        output = subprocess.check_output(
+            [sys.executable, "-m", "html2text", "--bypass-tables"],
+            input=source.encode(),
+        ).decode()
+    else:
+        h = html2text.HTML2Text()
+        h.bypass_tables = True
+        output = h.handle(source)
+    assert cleanup_eol(output).strip() == (
+        f"<table>  \n<tr>  \n<{tag}{expected}>\n\ncell\n\n</{tag}></tr></table>"
+    )
+
+
+@pytest.mark.parametrize("tag", ["td", "th"])
+@pytest.mark.parametrize("ignore_tables", [False, True])
+def test_table_spans_in_other_modes(tag, ignore_tables):
+    outputs = []
+    for attributes in (' colspan="2" rowspan="3"', ""):
+        h = html2text.HTML2Text()
+        h.ignore_tables = ignore_tables
+        h.bypass_tables = ignore_tables
+        outputs.append(
+            h.handle(f"<table><tr><{tag}{attributes}>cell</{tag}></tr></table>")
+        )
+    assert outputs[0] == outputs[1]

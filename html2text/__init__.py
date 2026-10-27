@@ -677,7 +677,14 @@ class HTML2Text(html.parser.HTMLParser):
                     self.soft_br()
                 if tag in ["td", "th"]:
                     if start:
-                        self.o("<{}>\n\n".format(tag))
+                        cell_attrs = ""
+                        for name in ("colspan", "rowspan"):
+                            value = attrs.get(name)
+                            if value is not None:
+                                cell_attrs += ' {}="{}"'.format(
+                                    name, html.escape(value, quote=True)
+                                )
+                        self.o("<{}{}>\n\n".format(tag, cell_attrs))
                     else:
                         self.o("\n</{}>".format(tag))
                 else:

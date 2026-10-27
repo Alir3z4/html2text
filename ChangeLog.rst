@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #307: Preserve rowspan and colspan when bypassing HTML tables.
+
 2025.4.15
 =========
 ----
