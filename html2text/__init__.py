@@ -556,13 +556,13 @@ class HTML2Text(html.parser.HTMLParser):
                 if self.images_as_html or (
                     self.images_with_size and ("width" in attrs or "height" in attrs)
                 ):
-                    self.o("<img src='" + attrs["src"] + "' ")
+                    self.o("<img src='" + html.escape(attrs["src"]) + "' ")
                     if "width" in attrs and attrs["width"] is not None:
-                        self.o("width='" + attrs["width"] + "' ")
+                        self.o("width='" + html.escape(attrs["width"]) + "' ")
                     if "height" in attrs and attrs["height"] is not None:
-                        self.o("height='" + attrs["height"] + "' ")
+                        self.o("height='" + html.escape(attrs["height"]) + "' ")
                     if alt:
-                        self.o("alt='" + alt + "' ")
+                        self.o("alt='" + html.escape(alt) + "' ")
                     self.o("/>")
                     return
 
