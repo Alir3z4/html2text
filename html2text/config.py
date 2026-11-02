@@ -71,6 +71,13 @@ RE_LINK = re.compile(r"(\[.*?\] ?\(.*?\))|(\[.*?\]:.*?)")
 # to find table separators
 RE_TABLE = re.compile(r" \| ")
 
+# Placeholder for "<" in text content, resolved in HTML2Text.finish()
+LT_PLACEHOLDER = "&lt_place_holder;"
+
+# A "<" that Markdown would read as the start of raw HTML (a tag name, "/",
+# "!" or "?") or of an autolink
+RE_LT_RAW_HTML = re.compile(re.escape(LT_PLACEHOLDER) + r"(?=[A-Za-z/!?])")
+
 RE_MD_DOT_MATCHER = re.compile(
     r"""
     ^             # start of line
