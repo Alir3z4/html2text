@@ -172,6 +172,9 @@ class HTML2Text(html.parser.HTMLParser):
         else:
             nbsp = " "
         outtext = outtext.replace("&nbsp_place_holder;", nbsp)
+        # A dereferenced "&lt;" must not turn into raw HTML in the output
+        outtext = config.RE_LT_RAW_HTML.sub("&lt;", outtext)
+        outtext = outtext.replace(config.LT_PLACEHOLDER, "<")
 
         # Clear self.outtextlist to avoid memory leak of its content to
         # the next handling.
@@ -907,8 +910,11 @@ class HTML2Text(html.parser.HTMLParser):
                 self.maybe_automatic_link = None
                 self.empty_link = False
 
-        if not self.code and not self.pre and not entity_char:
-            data = escape_md_section(data, snob=self.escape_snob)
+        if not self.code and not self.pre:
+            if not entity_char:
+                data = escape_md_section(data, snob=self.escape_snob)
+            # resolved in finish(), once the following character is known
+            data = data.replace("<", config.LT_PLACEHOLDER)
         self.preceding_data = data
         self.o(data, puredata=True)
 
