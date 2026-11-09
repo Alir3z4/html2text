@@ -54,6 +54,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.split_next_td = False
         self.td_count = 0
         self.table_start = False
+        self.in_table_cell = False
         self.unicode_snob = config.UNICODE_SNOB  # covered in cli
         self.escape_snob = config.ESCAPE_SNOB  # covered in cli
         self.links_each_paragraph = config.LINKS_EACH_PARAGRAPH
@@ -699,6 +700,8 @@ class HTML2Text(html.parser.HTMLParser):
                             self.soft_br()
                             self.o("</" + config.TABLE_MARKER_FOR_PAD + ">")
                             self.o("  \n")
+                if tag in ["td", "th"]:
+                    self.in_table_cell = start
                 if tag in ["td", "th"] and start:
                     if self.split_next_td:
                         self.o("| ")
@@ -906,7 +909,8 @@ class HTML2Text(html.parser.HTMLParser):
                 self.o("[")
                 self.maybe_automatic_link = None
                 self.empty_link = False
-
+        if self.in_table_cell:
+            data = data.replace("|", r"\|")
         if not self.code and not self.pre and not entity_char:
             data = escape_md_section(data, snob=self.escape_snob)
         self.preceding_data = data
