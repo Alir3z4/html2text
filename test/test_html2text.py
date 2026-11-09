@@ -254,3 +254,54 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+def test_table_cell_pipe_is_escaped() -> None:
+    h = html2text.HTML2Text()
+    h.body_width = 0
+
+    result = h.handle(
+        "<table>"
+        "<tr><th>expr</th><th>note</th></tr>"
+        "<tr><td>a | b</td><td>plain</td></tr>"
+        "</table>"
+    )
+
+    assert r"a \| b" in result
+    assert "plain" in result
+
+
+def test_table_cell_pipe_with_nested_formatting() -> None:
+
+    h = html2text.HTML2Text()
+    h.body_width = 0
+
+    result = h.handle(
+        "<table>"
+        "<tr><td><strong>a | b</strong></td><td>plain</td></tr>"
+        "</table>"
+    )
+
+    assert r"a \| b" in result
+    assert "plain" in result
+
+def test_table_cell_already_escaped_pipe() -> None:
+
+    h = html2text.HTML2Text()
+    h.body_width = 0
+
+    result = h.handle(
+        r"<table><tr><td>a \| b</td></tr></table>"
+    )
+
+    assert "a " + "\\" * 3 + "| b" in result
+
+def test_table_cell_pipe_with_multiple_backslashes() -> None:
+
+    h = html2text.HTML2Text()
+    h.body_width = 0
+
+    result = h.handle(
+        "<table><tr><td>a \\\\| b</td></tr></table>"
+    )
+
+    assert "a " + "\\" * 5 + "| b" in result
