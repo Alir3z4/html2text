@@ -11,8 +11,9 @@ class AnchorElement:
 
 
 class ListElement:
-    __slots__ = ["name", "num"]
+    __slots__ = ["name", "num", "marker_end"]
 
     def __init__(self, name: str, num: int):
         self.name = name
         self.num = num
+        self.marker_end: Optional[int] = None

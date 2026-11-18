@@ -31,3 +31,11 @@
     4. end
   * end
 
+  * before
+  * * first
+    * second
+  * after
+
+  10. 1. * nested
+      2. sibling
+  11. after
