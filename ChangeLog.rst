@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #470: Preserve nested lists at the beginning of a list item.
+
 2025.4.15
 =========
 ----

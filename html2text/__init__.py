@@ -643,24 +643,27 @@ class HTML2Text(html.parser.HTMLParser):
                 if self.google_doc:
                     self.o("  " * self.google_nest_count(tag_style))
                 else:
-                    # Indent two spaces per list, except use three spaces for an
-                    # unordered list inside an ordered list.
-                    # https://spec.commonmark.org/0.28/#motivation
-                    # TODO: line up <ol><li>s > 9 correctly.
-                    parent_list = None
-                    for list in self.list:
-                        self.list_code_indent += "   " if parent_list == "ol" else "  "
-                        parent_list = list.name
-                    self.o(self.list_code_indent)
+                    if self.list:
+                        self.list_code_indent = "  "
+                    for parent in self.list[:-1]:
+                        width = len(str(parent.num)) + 2 if parent.name == "ol" else 2
+                        self.list_code_indent += " " * width
+                    # The parent marker already supplies the indentation when
+                    # the nested list is the first content in that item.
+                    if len(self.list) < 2 or self.list[-2].marker_end != self.outcount:
+                        self.o(self.list_code_indent)
 
                 if li.name == "ul":
-                    self.list_code_indent += "  "
-                    self.o(self.ul_item_mark + " ")
-                elif li.name == "ol":
+                    marker = self.ul_item_mark + " "
+                else:
                     li.num += 1
-                    self.list_code_indent += "   "
-                    self.o(str(li.num) + ". ")
+                    marker = str(li.num) + ". "
+                self.list_code_indent += " " * len(marker)
+                self.o(marker)
+                li.marker_end = self.outcount
                 self.start = True
+            elif self.list:
+                self.list[-1].marker_end = None
 
         if tag in ["table", "tr", "td", "th"]:
             if self.ignore_tables:
