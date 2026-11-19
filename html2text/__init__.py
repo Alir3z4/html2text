@@ -944,11 +944,14 @@ class HTML2Text(html.parser.HTMLParser):
 
         :rtype: int
         """
-        nest_count = 0
-        if "margin-left" in style:
-            nest_count = int(style["margin-left"][:-2]) // self.google_list_indent
-
-        return nest_count
+        # Google Docs exports use two-letter units such as pt and px. Only the
+        # whole part of a positive margin contributes to a full indent level.
+        margin = re.fullmatch(
+            r"\+?([0-9]+)(?:\.[0-9]*)?[a-zA-Z]{2}", style.get("margin-left", "")
+        )
+        if margin is None:
+            return 0
+        return int(margin[1]) // self.google_list_indent
 
     def optwrap(self, text: str) -> str:
         """
