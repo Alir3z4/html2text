@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #330: Handle automatic and fractional Google Docs list margins.
+
 2025.4.15
 =========
 ----
