@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #382: Distinguish parser options from module-level configuration constants.
+
 2025.4.15
 =========
 ----

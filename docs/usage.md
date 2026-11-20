@@ -58,8 +58,8 @@ To customize the options provided by the module the usage is as follows:
 Available Options
 -----------------
 
-All options exist in the config.py file. A list is provided here with
-simple indications of their function.
+The config.py file contains parser defaults as well as module-level constants.
+The list below describes both; not every entry is an attribute of HTML2Text.
 
 
     - UNICODE_SNOB for using unicode
@@ -106,9 +106,14 @@ Options that are not in the config.py file:
     - emphasis_mark is the character used when replacing the `<em>` tag. It defaults to `_`.
     - strong_mark is the characer used when replacing the `<strong>` tag. It defaults to `**`.
 
-To alter any option the procedure is to create a parser with
-`parser = html2text.HTML2Text()` and to set the option on the parser.
-example: `parser.unicode_snob = True` to set the UNICODE_SNOB option.
+To alter a parser option, create a parser with
+`parser = html2text.HTML2Text()` and set the corresponding lowercase attribute.
+For example, `parser.unicode_snob = True` overrides the UNICODE_SNOB default.
+
+The `RE_*` constants (including regular expression matchers) and `UNIFIABLE`
+are module-level constants in `html2text.config`, not parser attributes. For example,
+`html2text.config.RE_MD_DASH_MATCHER` is a compiled regular expression;
+neither `parser.RE_MD_DASH_MATCHER` nor `parser.re_md_dash_matcher` exists.
 
 
 Command line options
