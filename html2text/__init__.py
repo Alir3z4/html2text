@@ -144,6 +144,13 @@ class HTML2Text(html.parser.HTMLParser):
         data = data.replace("</' + 'script>", "</ignore>")
         super().feed(data)
 
+    def goahead(self, end: bool) -> None:
+        # getpos() is document-relative, while rawdata may begin partway
+        # through a line after an earlier feed() consumed its prefix.
+        self._entityref_line, offset = self.getpos()
+        self._entityref_line_start = -offset
+        super().goahead(end)
+
     def handle(self, data: str) -> str:
         self.start = True
         self.feed(data)
@@ -184,6 +191,20 @@ class HTML2Text(html.parser.HTMLParser):
 
     def handle_entityref(self, c: str) -> None:
         ref = self.entityref(c)
+        if ref == "&" + c + ";" and self.rawdata:
+            # HTMLParser omits the original semicolon from this callback.
+            # Unknown names must keep the spelling in the source text.
+            line, offset = self.getpos()
+            while self._entityref_line < line:
+                self._entityref_line_start = (
+                    self.rawdata.find("\n", max(0, self._entityref_line_start)) + 1
+                )
+                self._entityref_line += 1
+            start = self._entityref_line_start + offset
+            if self.rawdata.startswith("&" + c, start) and not self.rawdata.startswith(
+                ref, start
+            ):
+                ref = ref[:-1]
 
         # ref may be an empty string (e.g. for &lrm;/&rlm; markers that should
         # not contribute to the final output).

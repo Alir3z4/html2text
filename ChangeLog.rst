@@ -1,3 +1,9 @@
+Unreleased
+==========
+
+* Fix #369: Preserve semicolons as written for unknown HTML entities, including
+  when input is fed in chunks.
+
 2025.4.15
 =========
 ----
