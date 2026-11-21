@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #430: Clarify Unicode support in the project description.
+
 2025.4.15
 =========
 ----
