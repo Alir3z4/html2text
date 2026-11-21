@@ -2,8 +2,8 @@ About
 -----
 
 html2text is a python package which converts a page of HTML into clean,
-easy-to-read plain ASCII text. Better yet, that ASCII also happens to be
-valid Markdown (a text-to-HTML format).
+easy-to-read plain text. The output is also valid Markdown (a text-to-HTML
+format). It supports Unicode input and output.
 
 It was originally written by Aaron Swartz.
 
