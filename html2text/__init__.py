@@ -944,11 +944,12 @@ class HTML2Text(html.parser.HTMLParser):
 
         :rtype: int
         """
-        nest_count = 0
-        if "margin-left" in style:
-            nest_count = int(style["margin-left"][:-2]) // self.google_list_indent
-
-        return nest_count
+        # Preserve support for pixel and point margins emitted by Google Docs.
+        # CSS keywords and relative units cannot determine a nesting level.
+        margin = style.get("margin-left", "").strip()
+        if re.fullmatch(r"\+?(?:\d+(?:\.\d*)?|\.\d+)(?:px|pt)", margin, re.I):
+            return int(float(margin[:-2]) // self.google_list_indent)
+        return 0
 
     def optwrap(self, text: str) -> str:
         """
