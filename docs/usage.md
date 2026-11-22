@@ -151,3 +151,9 @@ Command line options
 | `--default-image-alt`=`Image_Here`                     | Inserts the given `alt` text whenever images are missing `alt` values.
 | `--open-quote`=`"`                                     | Inserts the given text when opening a quote. Defaults to `"`.
 | `--close-quote`=`"`                                    | Inserts the given text when closing a quote. Defaults to `"`.
+
+## Lazy-loaded images
+
+When an image has no nonempty `src`, html2text uses its `data-src` value, if
+present. A nonempty `src` takes precedence. The selected source follows the same
+image options and URL resolution as an ordinary image.
