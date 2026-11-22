@@ -947,7 +947,7 @@ class HTML2Text(html.parser.HTMLParser):
         # Preserve support for pixel and point margins emitted by Google Docs.
         # CSS keywords and relative units cannot determine a nesting level.
         margin = style.get("margin-left", "").strip()
-        if re.fullmatch(r"\d+(?:\.\d*)?(?:px|pt)", margin):
+        if re.fullmatch(r"\+?(?:\d+(?:\.\d*)?|\.\d+)(?:px|pt)", margin, re.I):
             return int(float(margin[:-2]) // self.google_list_indent)
         return 0
 
