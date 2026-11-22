@@ -546,6 +546,8 @@ class HTML2Text(html.parser.HTMLParser):
                             self.o("][" + str(a_props.count) + "]")
 
         if tag == "img" and start and not self.ignore_images:
+            if not attrs.get("src") and attrs.get("data-src"):
+                attrs["src"] = attrs["data-src"]
             if "src" in attrs and attrs["src"] is not None:
                 if not self.images_to_alt:
                     attrs["href"] = attrs["src"]
