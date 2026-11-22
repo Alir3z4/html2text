@@ -137,6 +137,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.preceding_stressed = False
         self.preceding_data = ""
         self.current_tag = ""
+        self.picture_sources: List[Optional[str]] = []
 
         config.UNIFIABLE["nbsp"] = "&nbsp_place_holder;"
 
@@ -161,6 +162,7 @@ class HTML2Text(html.parser.HTMLParser):
 
     def finish(self) -> str:
         self.close()
+        self.picture_sources.clear()
 
         self.pbr()
         self.o("", force="end")
@@ -545,7 +547,23 @@ class HTML2Text(html.parser.HTMLParser):
                                 self.a.append(a_props)
                             self.o("][" + str(a_props.count) + "]")
 
+        if tag == "picture":
+            if start:
+                self.picture_sources.append(None)
+            elif self.picture_sources:
+                self.picture_sources.pop()
+        elif tag == "source" and start and self.picture_sources:
+            if self.picture_sources[-1] is None:
+                # Choose a deterministic fallback, without simulating a viewport.
+                # Commas inside a URL (including data URLs) are significant.
+                srcset = (attrs.get("srcset") or "").lstrip(" \t\n\r\f,")
+                if srcset:
+                    self.picture_sources[-1] = srcset.split()[0].rstrip(",") or None
+
         if tag == "img" and start and not self.ignore_images:
+            if not attrs.get("src") and self.picture_sources:
+                if self.picture_sources[-1]:
+                    attrs["src"] = self.picture_sources[-1]
             if "src" in attrs and attrs["src"] is not None:
                 if not self.images_to_alt:
                     attrs["href"] = attrs["src"]
