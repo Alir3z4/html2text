@@ -1,3 +1,9 @@
+Unreleased
+==========
+
+* Fix #467: Escape paragraph-leading asterisks, blockquote markers and heading
+  markers, including HTML character references.
+
 2025.4.15
 =========
 ----

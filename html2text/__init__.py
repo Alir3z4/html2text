@@ -907,7 +907,12 @@ class HTML2Text(html.parser.HTMLParser):
                 self.maybe_automatic_link = None
                 self.empty_link = False
 
-        if not self.code and not self.pre and not entity_char:
+        block_marker_entity = (
+            entity_char
+            and data in ("*", ">", "#")
+            and (self.start or self.p_p or self.lastWasNL)
+        )
+        if not self.code and not self.pre and (not entity_char or block_marker_entity):
             data = escape_md_section(data, snob=self.escape_snob)
         self.preceding_data = data
         self.o(data, puredata=True)
