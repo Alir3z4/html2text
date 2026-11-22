@@ -135,6 +135,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.baseurl = baseurl
         self.stressed = False
         self.preceding_stressed = False
+        self.stressed_space = False
         self.preceding_data = ""
         self.current_tag = ""
 
@@ -512,6 +513,8 @@ class HTML2Text(html.parser.HTMLParser):
                         self.ignore_mailto_links and attrs["href"].startswith("mailto:")
                     )
                 ):
+                    if self.preceding_stressed and self.stressed_space:
+                        self.o(" ")
                     self.astack.append(attrs)
                     self.maybe_automatic_link = attrs["href"]
                     self.empty_link = True
@@ -876,6 +879,7 @@ class HTML2Text(html.parser.HTMLParser):
             return
 
         if self.stressed:
+            self.stressed_space = data[-1].isspace()
             data = data.strip()
             self.stressed = False
             self.preceding_stressed = True
