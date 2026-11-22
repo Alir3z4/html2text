@@ -151,3 +151,13 @@ Command line options
 | `--default-image-alt`=`Image_Here`                     | Inserts the given `alt` text whenever images are missing `alt` values.
 | `--open-quote`=`"`                                     | Inserts the given text when opening a quote. Defaults to `"`.
 | `--close-quote`=`"`                                    | Inserts the given text when closing a quote. Defaults to `"`.
+# Responsive pictures
+
+For an `img` inside `picture`, an explicit nonempty `src` remains the image
+URL. If it is missing or empty, html2text uses the first URL from the first
+nonempty `source srcset` in that picture. It emits one image using the
+`img` element's alt text and the usual image options.
+
+This is a deterministic text-conversion fallback. It does not evaluate media
+queries, image formats, viewport sizes, or density descriptors like a browser.
+Source elements outside a picture do not supply image URLs.
