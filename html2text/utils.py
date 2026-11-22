@@ -247,6 +247,7 @@ def escape_md_section(text: str, snob: bool = False) -> str:
     text = config.RE_MD_DOT_MATCHER.sub(r"\1\\\2", text)
     text = config.RE_MD_PLUS_MATCHER.sub(r"\1\\\2", text)
     text = config.RE_MD_DASH_MATCHER.sub(r"\1\\\2", text)
+    text = config.RE_MD_BLOCK_MARKER_MATCHER.sub(r"\1\\\2", text)
 
     return text
 

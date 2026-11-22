@@ -3,6 +3,7 @@
 The AUTHORS/Contributors are (and/or have been):
 
 * Aaron Swartz
+* Aschenbath
 * Yariv Barkan
 * Alex Musayev
 * Matěj Cepl

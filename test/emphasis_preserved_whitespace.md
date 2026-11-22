@@ -30,7 +30,7 @@ _emphasis_!
 
 (~~strike~~]
 
-* **bold**
+\* **bold**
 
 ~ ~~strike~~
 
