@@ -1,3 +1,9 @@
+Unreleased
+==========
+
+* Fix #400: Clear parser and document state after a failed ``handle()`` call
+  so the converter can be reused, retaining options and custom callbacks.
+
 2025.4.15
 =========
 ----
