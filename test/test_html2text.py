@@ -254,3 +254,22 @@ def test_strong_emptied() -> None:
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."
     assert h.handle(string) == "A B _C_.\n\n"
+
+
+@pytest.mark.parametrize(
+    "html,ignore_emphasis,expected",
+    [
+        # Whitespace on both sides of an inline tag is one space, as in a
+        # browser: templates often put tags on their own lines.
+        ("<p><span>Label:\n</span>\nText</p>", False, "Label: Text\n\n"),
+        ("<p>a <span> b </span> c</p>", False, "a b c\n\n"),
+        ("<p><strong>Label:\n</strong>\nText</p>", True, "Label: Text\n\n"),
+        ("<p>a <em>b </em> c</p>", True, "a b c\n\n"),
+        # A line break keeps its two spaces.
+        ("<p>a<br>b</p>", False, "a  \nb\n\n"),
+    ],
+)
+def test_whitespace_around_inline_tags(html, ignore_emphasis, expected) -> None:
+    h = html2text.HTML2Text()
+    h.ignore_emphasis = ignore_emphasis
+    assert h.handle(html) == expected

@@ -10,6 +10,6 @@ Header 1 | Header 2 | Header 3
 ---|---|---  
 Content 1 | 2 | ![200](http://lorempixel.com/200/200) Image!  
 Content 1 longer | Content 2 | blah  
-Content  | Content 2 | blah  
-t  | Content 2 | blah blah blah
+Content | Content 2 | blah  
+t | Content 2 | blah blah blah
 

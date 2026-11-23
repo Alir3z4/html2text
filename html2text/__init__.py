@@ -119,6 +119,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.quote = False
         self.br_toggle = ""
         self.lastWasNL = False
+        self.lastWasSpace = False
         self.lastWasList = False
         self.style = 0
         self.style_def: Dict[str, Dict[str, str]] = {}
@@ -158,6 +159,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.outtextlist.append(s)
         if s:
             self.lastWasNL = s[-1] == "\n"
+            self.lastWasSpace = s[-1] == " "
 
     def finish(self) -> str:
         self.close()
@@ -830,7 +832,10 @@ class HTML2Text(html.parser.HTMLParser):
                 self.br_toggle = ""
 
             if self.space:
-                if not self.lastWasNL:
+                # Whitespace around an inline tag, like "<b>a </b> b", is one
+                # space, as in a browser: the space before the tag has already
+                # been written.
+                if not self.lastWasNL and not self.lastWasSpace:
                     self.out(" ")
                 self.space = False
 
