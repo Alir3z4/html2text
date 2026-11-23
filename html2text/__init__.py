@@ -51,9 +51,6 @@ class HTML2Text(html.parser.HTMLParser):
         super().__init__(convert_charrefs=False)
 
         # Config options
-        self.split_next_td = False
-        self.td_count = 0
-        self.table_start = False
         self.unicode_snob = config.UNICODE_SNOB  # covered in cli
         self.escape_snob = config.ESCAPE_SNOB  # covered in cli
         self.links_each_paragraph = config.LINKS_EACH_PARAGRAPH
@@ -95,6 +92,16 @@ class HTML2Text(html.parser.HTMLParser):
         else:
             self.out = out
 
+        self.baseurl = baseurl
+        self.absolute_url_matcher = re.compile(r"^[a-zA-Z+]+://")
+        self._reset_conversion_state()
+        config.UNIFIABLE["nbsp"] = "&nbsp_place_holder;"
+
+    def _reset_conversion_state(self) -> None:
+        """Discard document state while retaining configuration and callbacks."""
+        self.split_next_td = False
+        self.td_count = 0
+        self.table_start = False
         # empty list to store output characters before they are "joined"
         self.outtextlist: List[str] = []
 
@@ -107,7 +114,6 @@ class HTML2Text(html.parser.HTMLParser):
         self.astack: List[Optional[Dict[str, Optional[str]]]] = []
         self.maybe_automatic_link: Optional[str] = None
         self.empty_link = False
-        self.absolute_url_matcher = re.compile(r"^[a-zA-Z+]+://")
         self.acount = 0
         self.list: List[ListElement] = []
         self.blockquote = 0
@@ -132,13 +138,10 @@ class HTML2Text(html.parser.HTMLParser):
         self.abbr_data: Optional[str] = None
         # Stack of abbreviations to write later
         self.abbr_list: Dict[str, str] = {}
-        self.baseurl = baseurl
         self.stressed = False
         self.preceding_stressed = False
         self.preceding_data = ""
         self.current_tag = ""
-
-        config.UNIFIABLE["nbsp"] = "&nbsp_place_holder;"
 
     def feed(self, data: str) -> None:
         data = data.replace("</' + 'script>", "</ignore>")
@@ -146,13 +149,21 @@ class HTML2Text(html.parser.HTMLParser):
 
     def handle(self, data: str) -> str:
         self.start = True
-        self.feed(data)
-        self.feed("")
-        markdown = self.optwrap(self.finish())
-        if self.pad_tables:
-            return pad_tables_in_text(markdown)
-        else:
-            return markdown
+        try:
+            self.feed(data)
+            self.feed("")
+            markdown = self.optwrap(self.finish())
+            if self.pad_tables:
+                return pad_tables_in_text(markdown)
+            else:
+                return markdown
+        except Exception:
+            # HTMLParser retains rawdata when parsing or a callback raises.
+            # Reusing it must neither replay that HTML nor inherit its open
+            # links, lists, emphasis, quiet mode or buffered output.
+            super().reset()
+            self._reset_conversion_state()
+            raise
 
     def outtextf(self, s: str) -> None:
         self.outtextlist.append(s)
