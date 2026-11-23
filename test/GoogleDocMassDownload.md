@@ -1,4 +1,4 @@
-#  test doc  
+# test doc  
   
 first issue  
   
@@ -12,8 +12,8 @@ text to separate lists
   
   1. now with numbers
   2. the prisoner
-    1. not an  _italic number_ 
-    2. a  **bold human**   being
+    1. not an _italic number_ 
+    2. a **bold human**  being
   3. end  
   
 **bold**   
@@ -24,5 +24,5 @@ _italic_
 `     return 'a'`  
 `   return 'b'`  
   
-Some  ` fixed width text`  here  
+Some ` fixed width text`  here  
 _` italic fixed width text`_ 
