@@ -1,3 +1,9 @@
+Unreleased
+==========
+
+* Fix #387: Give tables without a header row an empty Markdown header,
+  preserving their first row as data, including streamed and padded output.
+
 2025.4.15
 =========
 ----
