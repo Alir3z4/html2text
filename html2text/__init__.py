@@ -6,7 +6,7 @@ import re
 import string
 import urllib.parse as urlparse
 from textwrap import wrap
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 from . import config
 from ._typing import OutCallback
@@ -54,6 +54,10 @@ class HTML2Text(html.parser.HTMLParser):
         self.split_next_td = False
         self.td_count = 0
         self.table_start = False
+        self._table_out: Optional[Callable[[str], None]] = None
+        self._table_row: List[str] = []
+        self._table_row_header = False
+        self._in_table_head = False
         self.unicode_snob = config.UNICODE_SNOB  # covered in cli
         self.escape_snob = config.ESCAPE_SNOB  # covered in cli
         self.links_each_paragraph = config.LINKS_EACH_PARAGRAPH
@@ -91,7 +95,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.include_sup_sub = config.INCLUDE_SUP_SUB  # covered in cli
 
         if out is None:
-            self.out = self.outtextf
+            self.out: Callable[[str], None] = self.outtextf
         else:
             self.out = out
 
@@ -161,6 +165,8 @@ class HTML2Text(html.parser.HTMLParser):
 
     def finish(self) -> str:
         self.close()
+        if self._table_out is not None:
+            self._end_table_row()
 
         self.pbr()
         self.o("", force="end")
@@ -662,6 +668,9 @@ class HTML2Text(html.parser.HTMLParser):
                     self.o(str(li.num) + ". ")
                 self.start = True
 
+        if tag == "thead":
+            self._in_table_head = start
+
         if tag in ["table", "tr", "td", "th"]:
             if self.ignore_tables:
                 if tag == "tr":
@@ -689,31 +698,44 @@ class HTML2Text(html.parser.HTMLParser):
             else:
                 if tag == "table":
                     if start:
+                        if self._table_out is not None:
+                            self._end_table_row()
                         self.table_start = True
+                        self.split_next_td = False
+                        self.td_count = 0
+                        self._in_table_head = False
                         if self.pad_tables:
                             self.o("<" + config.TABLE_MARKER_FOR_PAD + ">")
                             self.o("  \n")
                     else:
+                        if self._table_out is not None:
+                            self._end_table_row()
+                        self.table_start = False
+                        self.split_next_td = False
+                        self._in_table_head = False
                         if self.pad_tables:
                             # add break in case the table is empty or its 1 row table
                             self.soft_br()
                             self.o("</" + config.TABLE_MARKER_FOR_PAD + ">")
                             self.o("  \n")
                 if tag in ["td", "th"] and start:
+                    if self.table_start and self._table_out is None:
+                        self._start_table_row()
+                    if tag == "th":
+                        self._table_row_header = True
                     if self.split_next_td:
                         self.o("| ")
                     self.split_next_td = True
 
                 if tag == "tr" and start:
+                    # HTML permits omitting </tr> before the next row.
+                    if self.split_next_td or self._table_out is not None:
+                        self._end_table_row()
                     self.td_count = 0
+                    if self.table_start:
+                        self._start_table_row()
                 if tag == "tr" and not start:
-                    self.split_next_td = False
-                    self.soft_br()
-                if tag == "tr" and not start and self.table_start:
-                    # Underline table header
-                    self.o("|".join(["---"] * self.td_count))
-                    self.soft_br()
-                    self.table_start = False
+                    self._end_table_row()
                 if tag in ["td", "th"] and start:
                     self.td_count += 1
 
@@ -735,6 +757,49 @@ class HTML2Text(html.parser.HTMLParser):
                 self.o("<{}>".format(tag))
             else:
                 self.o("</{}>".format(tag))
+
+    def _start_table_row(self) -> None:
+        # Flush the preceding paragraph/indent before buffering the first row.
+        # Buffer rendered output, so inline formatting and custom out callbacks
+        # receive the same header/data order as the normal string result.
+        self.o("", force=True)
+        self._table_out = self.out
+        self._table_row = []
+        self._table_row_header = self._in_table_head
+        self.out = self._buffer_table_row
+
+    def _buffer_table_row(self, data: str) -> None:
+        self._table_row.append(data)
+        if data:
+            self.lastWasNL = data[-1] == "\n"
+
+    def _end_table_row(self) -> None:
+        if self._table_out is not None:
+            self.out = self._table_out
+            self._table_out = None
+            if not self.td_count:
+                self._table_row = []
+                self.split_next_td = False
+                return
+            if self.td_count and not self._table_row_header:
+                prefix = ">" * self.blockquote + (" " if self.blockquote else "")
+                header = "| " + " | ".join([""] * self.td_count) + " |"
+                divider = "| " + " | ".join(["---"] * self.td_count) + " |"
+                if self.pad_tables:
+                    # The padding pass adds outer pipes itself.
+                    header = "|".join([""] * self.td_count)
+                    divider = "|".join(["---"] * self.td_count)
+                self.out(header + "  \n" + prefix + divider + "  \n" + prefix)
+            for data in self._table_row:
+                self.out(data)
+            self._table_row = []
+            if self.td_count:
+                if self._table_row_header:
+                    self.soft_br()
+                    self.o("|".join(["---"] * self.td_count))
+                self.table_start = False
+        self.split_next_td = False
+        self.soft_br()
 
     # TODO: Add docstring for these one letter functions
     def pbr(self) -> None:
