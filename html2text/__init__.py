@@ -52,6 +52,7 @@ class HTML2Text(html.parser.HTMLParser):
 
         # Config options
         self.split_next_td = False
+        self.in_table_cell = False
         self.td_count = 0
         self.table_start = False
         self.unicode_snob = config.UNICODE_SNOB  # covered in cli
@@ -378,7 +379,11 @@ class HTML2Text(html.parser.HTMLParser):
                 self.p()
 
         if tag == "br" and start:
-            if self.blockquote > 0:
+            if self.in_table_cell and not self.pre:
+                # A Markdown table row must stay on one physical line. Inline
+                # HTML preserves the break; close/reopen code spans around it.
+                self.o("`<br>`" if self.code else "<br>")
+            elif self.blockquote > 0:
                 self.o("  \n> ")
             else:
                 self.o("  \n")
@@ -687,6 +692,11 @@ class HTML2Text(html.parser.HTMLParser):
                         self.o("</{}>".format(tag))
 
             else:
+                if tag in ["td", "th"]:
+                    self.in_table_cell = start
+                else:
+                    # Rows/tables also implicitly close an unterminated cell.
+                    self.in_table_cell = False
                 if tag == "table":
                     if start:
                         self.table_start = True
