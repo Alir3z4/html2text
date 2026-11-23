@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #150: Ignore trailing line breaks in list items while retaining internal breaks.
+
 2025.4.15
 =========
 ----

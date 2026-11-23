@@ -137,6 +137,8 @@ class HTML2Text(html.parser.HTMLParser):
         self.preceding_stressed = False
         self.preceding_data = ""
         self.current_tag = ""
+        self._tag_start = False
+        self._pending_list_breaks: List[str] = []
 
         config.UNIFIABLE["nbsp"] = "&nbsp_place_holder;"
 
@@ -161,6 +163,7 @@ class HTML2Text(html.parser.HTMLParser):
 
     def finish(self) -> str:
         self.close()
+        self._pending_list_breaks.clear()
 
         self.pbr()
         self.o("", force="end")
@@ -305,10 +308,16 @@ class HTML2Text(html.parser.HTMLParser):
         self, tag: str, attrs: Dict[str, Optional[str]], start: bool
     ) -> None:
         self.current_tag = tag
+        self._tag_start = start
 
         if self.tag_callback is not None:
             if self.tag_callback(self, tag, attrs, start) is True:
                 return
+
+        if tag in ["li", "ul", "ol"]:
+            # A list boundary supplies its own newline. A pending <br> at the
+            # end of an item would otherwise introduce an empty paragraph.
+            self._pending_list_breaks.clear()
 
         # first thing inside the anchor tag is another tag
         # that produces some output
@@ -378,10 +387,11 @@ class HTML2Text(html.parser.HTMLParser):
                 self.p()
 
         if tag == "br" and start:
-            if self.blockquote > 0:
-                self.o("  \n> ")
+            line_break = "  \n> " if self.blockquote > 0 else "  \n"
+            if self.list and not (self.pre or self.code or self.quiet):
+                self._pending_list_breaks.append(line_break)
             else:
-                self.o("  \n")
+                self.o(line_break)
 
         if tag == "hr" and start:
             self.p()
@@ -757,6 +767,20 @@ class HTML2Text(html.parser.HTMLParser):
         """
         Deal with indentation and whitespace
         """
+        if (
+            self._pending_list_breaks
+            and not self.quiet
+            and data
+            and ((puredata and data.strip()) or (not puredata and self._tag_start))
+        ):
+            # Keep breaks between actual content, including consecutive ones.
+            # Closing inline tags can finish their Markdown markers first;
+            # they do not make a trailing break into visible list content.
+            breaks = self._pending_list_breaks
+            self._pending_list_breaks = []
+            for line_break in breaks:
+                self.o(line_break)
+
         if self.abbr_data is not None:
             self.abbr_data += data
 
