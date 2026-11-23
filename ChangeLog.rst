@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #115: Preserve line breaks inside Markdown table cells as inline HTML.
+
 2025.4.15
 =========
 ----
