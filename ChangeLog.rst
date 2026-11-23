@@ -1,3 +1,9 @@
+Unreleased
+==========
+
+* Fix #360: Separate image alternative text from following words with
+  ``images_to_alt``, including adjacent images and inline formatting.
+
 2025.4.15
 =========
 ----

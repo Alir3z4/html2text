@@ -137,6 +137,7 @@ class HTML2Text(html.parser.HTMLParser):
         self.preceding_stressed = False
         self.preceding_data = ""
         self.current_tag = ""
+        self._after_image_alt = False
 
         config.UNIFIABLE["nbsp"] = "&nbsp_place_holder;"
 
@@ -146,6 +147,7 @@ class HTML2Text(html.parser.HTMLParser):
 
     def handle(self, data: str) -> str:
         self.start = True
+        self._after_image_alt = False
         self.feed(data)
         self.feed("")
         markdown = self.optwrap(self.finish())
@@ -309,6 +311,23 @@ class HTML2Text(html.parser.HTMLParser):
         if self.tag_callback is not None:
             if self.tag_callback(self, tag, attrs, start) is True:
                 return
+
+        if (
+            start
+            and not self.quiet
+            and self._after_image_alt
+            and (
+                (tag in ["em", "i", "u", "strong", "b"] and not self.ignore_emphasis)
+                or tag in ["del", "strike", "s", "kbd", "code", "tt", "q"]
+                or (tag == "a" and not self.ignore_links and attrs.get("href"))
+                or (tag in ["sup", "sub"] and self.include_sup_sub)
+            )
+        ):
+            # Put the boundary outside opening Markdown delimiters. Closing
+            # delimiters must leave it pending for the next visible text.
+            self.space = True
+            self.preceding_data = ""
+            self._after_image_alt = False
 
         # first thing inside the anchor tag is another tag
         # that produces some output
@@ -566,6 +585,9 @@ class HTML2Text(html.parser.HTMLParser):
                     self.o("/>")
                     return
 
+                if self.images_to_alt and alt:
+                    self._image_alt_boundary(alt)
+
                 # If we have a link to create, output the start
                 if self.maybe_automatic_link is not None:
                     href = self.maybe_automatic_link
@@ -576,6 +598,9 @@ class HTML2Text(html.parser.HTMLParser):
                     ):
                         self.o("<" + escape_md(alt) + ">")
                         self.empty_link = False
+                        self._after_image_alt = not self.quiet and not (
+                            self.pre or self.code
+                        )
                         return
                     else:
                         self.o("[")
@@ -586,6 +611,8 @@ class HTML2Text(html.parser.HTMLParser):
                 # considering only the alt text.
                 if self.images_to_alt:
                     self.o(escape_md(alt))
+                    if alt and not self.quiet and not (self.pre or self.code):
+                        self._after_image_alt = not alt[-1].isspace()
                 else:
                     self.o("![" + escape_md(alt) + "]")
                     if self.inline_links:
@@ -869,6 +896,16 @@ class HTML2Text(html.parser.HTMLParser):
             self.out(data)
             self.outcount += 1
 
+    def _image_alt_boundary(self, data: str) -> None:
+        if self._after_image_alt and data and not self.quiet:
+            if (
+                not data[0].isspace()
+                and data[0] not in ".,;:!?)]}"
+                and not data.startswith("&nbsp_place_holder;")
+            ):
+                self.space = True
+            self._after_image_alt = False
+
     def handle_data(self, data: str, entity_char: bool = False) -> None:
         if not data:
             # Data may be empty for some HTML entities. For example,
@@ -888,6 +925,8 @@ class HTML2Text(html.parser.HTMLParser):
                 # should match a letter or common punctuation
                 data = " " + data
             self.preceding_stressed = False
+
+        self._image_alt_boundary(data)
 
         if self.style:
             self.style_def.update(dumb_css_parser(data))
