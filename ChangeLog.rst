@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix #367: Preserve columns spanned by table cells as empty Markdown cells.
+
 2025.4.15
 =========
 ----

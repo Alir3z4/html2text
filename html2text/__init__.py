@@ -53,6 +53,8 @@ class HTML2Text(html.parser.HTMLParser):
         # Config options
         self.split_next_td = False
         self.td_count = 0
+        self.td_colspan = 1
+        self.table_row_bordered = False
         self.table_start = False
         self.unicode_snob = config.UNICODE_SNOB  # covered in cli
         self.escape_snob = config.ESCAPE_SNOB  # covered in cli
@@ -701,21 +703,45 @@ class HTML2Text(html.parser.HTMLParser):
                             self.o("  \n")
                 if tag in ["td", "th"] and start:
                     if self.split_next_td:
+                        self.o("| " * self.td_colspan)
+                    try:
+                        # HTML caps colspan at 1000; invalid values mean one cell.
+                        self.td_colspan = min(
+                            1000, max(1, int(attrs.get("colspan") or "1"))
+                        )
+                    except ValueError:
+                        self.td_colspan = 1
+                    if (
+                        not self.split_next_td
+                        and self.td_colspan > 1
+                        and not self.pad_tables
+                    ):
+                        # Keep an empty first cell distinct from a leading border.
                         self.o("| ")
+                        self.table_row_bordered = True
                     self.split_next_td = True
+                    self.td_count += self.td_colspan
 
                 if tag == "tr" and start:
                     self.td_count = 0
+                    self.td_colspan = 1
+                    self.table_row_bordered = False
                 if tag == "tr" and not start:
+                    if self.split_next_td:
+                        self.o("| " * (self.td_colspan - 1))
+                        if not self.pad_tables and (
+                            self.table_row_bordered or self.td_colspan > 1
+                        ):
+                            # A final empty cell needs its own closing border.
+                            self.o("|")
                     self.split_next_td = False
+                    self.td_colspan = 1
                     self.soft_br()
                 if tag == "tr" and not start and self.table_start:
                     # Underline table header
                     self.o("|".join(["---"] * self.td_count))
                     self.soft_br()
                     self.table_start = False
-                if tag in ["td", "th"] and start:
-                    self.td_count += 1
 
         if tag == "pre":
             if start:
