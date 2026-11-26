@@ -41,6 +41,8 @@ The AUTHORS/Contributors are (and/or have been):
 * Gregory Anders <gh: gpanders>
 * Alex Vandiver <gh: alexmv>
 
+* manav4u <gh: manav4u>
+
 Maintainer:
 
 * Alireza Savand <alireza.savand@gmail.com>

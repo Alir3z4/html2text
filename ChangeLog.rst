@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Clear emitted abbreviation definitions between converted documents.
+
 2025.4.15
 =========
 ----
